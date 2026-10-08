@@ -21,6 +21,7 @@
             background: linear-gradient(135deg, #fff3d1 0%, #ffdfba 50%, #ffc6d9 100%);
             background-attachment: fixed;
             color: #5c4033;
+            transition: background 0.5s ease;
         }
 
         body {
@@ -40,6 +41,7 @@
             opacity: 0.5;
             z-index: 0;
             pointer-events: none;
+            transition: background 0.5s ease;
         }
 
         .circle-1 {
@@ -120,7 +122,7 @@
             min-height: 80vh;
             position: relative;
             transform-origin: center;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, border-color 0.4s ease, background 0.4s ease;
         }
 
         .box-container.closing-book {
@@ -139,6 +141,7 @@
             border: 1.5px dashed rgba(224, 122, 95, 0.2);
             border-radius: 20px;
             pointer-events: none;
+            transition: border-color 0.4s ease;
         }
 
         .cover-content {
@@ -267,6 +270,7 @@
             margin-bottom: 12px;
             position: relative;
             z-index: 2;
+            transition: border-color 0.4s ease;
         }
 
         .card-brand {
@@ -278,6 +282,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            transition: color 0.4s ease;
         }
 
         .slides-container {
@@ -326,6 +331,7 @@
             gap: 8px;
             position: relative;
             z-index: 2;
+            transition: border-color 0.4s ease;
         }
 
         .btn {
@@ -341,7 +347,7 @@
             box-shadow: 0 3px 8px rgba(255, 209, 102, 0.25);
             white-space: nowrap;
             -webkit-tap-highlight-color: transparent;
-            transition: transform 0.15s ease;
+            transition: all 0.2s ease;
         }
 
         .btn:active:not(:disabled) {
@@ -374,6 +380,7 @@
             padding: 16px;
             font-size: 1.1rem;
             box-shadow: 0 5px 15px rgba(244, 162, 97, 0.35);
+            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
         }
 
         .dots {
@@ -402,6 +409,7 @@
             width: 20px;
             border-radius: 4px;
             background: #f4a261;
+            transition: background 0.4s ease;
         }
 
         .quest-complete-content {
@@ -434,8 +442,8 @@
 </head>
 <body>
 
-    <div class="ambient-circle circle-1"></div>
-    <div class="ambient-circle circle-2"></div>
+    <div class="ambient-circle circle-1" id="circle1"></div>
+    <div class="ambient-circle circle-2" id="circle2"></div>
     <div id="falling-container"></div>
     <div id="youtube-player" style="display:none;"></div>
 
@@ -473,14 +481,14 @@
 
         <!-- 3. Reader Screen (Slides) -->
         <div class="box-container hidden" id="mainCard">
-            <div class="card-header">
+            <div class="card-header" id="cardHeader">
                 <span class="card-brand" id="cardBrandTitle">🍯 The Beginning</span>
                 <span id="slideCounterText" style="font-family: 'Poppins', sans-serif; font-size: 0.95rem; font-weight: 600; color: #8c6d59;">1 / 15</span>
             </div>
 
             <div class="slides-container" id="slidesWrapper"></div>
 
-            <div class="controls">
+            <div class="controls" id="cardControls">
                 <button class="btn back-menu-btn" onclick="confirmBackToMenu()">
                     ✕ Menu
                 </button>
@@ -504,7 +512,7 @@
                 <div style="font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 500; color: #a07865;" id="completedQuestDesc">Chapter berhasil diselesaikan dengan baik, Ali ✨</div>
             </div>
             <div>
-                <button class="btn btn-primary" onclick="returnToMenuFromComplete()">
+                <button class="btn btn-primary" id="completeBtn" onclick="returnToMenuFromComplete()">
                     Kembali ke Daftar Chapter ✨
                 </button>
             </div>
@@ -521,7 +529,7 @@
                 </div>
             </div>
             <div>
-                <button class="btn btn-primary" onclick="returnToMenuFromComplete()">
+                <button class="btn btn-primary" style="background: #a37060; border-color: #a37060;" onclick="returnToMenuFromComplete()">
                     Tutup Buku & Kembali ke Menu 🕊️
                 </button>
             </div>
@@ -531,7 +539,7 @@
     <!-- YouTube IFrame API Script -->
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        const flowers = ['🌸', '🌼', '🌷', '🌻', '💮'];
+        const flowers = ['🍁', '🌼', '🌸', '💮'];
         const container = document.getElementById('falling-container');
         for (let i = 0; i < 6; i++) {
             const span = document.createElement('div');
@@ -542,6 +550,85 @@
             span.style.animationDelay = (Math.random() * 5) + 's';
             span.style.fontSize = (Math.random() * 4 + 16) + 'px';
             container.appendChild(span);
+        }
+
+        // Definisi Tema Berdasarkan Chapter
+        const chapterThemes = {
+            1: {
+                bg: "linear-gradient(135deg, #fff3d1 0%, #ffdfba 50%, #ffc6d9 100%)",
+                boxBg: "rgba(255, 253, 245, 0.98)",
+                boxBorder: "rgba(255, 223, 186, 0.95)",
+                brandColor: "#e07a5f",
+                btnPrimary: "#f4a261",
+                btnBorder: "#ffd166",
+                circle1: "#ffecb6",
+                circle2: "#ffb4b0"
+            },
+            2: {
+                bg: "linear-gradient(135deg, #e3eedd 0%, #d4e0cb 50%, #bcd2b6 100%)",
+                boxBg: "rgba(247, 252, 245, 0.98)",
+                boxBorder: "rgba(202, 222, 195, 0.95)",
+                brandColor: "#588157",
+                btnPrimary: "#588157",
+                btnBorder: "#a3b18b",
+                circle1: "#d8f3dc",
+                circle2: "#b7b7a4"
+            },
+            3: {
+                bg: "linear-gradient(135deg, #faedcd 0%, #fefae0 50%, #f5cac3 100%)",
+                boxBg: "rgba(255, 253, 250, 0.98)",
+                boxBorder: "rgba(242, 219, 203, 0.95)",
+                brandColor: "#bc6c25",
+                btnPrimary: "#dda15e",
+                btnBorder: "#f4a261",
+                circle1: "#fefae0",
+                circle2: "#f5cac3"
+            },
+            4: {
+                bg: "linear-gradient(135deg, #e2ece9 0%, #dfccdf 50%, #f3c6df 100%)",
+                boxBg: "rgba(253, 250, 253, 0.98)",
+                boxBorder: "rgba(225, 204, 222, 0.95)",
+                brandColor: "#7c4d58",
+                btnPrimary: "#9e5a63",
+                btnBorder: "#d4a373",
+                circle1: "#eed7c5",
+                circle2: "#d4a5a5"
+            }
+        };
+
+        function applyTheme(chapterId) {
+            const theme = chapterThemes[chapterId];
+            if (!theme) return;
+
+            document.documentElement.style.background = theme.bg;
+            document.body.style.background = theme.bg;
+            
+            const mainCard = document.getElementById('mainCard');
+            mainCard.style.background = theme.boxBg;
+            mainCard.style.borderColor = theme.boxBorder;
+
+            document.getElementById('cardHeader').style.borderColor = theme.boxBorder;
+            document.getElementById('cardControls').style.borderColor = theme.boxBorder;
+            document.getElementById('cardBrandTitle').style.color = theme.brandColor;
+
+            document.getElementById('circle1').style.background = theme.circle1;
+            document.getElementById('circle2').style.background = theme.circle2;
+
+            document.getElementById('nextBtn').style.borderColor = theme.btnBorder;
+            document.getElementById('nextBtn').style.color = theme.brandColor;
+
+            // Update primary buttons and active dots
+            const styleId = 'dynamic-theme-style';
+            let styleTag = document.getElementById(styleId);
+            if (!styleTag) {
+                styleTag = document.createElement('style');
+                styleTag.id = styleId;
+                document.head.appendChild(styleTag);
+            }
+            styleTag.innerHTML = `
+                .btn-primary { background: ${theme.btnPrimary} !important; border-color: ${theme.btnPrimary} !important; }
+                .dot.active { background: ${theme.brandColor} !important; }
+            `;
         }
 
         let defaultQuestStatus = {
@@ -689,56 +776,56 @@
 
         const sectionsData = {
             1: [
-                "Hai Li, sebelum kita ada di titik ini, seperti yang lu tau... gua pernah ngerasa nyaman dan kagum sama lu.",
-                "U were so fun to talk to, had strong principles, and ur out of the box perspective always made me see things differently.",
-                "And i guess, all of that became the real reason why i fell for u.",
-                "I used to think that if i ever have kids one day, I\\'d want them to have a father just like u",
-                "Waktu itu, rasanya semua hal tentang lu keliatan begitu berarti, dan bagian dari diri gua sempat berharap kalau cerita kita bakal berjalan beda dari realitanya sekarang.",
-                "Tapi ya, hidup ga selalu sesuai sama apa yang kita mau.",
-                "Even now, part of me still appreciates those little things we shared. Hal-hal tulus itu yang bakal selalu gua ingat dari lu."
+                `Hai Li, sebelum kita ada di titik ini, seperti yang lu tau... gua pernah ngerasa nyaman dan kagum sama lu.`,
+                `U were so fun to talk to, had strong principles, and ur out of the box perspective always made me see things differently.`,
+                `And i guess, all of that became the real reason why i fell for u.`,
+                `I used to think that if i ever have kids one day, I'd want them to have a father just like u`,
+                `Waktu itu, rasanya semua hal tentang lu keliatan begitu berarti, dan bagian dari diri gua sempat berharap kalau cerita kita bakal berjalan beda dari realitanya sekarang.`,
+                `Tapi ya, hidup ga selalu sesuai sama apa yang kita mau.`,
+                `Even now, part of me still appreciates those little things we shared. Hal-hal tulus itu yang bakal selalu gua ingat dari lu.`
             ],
             2: [
-                "Mungkin lu agak kaget nerima tulisan ini, tapi gua rasa ini cara yang paling clear buat nutup semuanya.",
-                "Sebenarnya waktu gua tanya kenapa kita berantem mulu, gua udah lama tau jawabannya, Li.",
-                "Waktu lu tanya balik, gua memilih untuk jawab ga tau karena gua ga punya cukup keberanian buat nyampeinnya, tapi akhirnya kita sampe di moment yang bener-bener terakhir ini.",
-                "So, let me share how i saw what was really happening between us.",
-                "Gua sadar, interaksi kita selama setengah tahun ini ga sejalan.",
-                "Bukan berarti salah siapa-siapa, tapi cara kita merespons masalah emang beda.",
-                "Lu cenderung butuh waktu sendiri atau memproses semuanya secara internal saat tekanan datang, yang sering bikin gua nangkep mixed signals.",
-                "Sementara gua tipikal yang langsung butuh kejelasan dan pengen dibahas saat itu juga, yang di sisi lain mungkin malah bikin lu ngerasa tertekan.",
-                "Dari awal udah berasa ko Li, dimana semakin gua buka diri seluas-luasnya, semakin tinggi juga boundary lu.",
-                "Ya jadinya kita sama-sama cape, gua cape nebak-nebak dan lu mungkin cape karena ngerasa ditekan, mungkin lu juga ngerasa ruang aman lu terganggu.",
-                "Kita berdua punya prinsip dan standar sendiri yang sayangnya untuk sekarang belum ketemu di satu titik tengah dan malah jadi saling nyakitin.",
-                "Intinya, masih banyak yang harus kita pelajarin. Semoga tulisan gua ini bisa bikin kita lebih kenal sama diri masing-masing. Sukses buat kedepannya."
+                `Mungkin lu agak kaget nerima tulisan ini, tapi gua rasa ini cara yang paling clear buat nutup semuanya.`,
+                `Sebenarnya waktu gua tanya kenapa kita berantem mulu, gua udah lama tau jawabannya, Li.`,
+                `Waktu lu tanya balik, gua memilih untuk jawab ga tau karena gua ga punya cukup keberanian buat nyampeinnya, tapi akhirnya kita sampe di moment yang bener-bener terakhir ini.`,
+                `So, let me share how i saw what was really happening between us.`,
+                `Gua sadar, interaksi kita selama setengah tahun ini ga sejalan.`,
+                `Bukan berarti salah siapa-siapa, tapi cara kita merespons masalah emang beda.`,
+                `Lu cenderung butuh waktu sendiri atau memproses semuanya secara internal saat tekanan datang, yang sering bikin gua nangkep mixed signals.`,
+                `Sementara gua tipikal yang langsung butuh kejelasan dan pengen dibahas saat itu juga, yang di sisi lain mungkin malah bikin lu ngerasa tertekan.`,
+                `Dari awal udah berasa ko Li, dimana semakin gua buka diri seluas-luasnya, semakin tinggi juga boundary lu.`,
+                `Ya jadinya kita sama-sama cape, gua cape nebak-nebak dan lu mungkin cape karena ngerasa ditekan, mungkin lu juga ngerasa ruang aman lu terganggu.`,
+                `Kita berdua punya prinsip dan standar sendiri yang sayangnya untuk sekarang belum ketemu di satu titik tengah dan malah jadi saling nyakitin.`,
+                `Intinya, masih banyak yang harus kita pelajarin. Semoga tulisan gua ini bisa bikin kita lebih kenal sama diri masing-masing. Sukses buat kedepannya.`
             ],
             3: [
-                "Ngomongin soal interaksi kita kemarin, ini murni cara gua melihat sosok lu selama setengah tahun kita berinteraksi.",
-                "Kalau lu mau, lu juga bebas banget buat ngasi feedback gimana gua selama ini.",
-                "Di mata gua lu punya prinsip kuat buat defend argumen lu, dan kejujuran itu buat gua kagum. Seorang Ali dengan argumennya yang ga gampang goyah.",
-                "Deep down, gua tau niat lu emang tulus pengen jadi orang baik.",
-                "Walau sering bikin gua cape dan nguras energi banget, to be fair, lu partner debat paling seru.",
-                "Lu bisa ngasih perspective yang out of the box. Ada aja sudut pandang tak terduga dari lu yang ngebuka mata gua.",
-                "Di sisi lain, harus gua akuin kalau pola komunikasi kita sering banget ga sejalan, yang akhirnya memicu banyak kesalahpahaman.",
-                "Gua sempat merasa kesulitan ketika lu memilih untuk menutup diri, nyimpen semuanya sendiri, dan beberapa keputusan yang tidak lu ambil secara tegas.",
-                "Di satu sisi, gua jadi bingung harus bersikap gimana. Tapi gua juga mulai belajar untuk memahami, mungkin cara itu yang paling nyaman buat lu menghadapi masalah untuk saat ini.",
-                "Begitu juga soal diskusi atau masukan. Ke depannya, semoga lu bisa lebih nyaman buat nerima masukan orang lain.",
-                "Anyway, thanks for the chaos, the debates, and everything in between. Semoga whatever u pursue next, semuanya dimudahkan."
+                `Ngomongin soal interaksi kita kemarin, ini murni cara gua melihat sosok lu selama setengah tahun kita berinteraksi.`,
+                `Kalau lu mau, lu juga bebas banget buat ngasi feedback gimana gua selama ini.`,
+                `Di mata gua lu punya prinsip kuat buat defend argumen lu, dan kejujuran itu buat gua kagum. Seorang Ali dengan argumennya yang ga gampang goyah.`,
+                `Deep down, gua tau niat lu emang tulus pengen jadi orang baik.`,
+                `Walau sering bikin gua cape dan nguras energi banget, to be fair, lu partner debat paling seru.`,
+                `Lu bisa ngasih perspective yang out of the box. Ada aja sudut pandang tak terduga dari lu yang ngebuka mata gua.`,
+                `Di sisi lain, harus gua akuin kalau pola komunikasi kita sering banget ga sejalan, yang akhirnya memicu banyak kesalahpahaman.`,
+                `Gua sempat merasa kesulitan ketika lu memilih untuk menutup diri, nyimpen semuanya sendiri, dan beberapa keputusan yang tidak lu ambil secara tegas.`,
+                `Di satu sisi, gua jadi bingung harus bersikap gimana. Tapi gua juga mulai belajar untuk memahami, mungkin cara itu yang paling nyaman buat lu menghadapi masalah untuk saat ini.`,
+                `Begitu juga soal diskusi atau masukan. Ke depannya, semoga lu bisa lebih nyaman buat nerima masukan orang lain.`,
+                `Anyway, thanks for the chaos, the debates, and everything in between. Semoga whatever u pursue next, semuanya dimudahkan.`
             ],
             4: [
-                "Akhirnya kita sampai di tahap gua harus nulis pesan ini.",
-                "Thanks for the gift, and i\\'m glad we managed to exchange gifts. A bit late, but happy 24th birthday.",
-                "Oh, and i bought u that book u wanted to read (I really hope u haven\\'t bought it yet, cause i had to wait quite a while to finally give it to u).",
-                "Lewat tulisan ini, gua beneran mau pamit. Thanks for everything, terutama buat pertemanan kita selama setengah tahun.",
-                "Makasih udah dipersilakan pergi juga, jadi gua bisa pergi tanpa rasa bersalah dan ga perlu mikir buat balik lagi kayak sebelum sebelumnya.",
-                "Di titik ini, gua sadar kalau perasaan yang sempat ada buat lu perlahan udah hilang, dan gua juga sadar kalau kita emang ga bisa berteman secara wajar tanpa terus-terusan saling nyakitin.",
-                "Dari evaluasi gua belakangan, i realized komunikasi kita sering ga sejalan dan gua masih punya banyak hal yang harus diperbaiki dalam diri ini, termasuk cara pandang gua yang sering kejebak di ego sendiri.",
-                "Lu pernah jelasin tentang ego gua, gua rasa itu bener. Selama ini tulisan gua selalu dari pov gua aja, and i need to learn buat mulai lihat dari pov orang lain.",
-                "At the end of the day, gua belajar kalau ikhlas itu jauh lebih indah.",
-                "If we\\'re truly meant to cross paths again, we\\'ll find our way back to each other.",
-                "Kalaupun bukan takdirnya, it\\'s okay, maybe we only met to learn from each other. So, we don\\'t need to be afraid to walk away anymore.",
-                "When u finish reading this note, I\\'ve already blocked u. I\\'m so sorry. Gua ga bermaksud untuk mutus silaturahim, but i need to take my own time dan fokus ke diri sendiri.",
-                "Tapi, kalau ada hal penting or feedback yang pengen lu sampein, u can send it to my email at karuniashavira@gmail.com.",
-                "Thanks for everything, and i truly wish the best for both of us."
+                `Akhirnya kita sampai di tahap gua harus nulis pesan ini.`,
+                `Thanks for the gift, and i'm glad we managed to exchange gifts. A bit late, but happy 24th birthday.`,
+                `Oh, and i bought u that book u wanted to read (I really hope u haven't bought it yet, cause i had to wait quite a while to finally give it to u).`,
+                `Lewat tulisan ini, gua beneran mau pamit. Thanks for everything, terutama buat pertemanan kita selama setengah tahun.`,
+                `Makasih udah dipersilakan pergi juga, jadi gua bisa pergi tanpa rasa bersalah dan ga perlu mikir buat balik lagi kayak sebelum sebelumnya.`,
+                `Di titik ini, gua sadar kalau perasaan yang sempat ada buat lu perlahan udah hilang, dan gua juga sadar kalau kita emang ga bisa berteman secara wajar tanpa terus-terusan saling nyakitin.`,
+                `Dari evaluasi gua belakangan, i realized komunikasi kita sering ga sejalan dan gua masih punya banyak hal yang harus diperbaiki dalam diri ini, termasuk cara pandang gua yang sering kejebak di ego sendiri.`,
+                `Lu pernah jelasin tentang ego gua, gua rasa itu bener. Selama ini tulisan gua selalu dari pov gua aja, and i need to learn buat mulai lihat dari pov orang lain.`,
+                `At the end of the day, gua belajar kalau ikhlas itu jauh lebih indah.`,
+                `If we're truly meant to cross paths again, we'll find our way back to each other.`,
+                `Kalaupun bukan takdirnya, it's okay, maybe we only met to learn from each other. So, we don't need to be afraid to walk away anymore.`,
+                `When u finish reading this note, I've already blocked u. I'm so sorry. Gua ga bermaksud untuk mutus silaturahim, but i need to take my own time dan fokus ke diri sendiri.`,
+                `Tapi, kalau ada hal penting or feedback yang pengen lu sampein, u can send it to my email at karuniashavira@gmail.com.`,
+                `Thanks for everything, and i truly wish the best for both of us.`
             ]
         };
 
@@ -759,6 +846,7 @@
             const data = sectionsData[sectionId];
             totalSlides = data.length;
 
+            applyTheme(sectionId);
             cardBrandTitle.innerText = `🍯 ${questStatus[sectionId].title}`;
 
             slidesWrapper.innerHTML = '';
@@ -807,6 +895,7 @@
                 }
             });
 
+            currentDots.dots = currentDots || [];
             currentDots.forEach((dot, index) => {
                 dot.classList.remove('active');
                 if (index === currentSlide) {
