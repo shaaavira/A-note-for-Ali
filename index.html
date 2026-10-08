@@ -1,27 +1,88 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="0">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notes on Closure - Slide Mode</title>
-    <!-- Google Fonts: Pinyon Script & Poppins -->
+    <title>Notes on Closure</title>
     <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        /* ============ THEME VARIABLES ============ */
+        html {
+            --bg: linear-gradient(135deg, #fff3d1 0%, #ffdfba 50%, #ffc6d9 100%);
+            --box-bg: rgba(255, 253, 245, 0.98);
+            --box-border: rgba(255, 223, 186, 0.95);
+            --dash: rgba(224, 122, 95, 0.2);
+            --brand: #e07a5f;
+            --primary: #f4a261;
+            --btn-border: #ffd166;
+            --btn-bg: #ffffff;
+            --btn-text: #d48348;
+            --c1: #ffecb6;
+            --c2: #ffb4b0;
+            --text: #4a3b32;
+            --muted: #a07865;
+            --stat-bg: rgba(255, 255, 255, 0.75);
+            --stat-border: rgba(255, 209, 102, 0.6);
         }
+        html[data-theme="1"] { }
+        html[data-theme="2"] {
+            --bg: linear-gradient(135deg, #e3eedd 0%, #d4e0cb 50%, #bcd2b6 100%);
+            --box-bg: rgba(247, 252, 245, 0.98);
+            --box-border: rgba(180, 205, 172, 0.95);
+            --dash: rgba(88, 129, 87, 0.22);
+            --brand: #588157;
+            --primary: #588157;
+            --btn-border: #a3b18b;
+            --btn-text: #3f6b3e;
+            --c1: #d8f3dc;
+            --c2: #b7b7a4;
+            --text: #33452f;
+            --muted: #6f8a6b;
+            --stat-border: rgba(163, 177, 139, 0.7);
+        }
+        html[data-theme="3"] {
+            --bg: linear-gradient(135deg, #e4ebfa 0%, #d8d3f0 50%, #c3d0ee 100%);
+            --box-bg: rgba(249, 250, 255, 0.98);
+            --box-border: rgba(196, 204, 240, 0.95);
+            --dash: rgba(91, 106, 168, 0.22);
+            --brand: #5b6aa8;
+            --primary: #6f7fc0;
+            --btn-border: #b4bde8;
+            --btn-text: #5b6aa8;
+            --c1: #d6dcf7;
+            --c2: #cfc0ec;
+            --text: #34365a;
+            --muted: #7b80a8;
+            --stat-border: rgba(180, 189, 232, 0.8);
+        }
+        html[data-theme="4"] {
+            --bg: linear-gradient(160deg, #1d2145 0%, #38305a 55%, #6a4a72 100%);
+            --box-bg: rgba(36, 34, 68, 0.93);
+            --box-border: rgba(150, 130, 190, 0.45);
+            --dash: rgba(200, 180, 235, 0.18);
+            --brand: #e3c9ee;
+            --primary: #8e6bb0;
+            --btn-border: #9a7bb5;
+            --btn-bg: rgba(255, 255, 255, 0.07);
+            --btn-text: #e3c9ee;
+            --c1: #4b4a8a;
+            --c2: #8a4f7d;
+            --text: #efe6f7;
+            --muted: #b8a6cf;
+            --stat-bg: rgba(255, 255, 255, 0.06);
+            --stat-border: rgba(150, 130, 190, 0.4);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         html, body {
             width: 100%;
             min-height: 100%;
             min-height: 100dvh;
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #fff3d1 0%, #ffdfba 50%, #ffc6d9 100%);
+            background: var(--bg);
             background-attachment: fixed;
-            color: #5c4033;
-            transition: background 0.5s ease;
+            color: var(--text);
         }
 
         body {
@@ -33,7 +94,6 @@
             position: relative;
         }
 
-        /* Ambient Soft Glow */
         .ambient-circle {
             position: fixed;
             border-radius: 50%;
@@ -43,43 +103,26 @@
             pointer-events: none;
             transition: background 0.5s ease;
         }
+        .circle-1 { width: 250px; height: 250px; background: var(--c1); top: -40px; left: -40px; }
+        .circle-2 { width: 280px; height: 280px; background: var(--c2); bottom: -40px; right: -40px; }
 
-        .circle-1 {
-            width: 250px;
-            height: 250px;
-            background: #ffecb6;
-            top: -40px;
-            left: -40px;
+        #stars { position: fixed; inset: 0; z-index: 1; pointer-events: none; display: none; }
+        html[data-theme="4"] #stars { display: block; }
+        .star {
+            position: absolute; width: 2px; height: 2px; border-radius: 50%;
+            background: #fff; animation: twinkle 3s ease-in-out infinite;
         }
+        @keyframes twinkle { 0%,100% { opacity: 0.15; } 50% { opacity: 0.9; } }
 
-        .circle-2 {
-            width: 280px;
-            height: 280px;
-            background: #ffb4b0;
-            bottom: -40px;
-            right: -40px;
-        }
-
-        /* Falling Flowers Animation Container */
         #falling-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            overflow: hidden;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1; overflow: hidden;
         }
-
+        html[data-theme="4"] #falling-container { display: none; }
         .falling-flower {
-            position: absolute;
-            top: -10vh;
-            user-select: none;
-            pointer-events: none;
+            position: absolute; top: -10vh; user-select: none; pointer-events: none;
             animation: fallDown linear infinite;
         }
-
         @keyframes fallDown {
             0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
             15% { opacity: 0.8; }
@@ -88,662 +131,876 @@
         }
 
         .wrapper {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            max-width: 520px;
-            display: flex;
-            flex-direction: column;
-            perspective: 1000px;
+            position: relative; z-index: 2; width: 100%; max-width: 520px;
+            display: flex; flex-direction: column; perspective: 1000px;
         }
 
         .box-container {
             width: 100%;
-            background: rgba(255, 253, 245, 0.98);
+            background: var(--box-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 2.5px solid rgba(255, 223, 186, 0.95);
+            border: 2.5px solid var(--box-border);
             border-radius: 28px;
             padding: 28px 22px 22px 22px;
-            box-shadow: 0 15px 35px rgba(210, 150, 120, 0.22), 0 0 30px rgba(255, 255, 255, 0.7) inset;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            box-shadow: 0 15px 35px rgba(120, 90, 110, 0.2), 0 0 30px rgba(255, 255, 255, 0.12) inset;
+            display: flex; flex-direction: column; justify-content: space-between;
             min-height: 80vh;
             position: relative;
             transform-origin: center;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, border-color 0.4s ease, background 0.4s ease;
         }
-
-        .box-container.closing-book {
-            transform: scale(0.9) rotateX(10deg);
-            opacity: 0;
-            pointer-events: none;
-        }
-
+        .box-container.closing-book { transform: scale(0.9) rotateX(10deg); opacity: 0; pointer-events: none; }
         .box-container::before {
-            content: '';
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
-            border: 1.5px dashed rgba(224, 122, 95, 0.2);
-            border-radius: 20px;
-            pointer-events: none;
-            transition: border-color 0.4s ease;
-        }
-
-        .cover-content {
-            margin: auto 0;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            z-index: 2;
-        }
-
-        .cover-title {
-            font-family: 'Pinyon Script', cursive;
-            font-size: 4.2rem;
-            color: #4a3b32;
-            line-height: 1.1;
-            font-weight: 400;
-            text-shadow: 1px 1px 3px rgba(212, 131, 72, 0.1);
-            margin-bottom: 14px;
-        }
-
-        .cover-subtitle {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-            font-weight: 500;
-            color: #a07865;
-            letter-spacing: 0.2px;
-            max-width: 360px;
-            line-height: 1.5;
+            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 1.5px dashed var(--dash); border-radius: 20px; pointer-events: none;
         }
 
         .hidden { display: none !important; }
 
+        .cover-content {
+            margin: auto 0; text-align: center; display: flex; flex-direction: column;
+            align-items: center; position: relative; z-index: 2;
+        }
+        .cover-title {
+            font-family: 'Pinyon Script', cursive; font-size: 4.2rem; color: var(--text);
+            line-height: 1.1; font-weight: 400; margin-bottom: 14px;
+        }
+        .cover-subtitle {
+            font-size: 1rem; font-weight: 500; color: var(--muted);
+            letter-spacing: 0.2px; max-width: 360px; line-height: 1.5;
+        }
+
+        /* ============ MENU ============ */
         .menu-main-title {
-            font-family: 'Pinyon Script', cursive;
-            font-size: 3rem;
-            color: #4a3b32;
-            margin-bottom: 10px;
-            line-height: 1.1;
-            text-align: center;
+            font-family: 'Pinyon Script', cursive; font-size: 3rem; color: var(--text);
+            margin-bottom: 10px; line-height: 1.1; text-align: center;
         }
-
         .menu-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin: 6px 0;
-            max-height: 52vh;
-            overflow-y: auto;
-            padding-right: 2px;
+            display: flex; flex-direction: column; gap: 10px; margin: 6px 0;
+            max-height: 52vh; overflow-y: auto; padding-right: 2px;
         }
-
         .menu-item-card {
-            background: #ffffff;
-            border: 2px solid rgba(255, 209, 102, 0.6);
-            padding: 10px 14px;
-            border-radius: 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all 0.2s ease;
-            box-shadow: 0 3px 8px rgba(255, 209, 102, 0.12);
+            background: #ffffff; border: 2px solid rgba(255, 209, 102, 0.6);
+            padding: 10px 14px; border-radius: 14px; cursor: pointer;
+            display: flex; align-items: center; justify-content: space-between; gap: 8px;
+            transition: all 0.2s ease; box-shadow: 0 3px 8px rgba(255, 209, 102, 0.12);
         }
-
-        .menu-item-card:hover:not(.locked) {
-            background: #fffbf0;
-            border-color: #f4a261;
-        }
-
+        .menu-item-card:hover:not(.locked) { background: #fffbf0; transform: translateY(-1px); }
         .menu-item-card.locked {
-            background: #f7f5f0;
-            border-color: rgba(0, 0, 0, 0.05);
-            cursor: not-allowed;
-            opacity: 0.6;
-            box-shadow: none;
+            background: #f7f5f0; border-color: rgba(0,0,0,0.05); cursor: not-allowed; opacity: 0.6; box-shadow: none;
         }
-
         .menu-item-info h3 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #4a3b32;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
+            font-size: 0.85rem; font-weight: 600; color: #4a3b32;
+            display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
         }
-
         .menu-item-card.locked .menu-item-info h3 { color: #94a3b8; }
-
+        .menu-item-sub { font-size: 0.7rem; color: #a07865; margin-top: 2px; font-weight: 400; }
         .quest-status-badge {
-            font-size: 0.6rem;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-size: 0.6rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;
+            text-transform: uppercase; letter-spacing: 0.5px;
         }
-        .badge-available { background: rgba(34, 197, 94, 0.15); color: #15803d; border: 1px solid rgba(34, 197, 94, 0.3); }
-        .badge-completed { background: rgba(59, 130, 246, 0.15); color: #1d4ed8; border: 1px solid rgba(59, 130, 246, 0.3); }
-        .badge-locked { background: rgba(0, 0, 0, 0.05); color: #6b7280; border: 1px solid rgba(0, 0, 0, 0.1); }
-
-        .menu-item-action {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.8rem;
-            color: #f4a261;
-            font-weight: 600;
-        }
+        .badge-available { background: rgba(34,197,94,0.15); color: #15803d; border: 1px solid rgba(34,197,94,0.3); }
+        .badge-completed { background: rgba(59,130,246,0.15); color: #1d4ed8; border: 1px solid rgba(59,130,246,0.3); }
+        .badge-locked { background: rgba(0,0,0,0.05); color: #6b7280; border: 1px solid rgba(0,0,0,0.1); }
+        .menu-item-action { font-size: 0.8rem; color: #f4a261; font-weight: 600; white-space: nowrap; }
         .menu-item-card.locked .menu-item-action { color: #94a3b8; }
 
+        /* ============ READER FRAME ============ */
+        #mainCard { height: 88vh; height: min(88dvh, 820px); }
         .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 2px solid rgba(255, 223, 186, 0.8);
-            padding-bottom: 12px;
-            margin-top: -6px;
-            margin-bottom: 12px;
-            position: relative;
-            z-index: 2;
-            transition: border-color 0.4s ease;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 2px solid var(--box-border); padding-bottom: 12px;
+            margin-top: -6px; margin-bottom: 12px; position: relative; z-index: 2;
         }
-
         .card-brand {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: 0.2px;
-            color: #e07a5f;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: color 0.4s ease;
+            font-size: 1rem; font-weight: 700; color: var(--brand);
+            display: flex; align-items: center; gap: 8px;
         }
-
-        .slides-container {
-            display: flex;
-            position: relative;
-            overflow: hidden;
-            min-height: 45vh;
-            margin: 10px 0;
-            align-items: center;
-            z-index: 2;
+        #slideCounterText { font-size: 0.85rem; font-weight: 600; color: var(--muted); }
+        .ch-body {
+            flex: 1; min-height: 0; overflow-y: auto; position: relative; z-index: 2;
+            display: flex; flex-direction: column; padding: 2px 2px 6px;
         }
-
-        .slide {
-            position: absolute;
-            width: 100%;
-            display: none;
-            flex-direction: column;
-            opacity: 0;
-            transition: opacity 0.25s ease-in-out;
-            text-align: left;
-        }
-
-        .slide.active {
-            display: flex;
-            opacity: 1;
-            position: relative;
-        }
-
-        .slide-text {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.1rem;
-            line-height: 1.75;
-            color: #4a3b32;
-            font-weight: 400;
-            word-break: break-word;
-        }
-
         .controls {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-top: 14px;
-            padding-bottom: 2px;
-            border-top: 2px solid rgba(255, 223, 186, 0.8);
-            margin-bottom: -6px;
-            gap: 8px;
-            position: relative;
-            z-index: 2;
-            transition: border-color 0.4s ease;
+            display: flex; align-items: center; justify-content: space-between;
+            padding-top: 14px; padding-bottom: 2px; border-top: 2px solid var(--box-border);
+            margin-bottom: -6px; gap: 8px; position: relative; z-index: 2;
         }
+        .ctl-hint { flex: 1; text-align: center; font-size: 0.7rem; color: var(--muted); line-height: 1.3; }
 
         .btn {
-            background: #ffffff;
-            border: 2px solid #ffd166;
-            color: #d48348;
-            padding: 12px 16px;
-            border-radius: 30px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 3px 8px rgba(255, 209, 102, 0.25);
-            white-space: nowrap;
-            -webkit-tap-highlight-color: transparent;
-            transition: all 0.2s ease;
+            background: var(--btn-bg); border: 2px solid var(--btn-border); color: var(--btn-text);
+            padding: 12px 16px; border-radius: 30px; font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem; font-weight: 600; cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08); white-space: nowrap;
+            -webkit-tap-highlight-color: transparent; transition: all 0.2s ease;
         }
-
         .btn:active:not(:disabled) { transform: scale(0.95); }
-        .btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #e2e8f0; color: #94a3b8; box-shadow: none; }
-
-        .back-menu-btn {
-            background: #fff1f2;
-            border-color: #fca5a5;
-            color: #e11d48;
-            padding: 12px 12px;
-        }
-        .back-menu-btn:hover:not(:disabled) { background: #ffe4e6; }
-
+        .btn:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; }
+        .btn[hidden] { display: none; }
+        .back-menu-btn { background: #fff1f2; border-color: #fca5a5; color: #e11d48; padding: 12px 12px; }
+        html[data-theme="4"] .back-menu-btn { background: rgba(255,255,255,0.06); border-color: rgba(252,165,165,0.5); color: #f5b5c0; }
         .btn-primary {
-            background: #f4a261;
-            color: #ffffff;
-            border-color: #f4a261;
-            width: 100%;
-            padding: 16px;
-            font-size: 1.1rem;
-            box-shadow: 0 5px 15px rgba(244, 162, 97, 0.35);
-            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
-        }
-
-        .dots {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-            max-width: 90px;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .dots::-webkit-scrollbar { display: none; }
-
-        .dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: rgba(244, 162, 97, 0.3);
-            transition: all 0.25s ease;
-            flex-shrink: 0;
-        }
-
-        .dot.active {
-            width: 20px;
-            border-radius: 4px;
-            background: #f4a261;
-            transition: background 0.4s ease;
+            background: var(--primary); color: #ffffff; border-color: var(--primary);
+            width: 100%; padding: 16px; font-size: 1.1rem; box-shadow: 0 5px 15px rgba(0,0,0,0.15);
         }
 
         .quest-complete-content {
-            margin: auto 0;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            z-index: 2;
-            animation: fadeIn 0.3s ease;
+            margin: auto 0; text-align: center; display: flex; flex-direction: column;
+            align-items: center; position: relative; z-index: 2; animation: fadeIn 0.3s ease;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .closing-quote {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.95rem;
-            font-style: italic;
-            color: #a07865;
-            max-width: 380px;
-            line-height: 1.6;
-            margin-top: 12px;
-            padding: 0 8px;
+            font-size: 0.95rem; font-style: italic; color: var(--muted); max-width: 380px;
+            line-height: 1.6; margin-top: 12px; padding: 0 8px;
+        }
+
+        .tap-hint { text-align: center; font-size: 0.78rem; color: var(--muted); margin: 8px 0; animation: pulse 1.8s ease-in-out infinite; }
+        @keyframes pulse { 0%,100% { opacity: 0.45; } 50% { opacity: 1; } }
+        .fade-in { animation: fadeUp 0.6s ease both; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ============ CHAPTER 1: POLAROID ============ */
+        .p-area { position: relative; flex: 1; min-height: 320px; touch-action: pan-y; }
+        .sheet {
+            position: absolute; left: 50%; top: 50%; width: 82%; max-width: 320px; height: 62%;
+            background: #fffaf0; border-radius: 6px; box-shadow: 0 6px 14px rgba(160,100,80,0.18);
+        }
+        .sheet.s1 { transform: translate(-50%,-50%) rotate(-5deg) translateY(8px); }
+        .sheet.s2 { transform: translate(-50%,-50%) rotate(4deg) translateY(4px); }
+        .polaroid {
+            position: absolute; left: 50%; top: 50%; width: 88%; max-width: 340px;
+            background: #fffdf8; padding: 12px 12px 14px; border-radius: 6px;
+            box-shadow: 0 10px 24px rgba(160,100,80,0.28);
+            transition: transform 0.4s cubic-bezier(0.3, 0.9, 0.3, 1), opacity 0.3s ease;
+            cursor: grab; user-select: none; -webkit-user-select: none; touch-action: pan-y;
+        }
+        .polaroid.dragging { transition: none; cursor: grabbing; }
+        .tape {
+            position: absolute; top: -10px; left: 50%; width: 70px; height: 20px; margin-left: -35px;
+            background: rgba(255, 209, 102, 0.6); transform: rotate(-3deg);
+        }
+        .photo {
+            height: 64px; border-radius: 3px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; margin-bottom: 12px;
+        }
+        .p-text { font-size: 1rem; line-height: 1.65; color: #4a3b32; }
+        .p-cap { margin-top: 10px; font-family: 'Pinyon Script', cursive; font-size: 1.25rem; color: #c98b72; text-align: right; }
+
+        /* ============ CHAPTER 2: RUNI VS ALI ============ */
+        .chat { display: flex; flex-direction: column; gap: 10px; padding: 4px 0; }
+        .bubble {
+            align-self: flex-start; max-width: 92%; background: #fff; border: 2px solid rgba(163,177,139,0.55);
+            border-radius: 18px 18px 18px 4px; padding: 10px 14px; font-size: 0.95rem; line-height: 1.6;
+            color: #33452f; animation: fadeUp 0.4s ease both;
+        }
+        .bubble:nth-child(even) { background: #eef6ea; }
+        .c2-text { font-size: 0.92rem; line-height: 1.65; margin-bottom: 8px; }
+        .vs { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+        .vs-card {
+            border: 2px solid rgba(163,177,139,0.7); border-radius: 16px; padding: 12px 14px;
+            background: #fff; cursor: pointer; transition: all 0.3s ease; min-height: 78px;
+        }
+        .vs-card.ali { background: #eef3fb; border-color: #b4c3e0; }
+        .vs-card.runi { background: #fdf3ea; border-color: #ecc9a8; }
+        .vs-title { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.95rem; }
+        .vs-tag { margin-left: auto; font-size: 0.65rem; font-weight: 600; color: #6f8a6b; }
+        .vs-back { display: none; margin-top: 8px; font-size: 0.92rem; line-height: 1.6; color: #33452f; }
+        .vs-card.open .vs-back { display: block; animation: fadeUp 0.4s ease both; }
+        .vs-card.open .vs-tag { display: none; }
+        .scene { display: flex; justify-content: center; gap: 28px; align-items: flex-end; margin: 12px 0 6px; }
+        .meter-col { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 110px; }
+        .meter { position: relative; width: 56px; height: 130px; border-radius: 14px; overflow: hidden; border: 2px solid rgba(163,177,139,0.7); background: rgba(255,255,255,0.7); }
+        .meter-fill { position: absolute; left: 0; right: 0; bottom: 0; height: 5%; transition: height 0.15s linear; }
+        .meter-fill.open { background: linear-gradient(0deg, #f4a261, #ffd9a0); }
+        .meter-fill.wall {
+            background: repeating-linear-gradient(0deg, #b0866f 0 14px, #8f6a56 14px 16px),
+                        repeating-linear-gradient(90deg, transparent 0 18px, rgba(0,0,0,0.12) 18px 20px);
+            background-blend-mode: multiply;
+        }
+        .meter-label { font-size: 0.72rem; font-weight: 600; text-align: center; color: #33452f; line-height: 1.3; }
+        .meter-emoji { font-size: 1.6rem; transition: transform 0.2s ease; }
+        .slider-wrap { margin: 12px 4px 4px; }
+        .slider-wrap input[type=range] { width: 100%; accent-color: #588157; height: 28px; }
+        .slider-cap { text-align: center; font-size: 0.78rem; color: var(--muted); margin-top: 2px; min-height: 1.2em; }
+        .c2-end p { font-size: 0.92rem; line-height: 1.65; margin-top: 10px; }
+
+        /* ============ CHAPTER 3: RPG CARD ============ */
+        .rpg-head {
+            display: flex; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 16px;
+            background: linear-gradient(135deg, rgba(111,127,192,0.14), rgba(180,160,220,0.2));
+            border: 2px solid var(--stat-border);
+        }
+        .avatar {
+            width: 54px; height: 54px; border-radius: 14px; background: #fff; display: flex;
+            align-items: center; justify-content: center; font-size: 1.9rem; border: 2px solid var(--btn-border);
+        }
+        .rpg-name { font-weight: 700; color: var(--brand); letter-spacing: 1px; }
+        .rpg-sub { font-size: 0.74rem; color: var(--muted); }
+        .briefing {
+            font-size: 0.88rem; line-height: 1.6; margin: 10px 0 2px; padding: 10px 12px;
+            border-left: 3px solid var(--primary); background: rgba(255,255,255,0.55); border-radius: 8px;
+        }
+        .sec-title {
+            font-weight: 700; font-size: 0.75rem; letter-spacing: 0.8px; text-transform: uppercase;
+            color: var(--brand); margin: 14px 0 6px;
+        }
+        .stat {
+            background: var(--stat-bg); border: 2px solid var(--stat-border); border-radius: 14px;
+            padding: 10px 12px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.2s ease;
+        }
+        .stat:hover { border-color: var(--primary); }
+        .stat-top { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.88rem; }
+        .stat-tag { margin-left: auto; font-size: 0.62rem; font-weight: 600; color: var(--muted); }
+        .stat.open .stat-tag { display: none; }
+        .bar { height: 8px; border-radius: 5px; background: rgba(0,0,0,0.08); margin-top: 8px; overflow: hidden; }
+        .bar > i {
+            display: block; height: 100%; width: 0; border-radius: 5px;
+            background: linear-gradient(90deg, var(--primary), #9aa8e6);
+            transition: width 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .stat.grow .bar > i {
+            background: repeating-linear-gradient(45deg, #e9a86c, #e9a86c 6px, #f2c48f 6px, #f2c48f 12px);
+        }
+        .stat-detail {
+            max-height: 0; overflow: hidden; opacity: 0; font-size: 0.9rem; line-height: 1.65;
+            transition: max-height 0.5s ease, opacity 0.4s ease, margin 0.3s ease;
+        }
+        .stat-detail p + p { margin-top: 8px; }
+        .stat.open .stat-detail { max-height: 400px; opacity: 1; margin-top: 10px; }
+        .chest {
+            margin-top: 12px; text-align: center; border: 2px dashed var(--btn-border); border-radius: 16px;
+            padding: 14px; cursor: pointer; background: rgba(255,255,255,0.5);
+        }
+        .chest.locked { opacity: 0.5; cursor: not-allowed; }
+        .chest-emoji { font-size: 2.2rem; display: block; }
+        .chest.ready .chest-emoji { animation: wiggle 1s ease-in-out infinite; }
+        @keyframes wiggle { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-8deg); } 75% { transform: rotate(8deg); } }
+        .chest-label { font-size: 0.78rem; font-weight: 600; color: var(--brand); }
+        .chest-text { margin-top: 8px; font-size: 0.92rem; line-height: 1.65; text-align: left; }
+
+        /* ============ CHAPTER 4: ENVELOPE ============ */
+        .env-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; perspective: 700px; transition: opacity 0.6s ease; }
+        .env-wrap.gone { opacity: 0; pointer-events: none; }
+        .env { position: relative; width: 230px; height: 150px; cursor: pointer; transition: transform 0.3s ease; }
+        .env:hover { transform: translateY(-3px); }
+        .env-body {
+            position: absolute; inset: 0; border-radius: 8px;
+            background: linear-gradient(160deg, #e6d5f0, #cdb3e0); box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+        }
+        .env-body::after {
+            content: ''; position: absolute; inset: 0; border-radius: 8px;
+            background: linear-gradient(to top right, transparent 49%, rgba(120,80,160,0.18) 50%, transparent 51%),
+                        linear-gradient(to top left, transparent 49%, rgba(120,80,160,0.18) 50%, transparent 51%);
+        }
+        .env-flap {
+            position: absolute; top: 0; left: 0; width: 100%; height: 88px;
+            clip-path: polygon(0 0, 100% 0, 50% 100%); background: linear-gradient(180deg, #bfa0d6, #d4bde6);
+            transform-origin: top center; transition: transform 0.7s ease; z-index: 3; backface-visibility: visible;
+        }
+        .env.open .env-flap { transform: rotateX(180deg); z-index: 0; }
+        .seal { position: absolute; top: 62px; left: 50%; margin-left: -18px; width: 36px; height: 36px; border-radius: 50%; background: #8e6bb0; display: flex; align-items: center; justify-content: center; z-index: 4; font-size: 1.1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.3); transition: opacity 0.3s ease; }
+        .env.open .seal { opacity: 0; }
+        .env-hint { font-size: 0.8rem; color: var(--muted); animation: pulse 1.8s ease-in-out infinite; }
+        .letter { flex: 1; min-height: 0; display: flex; flex-direction: column; animation: fadeUp 0.8s ease both; }
+        .letter-scroll {
+            flex: 1; min-height: 0; overflow-y: auto; background: #fbf4e8; color: #4a3550;
+            border-radius: 10px; padding: 18px 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); cursor: pointer;
+        }
+        .lp { font-size: 0.97rem; line-height: 1.75; margin-bottom: 14px; }
+        .lp.soft { color: #7a6585; font-style: italic; animation: slowIn 3s ease both; }
+        @keyframes slowIn { from { opacity: 0; } to { opacity: 1; } }
+        .caret::after { content: '▍'; opacity: 0.5; animation: pulse 0.9s infinite; }
+        .letter-hint { text-align: center; font-size: 0.74rem; color: var(--muted); margin-top: 8px; min-height: 1.2em; }
+        .chest-label { display: block; }
+        .chest.ready { border-style: solid; border-color: var(--primary); animation: pulse 1.8s ease-in-out infinite; }
+        .line-stage { flex: 1; display: flex; align-items: center; cursor: pointer; }
+        .line-card {
+            width: 100%; min-height: 190px; display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: 10px;
+            background: rgba(255,255,255,0.6); border: 1px solid var(--stat-border);
+            border-radius: 18px; padding: 26px 20px;
+        }
+        html[data-theme="4"] .line-card { background: rgba(255,255,255,0.05); }
+        .line-text { font-size: 1.15rem; line-height: 1.8; color: var(--text); }
+        .fade-in-line { animation: fadeUp 0.5s ease both; }
+        .soft-in { animation: slowIn 3s ease both; color: var(--muted); font-style: italic; }
+        .bubble.right {
+            align-self: flex-end; border-radius: 18px 18px 4px 18px;
+            background: #588157; border-color: #4a6f49; color: #ffffff;
+        }
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .box-container { padding: 24px 16px 18px 16px; }
+            .btn { padding: 10px 13px; font-size: 0.88rem; }
+            .controls { flex-wrap: wrap; row-gap: 8px; }
+            .ctl-hint { order: -1; flex-basis: 100%; }
+            .ctl-hint:empty { display: none; }
+            .cover-title { font-size: 3.6rem; }
+        }
+        .modal {
+            position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center;
+            padding: 20px; background: rgba(40, 30, 30, 0.45);
+        }
+        .modal-card {
+            width: 100%; max-width: 340px; background: var(--box-bg); color: var(--text);
+            border: 2px solid var(--box-border); border-radius: 22px; padding: 22px 20px 18px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        .modal-text { font-size: 0.98rem; line-height: 1.6; margin-bottom: 18px; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+        .modal-actions .btn { padding: 10px 18px; font-size: 0.9rem; }
+        .modal-actions .modal-yes { width: auto; box-shadow: none; }
+        /* ===== Amplop chapter 4 (versi closure / honeybee) ===== */
+        .env-wrap { position: relative; }
+        .env-wrap::before {
+            content: ''; position: absolute; left: 50%; top: 50%; width: 320px; height: 320px;
+            transform: translate(-50%, -58%); border-radius: 50%; pointer-events: none;
+            background: radial-gradient(circle, rgba(242, 201, 107, 0.2), transparent 65%);
+        }
+        .env-hint { position: relative; }
+        .env { width: 250px; height: 165px; animation: floaty 4.5s ease-in-out infinite; }
+        .env:hover { transform: none; }
+        .env.open { animation: none; }
+        .env-body { z-index: 2; }
+        .env-flap { height: 96px; }
+        .env-paper {
+            position: absolute; left: 16px; right: 16px; top: 14px; height: 140px; z-index: 1;
+            background: #fbf4e8; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+            background-image: repeating-linear-gradient(180deg, transparent 0 18px, rgba(142,107,176,0.18) 18px 19px);
+            background-position: 0 14px;
+            transition: transform 0.9s cubic-bezier(0.3, 0.8, 0.3, 1) 0.45s;
+        }
+        .env.open .env-paper { transform: translateY(-92px); }
+        .env-addr { position: absolute; left: 20px; bottom: 16px; z-index: 3; line-height: 1; pointer-events: none; }
+        .addr-to { font-family: 'Pinyon Script', cursive; font-size: 1.9rem; color: #5a3e70; }
+        .addr-from { font-size: 0.62rem; letter-spacing: 1px; color: #7d6590; margin-top: 4px; padding-left: 3px; }
+        .env-stamp {
+            position: absolute; right: 16px; bottom: 16px; z-index: 3; width: 36px; height: 44px;
+            display: flex; align-items: center; justify-content: center; pointer-events: none;
+            background: #fdf3e6; border: 2px dashed #d9bfae; border-radius: 2px; transform: rotate(4deg);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+        .seal {
+            top: 76px; margin-left: -20px; width: 40px; height: 40px;
+            background: radial-gradient(circle at 35% 30%, #ecc986, #b07d2e 72%);
+            border-radius: 50% 47% 52% 49% / 49% 52% 47% 51%;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.35), inset 0 0 0 3px rgba(255,255,255,0.12);
+        }
+        .spark {
+            position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #f2d58f;
+            box-shadow: 0 0 8px 2px rgba(242, 213, 143, 0.55); opacity: 0; pointer-events: none;
+            animation: riseSpark 5s ease-in infinite;
+        }
+        @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        @keyframes riseSpark {
+            0% { transform: translateY(30px); opacity: 0; }
+            30% { opacity: 0.85; }
+            100% { transform: translateY(-110px); opacity: 0; }
+        }
+        /* ===== Animasi baru ===== */
+        .bubble.typing { display: flex; gap: 5px; align-items: center; padding: 13px 16px; width: 66px; }
+        .bubble.typing i {
+            width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.9);
+            animation: typingDot 1s ease-in-out infinite;
+        }
+        .bubble.typing i:nth-child(2) { animation-delay: 0.15s; }
+        .bubble.typing i:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes typingDot { 0%, 60%, 100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-4px); opacity: 1; } }
+
+        .mini { display: block; width: 100%; max-width: 250px; margin: 0 auto 6px; overflow: visible; }
+        .vs-back p { margin: 0; }
+        .spin { transform-box: fill-box; transform-origin: center; animation: spinAround 1.8s linear infinite; }
+        @keyframes spinAround { to { transform: rotate(360deg); } }
+        .hop { transform-box: fill-box; transform-origin: 50% 100%; animation: hopUp 0.9s ease-in-out infinite; }
+        @keyframes hopUp {
+            0%, 100% { transform: translateY(0) scaleY(0.96); }
+            40% { transform: translateY(-9px) scaleY(1.05); }
+            65% { transform: translateY(-9px) scaleY(1.05); }
+        }
+        .speed { animation: speedFlick 0.5s steps(2) infinite; }
+        @keyframes speedFlick { 0% { opacity: 1; transform: translateX(0); } 100% { opacity: 0.3; transform: translateX(-4px); } }
+        .qm { font-size: 16px; font-weight: 700; fill: #8fa5cf; font-family: 'Poppins', sans-serif; animation: qFloat 2s ease-in-out infinite; }
+        .qm.q2 { animation-delay: 0.7s; }
+        @keyframes qFloat { 0%, 100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(-6px); opacity: 1; } }
+
+        .scene2 { position: relative; max-width: 340px; margin: 6px auto 0; }
+        .scene-svg { display: block; width: 100%; height: auto; overflow: visible; }
+        .speech {
+            position: absolute; top: 0; z-index: 2; max-width: 46%; font-size: 0.72rem; font-weight: 600; line-height: 1.3;
+            padding: 5px 10px; border-radius: 14px; background: #fff; color: #33452f;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+        .sp-runi { left: 0; border: 2px solid #ecc9a8; }
+        .sp-ali { right: 0; border: 2px solid #b4c3e0; text-align: right; }
+        .bob { transform-box: fill-box; transform-origin: 50% 100%; animation: bobIdle 2.4s ease-in-out infinite; }
+        .bob.b2 { animation-delay: 1.1s; }
+        @keyframes bobIdle { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.965); } }
+        .hrt { animation: heartFly 2.4s ease-in infinite; }
+        @keyframes heartFly {
+            0% { transform: translate(98px, var(--y)) scale(0.4); opacity: 0; }
+            15% { opacity: 1; }
+            80% { opacity: 1; transform: translate(150px, calc(var(--y) - 10px)) scale(1); }
+            100% { transform: translate(160px, calc(var(--y) - 12px)) scale(1.35); opacity: 0; }
+        }
+        .sweat { animation: sweatDrip 1.2s ease-in infinite; }
+        @keyframes sweatDrip { 0% { transform: translateY(-2px); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(10px); opacity: 0; } }
+
+        .polaroid.current .photo { animation: develop 1.4s ease both; }
+        @keyframes develop {
+            0% { filter: blur(7px) brightness(1.5) sepia(0.8); opacity: 0.35; }
+            100% { filter: none; opacity: 1; }
+        }
+
+        .confetti-layer { position: fixed; width: 0; height: 0; z-index: 60; pointer-events: none; }
+        .confetti-layer i {
+            position: absolute; left: 0; top: 0; width: 7px; height: 10px; border-radius: 2px; opacity: 0;
+            animation: confettiOut 1.5s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+        }
+        @keyframes confettiOut {
+            0% { transform: translate(0, 0) rotate(0); opacity: 1; }
+            70% { opacity: 1; }
+            100% { transform: translate(var(--dx), calc(var(--dy) + 70px)) rotate(var(--rot)); opacity: 0; }
+        }
+
+        .shooting {
+            position: fixed; top: 14%; left: 78%; width: 110px; height: 2px; z-index: 3; opacity: 0; pointer-events: none;
+            background: linear-gradient(90deg, #ffffff, rgba(255,255,255,0));
+            border-radius: 2px; box-shadow: 0 0 8px 1px rgba(255,255,255,0.6);
+            transform: translate(0, 0) rotate(-35deg);
+        }
+        .shooting.go { animation: shootStar 1.7s ease-out forwards; }
+        @keyframes shootStar {
+            0% { transform: translate(0, 0) rotate(-35deg); opacity: 0; }
+            12% { opacity: 1; }
+            100% { transform: translate(-300px, 210px) rotate(-35deg); opacity: 0; }
+        }
+
+        /* kalimat inti: tampil beda warna */
+        .bubble.right.key {
+            background: #f2c36b; border-color: #d9a94f; color: #4a3b32; font-weight: 600;
+            box-shadow: 0 3px 12px rgba(217, 169, 79, 0.45);
+        }
+        .line-card.key {
+            background: rgba(242, 201, 107, 0.12); border-color: rgba(242, 201, 107, 0.65);
+            box-shadow: 0 0 22px rgba(242, 201, 107, 0.22);
+        }
+        .line-card.key .line-text { color: #f6dc9c; font-weight: 600; }
+
+        /* chapter 3: debat playful + hadiah yang pasti bisa diketuk */
+        .debate { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+        .db {
+            opacity: 0; font-size: 0.8rem; font-weight: 600; padding: 6px 12px; max-width: 80%;
+            background: #fff; border: 2px solid var(--btn-border); color: var(--text); border-radius: 14px;
+        }
+        .db1 { align-self: flex-start; border-radius: 14px 14px 14px 4px; }
+        .db2 { align-self: flex-end; background: #e6e9fb; border-radius: 14px 14px 4px 14px; }
+        .db3 { align-self: center; background: #fff3d1; border-color: #ffd166; color: #7a5a3a; }
+        .stat.open .db { animation: dbPop 0.45s cubic-bezier(0.3, 1.4, 0.5, 1) both; }
+        .stat.open .db1 { animation-delay: 0.5s; }
+        .stat.open .db2 { animation-delay: 1.3s; }
+        .stat.open .db3 { animation-delay: 2.1s; }
+        @keyframes dbPop { from { opacity: 0; transform: translateY(8px) scale(0.85); } to { opacity: 1; transform: none; } }
+        .chest > * { pointer-events: none; }
+        .chest.shake { animation: chestShake 0.45s ease; }
+        @keyframes chestShake {
+            0%, 100% { transform: translateX(0); } 20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(3px); }
+        }
+
+        /* chapter 4: ilustrasi mini di tiap momen */
+        .line-art { display: flex; justify-content: center; }
+        .line-art svg { width: 112px; height: auto; overflow: visible; }
+        .flame { transform-box: fill-box; transform-origin: 50% 100%; animation: flick 0.5s ease-in-out infinite alternate; transition: opacity 0.4s ease; }
+        @keyframes flick { from { transform: scale(1, 1) rotate(-3deg); } to { transform: scale(0.92, 1.1) rotate(3deg); } }
+        .cake-svg.out .flame { opacity: 0; }
+        .smoke circle { opacity: 0; transform-box: fill-box; transform-origin: center; }
+        .cake-svg.out .smoke circle { animation: smokeUp 1.8s ease-out forwards; }
+        .cake-svg.out .smoke circle:nth-child(2) { animation-delay: 0.25s; }
+        .cake-svg.out .smoke circle:nth-child(3) { animation-delay: 0.5s; }
+        @keyframes smokeUp { 0% { transform: translateY(0) scale(0.6); opacity: 0; } 20% { opacity: 0.7; } 100% { transform: translateY(-26px) scale(1.6); opacity: 0; } }
+        .wish { opacity: 0; transition: opacity 1s ease 1s; }
+        .cake-svg.out .wish { opacity: 1; }
+        .candle-pulse { animation: pulse 1.8s ease-in-out infinite; }
+        .cake-svg.out .candle-pulse { animation: none; opacity: 0; }
+        .bookbob { transform-box: fill-box; animation: bobBook 2.6s ease-in-out infinite; }
+        @keyframes bobBook { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+        .boat { transform-box: fill-box; transform-origin: 50% 100%; animation: boatRock 3.2s ease-in-out infinite; }
+        @keyframes boatRock { 0%, 100% { transform: translateX(-6px) rotate(-3deg); } 50% { transform: translateX(6px) rotate(3deg); } }
+        .balloon { transform-box: fill-box; transform-origin: 50% 100%; animation: balloonFloat 4s ease-in-out infinite; }
+        @keyframes balloonFloat { 0%, 100% { transform: translateY(2px) rotate(-3deg); } 50% { transform: translateY(-8px) rotate(3deg); } }
+
+        /* layar penutup: buku masuk ke rak */
+        .shelf-scene { width: 100%; max-width: 260px; margin: 0 auto 6px; }
+        .shelf-scene svg { width: 100%; height: auto; overflow: visible; display: block; }
+        .bookin { transform-box: fill-box; transform-origin: 50% 100%; animation: bookIn 2s cubic-bezier(0.3, 0.8, 0.3, 1) 0.5s both; }
+        @keyframes bookIn {
+            0% { transform: translateY(-90px) rotate(-18deg); opacity: 0; }
+            18% { opacity: 1; }
+            72% { transform: translateY(5px) rotate(2deg); }
+            100% { transform: none; opacity: 1; }
+        }
+        .shelfbee { animation: beeLand 1.4s ease-out 2.6s both; }
+        @keyframes beeLand { 0% { opacity: 0; transform: translate(46px, -34px); } 100% { opacity: 1; transform: translate(0, 0); } }
+        .beebob { animation: beeBobS 2.2s ease-in-out 4s infinite; }
+        @keyframes beeBobS { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+        .wing { transform-box: fill-box; transform-origin: 50% 100%; animation: wingFlap 0.16s ease-in-out infinite alternate; }
+        @keyframes wingFlap { from { transform: scaleY(1); } to { transform: scaleY(0.45); } }
+
+        /* chapter 1: ilustrasi hal-hal kecil */
+        .photo svg { height: 52px; width: auto; display: block; overflow: visible; }
+        .steam { fill: none; stroke: rgba(255, 255, 255, 0.9); stroke-width: 2; stroke-linecap: round; animation: steamUp 2.4s ease-in-out infinite; }
+        .steam.s2 { animation-delay: 1.1s; }
+        @keyframes steamUp { 0% { opacity: 0; transform: translateY(4px); } 40% { opacity: 1; } 100% { opacity: 0; transform: translateY(-5px); } }
+        .dot { animation: dotBlink 1.4s ease-in-out infinite; }
+        .dot:nth-of-type(2) { animation-delay: 0.2s; }
+        .dot:nth-of-type(3) { animation-delay: 0.4s; }
+        @keyframes dotBlink { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+        .twinkle { transform-box: fill-box; transform-origin: center; animation: twinkleS 2s ease-in-out infinite; }
+        @keyframes twinkleS { 0%, 100% { transform: scale(0.6); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+
+        /* cover: lebah kecil terbang melingkar di sekitar judul */
+        .cover-bee-wrap {
+            position: absolute; left: 50%; top: 38px; width: 0; height: 0; z-index: 3; pointer-events: none;
+            --rx: min(150px, 36vw); --ry: 40px;
+        }
+        .cb-x { animation: cbX 5s ease-in-out infinite alternate; }
+        .cb-y { animation: cbY 5s ease-in-out -2.5s infinite alternate; }
+        @keyframes cbX { from { transform: translateX(calc(var(--rx) * -1)); } to { transform: translateX(var(--rx)); } }
+        @keyframes cbY { from { transform: translateY(calc(var(--ry) * -1)); } to { transform: translateY(var(--ry)); } }
+        .cover-bee-wrap svg { width: 28px; height: auto; margin: -10px 0 0 -14px; display: block; overflow: visible; }
+
+        /* lebah terbang pergi (kartu terakhir chapter 4) */
+        .flybee {
+            position: fixed; left: -10%; top: 30%; font-size: 22px; z-index: 3;
+            opacity: 0; pointer-events: none;
+        }
+        .flybee.go { animation: beeAway 6s ease-in-out forwards; }
+        @keyframes beeAway {
+            0%   { transform: translate(0, 0); opacity: 0; }
+            10%  { opacity: 0.9; }
+            35%  { transform: translate(35vw, -24px); }
+            55%  { transform: translate(55vw, 12px); }
+            100% { transform: translate(115vw, -80px); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div class="ambient-circle circle-1" id="circle1"></div>
-    <div class="ambient-circle circle-2" id="circle2"></div>
+    <div class="ambient-circle circle-1"></div>
+    <div class="ambient-circle circle-2"></div>
+    <div id="stars"></div>
     <div id="falling-container"></div>
     <div id="youtube-player" style="display:none;"></div>
 
     <div class="wrapper">
-        <!-- 1. Cover Screen -->
+        <!-- 1. Cover -->
         <div class="box-container" id="coverScreen">
             <div></div>
             <div class="cover-content">
+                <div class="cover-bee-wrap" aria-hidden="true"><div class="cb-x"><div class="cb-y">
+                    <svg viewBox="-12 -12 24 22">
+                        <ellipse class="wing" cx="-2" cy="-5" rx="4.5" ry="3.3" fill="rgba(255,255,255,0.9)" stroke="rgba(160,120,101,0.35)" stroke-width="0.6"/>
+                        <ellipse class="wing" cx="3" cy="-5" rx="4.5" ry="3.3" fill="rgba(255,255,255,0.9)" stroke="rgba(160,120,101,0.35)" stroke-width="0.6"/>
+                        <ellipse cx="0" cy="0" rx="8" ry="5.6" fill="#f2c36b"/>
+                        <path d="M-2.4 -5.2 v10.4 M3.2 -4.6 v9.2" stroke="#4a3550" stroke-width="2"/>
+                        <circle cx="-6.2" cy="-1" r="1.1" fill="#4a3550"/>
+                    </svg>
+                </div></div></div>
                 <div class="cover-title">Notes on Closure</div>
                 <div class="cover-subtitle">Written because some things need to be said out loud, even if it's the last time we ever talk</div>
             </div>
             <div>
-                <button class="btn btn-primary" onclick="goToMenu()">
-                    Buka Catatan ✨
-                </button>
+                <button class="btn btn-primary" onclick="goToMenu()">Buka Catatan</button>
             </div>
         </div>
 
-        <!-- 2. Menu / Quest Log Screen -->
+        <!-- 2. Menu -->
         <div class="box-container hidden" id="menuScreen">
-            <div>
-                <div class="menu-main-title">Pilih Sesi Catatan</div>
-            </div>
+            <div><div class="menu-main-title">Pilih Sesi Catatan</div></div>
             <div class="menu-stack" id="menuListContainer"></div>
             <div>
-                <div style="font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 600; color: #a07865; text-align: center; margin-bottom: 10px;" id="questProgressText">
-                    Progress: 0 / 4 Chapter Selesai
-                </div>
+                <div style="font-size: 0.85rem; font-weight: 600; color: var(--muted); text-align: center; margin-bottom: 10px;" id="questProgressText">Progress: 0 / 4 Chapter Selesai</div>
                 <div style="display: flex; gap: 8px;">
-                    <button class="btn" onclick="backToCover()" style="flex: 1; border-radius: 30px; padding: 10px 14px; font-size: 0.85rem;">← Kembali</button>
-                    <button class="btn" onclick="resetProgress()" style="background: #fff1f2; border-color: #fca5a5; color: #e11d48; border-radius: 30px; padding: 10px 14px; font-size: 0.85rem;" title="Reset Progress">Reset ↺</button>
+                    <button class="btn" onclick="backToCover()" style="flex: 1; padding: 10px 14px; font-size: 0.85rem;">← Kembali</button>
+                    <button class="btn" onclick="resetProgress()" style="background: #fff1f2; border-color: #fca5a5; color: #e11d48; padding: 10px 14px; font-size: 0.85rem;" title="Reset Progress">Reset ↺</button>
                 </div>
             </div>
         </div>
 
-        <!-- 3. Reader Screen (Slides) -->
+        <!-- 3. Reader -->
         <div class="box-container hidden" id="mainCard">
-            <div class="card-header" id="cardHeader">
-                <span class="card-brand" id="cardBrandTitle">🍯 The Beginning</span>
-                <span id="slideCounterText" style="font-family: 'Poppins', sans-serif; font-size: 0.95rem; font-weight: 600; color: #8c6d59;">1 / 15</span>
+            <div class="card-header">
+                <span class="card-brand" id="cardBrandTitle">The Beginning</span>
+                <span id="slideCounterText"></span>
             </div>
-
-            <div class="slides-container" id="slidesWrapper"></div>
-
-            <div class="controls" id="cardControls">
-                <button class="btn back-menu-btn" onclick="confirmBackToMenu()">
-                    ✕ Menu
-                </button>
-                <button class="btn" id="prevBtn" onclick="changeSlide(-1)" disabled>
-                    ← Prev
-                </button>
-                
-                <div class="dots" id="dotsContainer"></div>
-
-                <button class="btn" id="nextBtn" onclick="nextAction()">
-                    Next →
-                </button>
+            <div class="ch-body" id="chBody"></div>
+            <div class="controls">
+                <button class="btn back-menu-btn" onclick="confirmBackToMenu()">✕ Menu</button>
+                <button class="btn" id="prevBtn" onclick="prevAction()" hidden>←</button>
+                <div class="ctl-hint" id="ctlHint"></div>
+                <button class="btn" id="nextBtn" onclick="nextAction()">Next →</button>
             </div>
         </div>
 
-        <!-- 4. Normal Quest Complete Screen -->
+        <!-- 4. Chapter Complete -->
         <div class="box-container hidden" id="questCompleteScreen">
             <div></div>
             <div class="quest-complete-content">
                 <div class="cover-title" style="font-size: 3.5rem; margin-bottom: 14px;">Terima kasih</div>
-                <div style="font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 500; color: #a07865;" id="completedQuestDesc">Chapter berhasil diselesaikan dengan baik, Ali ✨</div>
+                <div style="font-size: 1rem; font-weight: 500; color: var(--muted);" id="completedQuestDesc">Chapter berhasil diselesaikan dengan baik, Ali</div>
             </div>
             <div>
-                <button class="btn btn-primary" onclick="returnToMenuFromComplete()">
-                    Kembali ke Daftar Chapter ✨
-                </button>
+                <button class="btn btn-primary" onclick="returnToMenuFromComplete()">Kembali ke Daftar Chapter</button>
             </div>
         </div>
 
-        <!-- 5. Grand Finale Screen -->
+        <!-- 5. Grand Finale -->
         <div class="box-container hidden" id="grandFinaleScreen">
             <div></div>
             <div class="quest-complete-content">
-                <div class="cover-title" style="font-size: 3.5rem; margin-bottom: 12px;">The Final Chapter</div>
-                <div style="font-family: 'Poppins', sans-serif; font-size: 0.95rem; font-weight: 500; color: #a07865; margin-bottom: 10px;">Semua perjalanan telah ditutup, Ali.</div>
-                <div class="closing-quote">
-                    "Some chapters are meant to be read once, closed gently, and put back on the shelf without ever needing to be reopened."
+                <div class="shelf-scene" aria-hidden="true">
+                    <svg viewBox="0 0 260 150">
+                        <ellipse cx="130" cy="134" rx="112" ry="5" fill="rgba(0,0,0,0.18)"/>
+                        <rect x="14" y="120" width="232" height="9" rx="3" fill="#c9a06b"/>
+                        <rect x="14" y="127" width="232" height="3" rx="1.5" fill="#a9824f"/>
+                        <rect x="30" y="58" width="18" height="62" rx="2" fill="#e0b45c"/>
+                        <rect x="50" y="70" width="14" height="50" rx="2" fill="#a3b18b"/>
+                        <rect x="66" y="50" width="20" height="70" rx="2" fill="#8fa5cf"/>
+                        <rect x="130" y="64" width="16" height="56" rx="2" fill="#c98b72"/>
+                        <rect x="148" y="54" width="22" height="66" rx="2" fill="#b79ad0"/>
+                        <rect x="172" y="74" width="14" height="46" rx="2" fill="#d9a94f"/>
+                        <rect x="188" y="60" width="18" height="60" rx="2" fill="#9db89a"/>
+                        <g class="bookin">
+                            <rect x="102" y="56" width="22" height="64" rx="2" fill="#d98f6a"/>
+                            <rect x="102" y="56" width="5" height="64" rx="2" fill="#b86f4d"/>
+                            <rect x="110" y="68" width="10" height="2.5" rx="1" fill="#fbf4e8"/>
+                            <rect x="110" y="74" width="7" height="2.5" rx="1" fill="#fbf4e8"/>
+                        </g>
+                        <g transform="translate(113 50)">
+                            <g class="shelfbee"><g class="beebob">
+                                <ellipse class="wing" cx="-2" cy="-5" rx="4" ry="3" fill="rgba(255,255,255,0.85)"/>
+                                <ellipse class="wing" cx="3" cy="-5" rx="4" ry="3" fill="rgba(255,255,255,0.85)"/>
+                                <ellipse cx="0" cy="0" rx="7" ry="5" fill="#f2c36b"/>
+                                <path d="M-2 -4.6 v9.2 M3 -4 v8" stroke="#4a3550" stroke-width="1.8"/>
+                                <circle cx="-5.5" cy="-1" r="1" fill="#4a3550"/>
+                            </g></g>
+                        </g>
+                    </svg>
                 </div>
+                <div class="cover-title" style="font-size: 3.5rem; margin-bottom: 12px;">The Final Chapter</div>
+                <div style="font-size: 0.95rem; font-weight: 500; color: var(--muted); margin-bottom: 10px;">Semua perjalanan telah ditutup, Ali.</div>
+                <div class="closing-quote">"Some chapters are meant to be read once, closed gently, and put back on the shelf without ever needing to be reopened."</div>
             </div>
             <div>
-                <button class="btn btn-primary" onclick="returnToMenuFromComplete()">
-                    Tutup Buku & Kembali ke Menu 🕊️
-                </button>
+                <button class="btn btn-primary" onclick="returnToMenuFromComplete()">Tutup Buku &amp; Kembali ke Menu</button>
             </div>
         </div>
     </div>
 
-    <!-- YouTube IFrame API Script -->
+    <div class="modal hidden" id="modal">
+        <div class="modal-card">
+            <div class="modal-text" id="modalText"></div>
+            <div class="modal-actions">
+                <button class="btn" id="modalNo">Batal</button>
+                <button class="btn btn-primary modal-yes" id="modalYes">Ya</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        const flowers = ['🍁', '🌼', '🌸', '💮'];
-        const container = document.getElementById('falling-container');
-        for (let i = 0; i < 6; i++) {
-            const span = document.createElement('div');
-            span.classList.add('falling-flower');
-            span.innerText = flowers[Math.floor(Math.random() * flowers.length)];
-            span.style.left = Math.random() * 100 + 'vw';
-            span.style.animationDuration = (Math.random() * 4 + 7) + 's';
-            span.style.animationDelay = (Math.random() * 5) + 's';
-            span.style.fontSize = (Math.random() * 4 + 16) + 'px';
-            container.appendChild(span);
+        const $ = id => document.getElementById(id);
+
+        /* ---------- Ambient: bunga jatuh & bintang ---------- */
+        (function () {
+            const flowers = ['🍁', '🌼', '🌸', '💮'];
+            const c = $('falling-container');
+            for (let i = 0; i < 6; i++) {
+                const s = document.createElement('div');
+                s.className = 'falling-flower';
+                s.innerText = flowers[Math.floor(Math.random() * flowers.length)];
+                s.style.left = Math.random() * 100 + 'vw';
+                s.style.animationDuration = (Math.random() * 4 + 7) + 's';
+                s.style.animationDelay = (Math.random() * 5) + 's';
+                s.style.fontSize = (Math.random() * 4 + 16) + 'px';
+                c.appendChild(s);
+            }
+            const st = $('stars');
+            for (let i = 0; i < 45; i++) {
+                const s = document.createElement('div');
+                s.className = 'star';
+                s.style.left = Math.random() * 100 + 'vw';
+                s.style.top = Math.random() * 100 + 'vh';
+                s.style.animationDelay = (Math.random() * 3) + 's';
+                s.style.transform = 'scale(' + (Math.random() * 1.5 + 0.6) + ')';
+                st.appendChild(s);
+            }
+        })();
+
+        function applyTheme(id) {
+            document.documentElement.setAttribute('data-theme', String(id || 0));
         }
 
-        // Tema Warna Berbeda di Tiap Chapter (Dijamin tidak ada yang kembar)
-        const chapterThemes = {
-            1: { // Chapter 1: Warm Honey & Peach
-                bg: "linear-gradient(135deg, #fff3d1 0%, #ffdfba 50%, #ffc6d9 100%)",
-                boxBg: "rgba(255, 253, 245, 0.98)",
-                boxBorder: "rgba(255, 223, 186, 0.95)",
-                brandColor: "#d06a4c",
-                btnPrimary: "#f4a261",
-                btnBorder: "#ffd166",
-                circle1: "#ffecb6",
-                circle2: "#ffb4b0"
-            },
-            2: { // Chapter 2: Sage Green & Earthy Calm
-                bg: "linear-gradient(135deg, #e3eedd 0%, #d4e0cb 50%, #bcd2b6 100%)",
-                boxBg: "rgba(247, 252, 245, 0.98)",
-                boxBorder: "rgba(202, 222, 195, 0.95)",
-                brandColor: "#4f7744",
-                btnPrimary: "#588157",
-                btnBorder: "#a3b18b",
-                circle1: "#d8f3dc",
-                circle2: "#b7b7a4"
-            },
-            3: { // Chapter 3: Soft Dusty Rose & Warm Gold
-                bg: "linear-gradient(135deg, #fce4ec 0%, #f8bbd0 50%, #e1bee7 100%)",
-                boxBg: "rgba(254, 250, 252, 0.98)",
-                boxBorder: "rgba(243, 208, 222, 0.95)",
-                brandColor: "#ad406f",
-                btnPrimary: "#c94f7c",
-                btnBorder: "#e8a5b8",
-                circle1: "#f8bbd0",
-                circle2: "#e1bee7"
-            },
-            4: { // Chapter 4: Deep Muted Lavender & Slate Blue
-                bg: "linear-gradient(135deg, #e4e5f1 0%, #d5d4d9 100%)",
-                boxBg: "rgba(250, 250, 252, 0.98)",
-                boxBorder: "rgba(215, 212, 225, 0.95)",
-                brandColor: "#59354e",
-                btnPrimary: "#6d4c7d",
-                btnBorder: "#b5c7ed",
-                circle1: "#d4c5ed",
-                circle2: "#b5c7ed"
-            }
-        };
-
-        function applyTheme(chapterId) {
-            const theme = chapterThemes[chapterId];
-            if (!theme) return;
-
-            document.documentElement.style.background = theme.bg;
-            document.body.style.background = theme.bg;
-            
-            const mainCard = document.getElementById('mainCard');
-            mainCard.style.background = theme.boxBg;
-            mainCard.style.borderColor = theme.boxBorder;
-
-            document.getElementById('cardHeader').style.borderColor = theme.boxBorder;
-            document.getElementById('cardControls').style.borderColor = theme.boxBorder;
-            document.getElementById('cardBrandTitle').style.color = theme.brandColor;
-
-            document.getElementById('circle1').style.background = theme.circle1;
-            document.getElementById('circle2').style.background = theme.circle2;
-
-            document.getElementById('nextBtn').style.borderColor = theme.btnBorder;
-            document.getElementById('nextBtn').style.color = theme.brandColor;
-
-            const styleId = 'dynamic-theme-style';
-            let styleTag = document.getElementById(styleId);
-            if (!styleTag) {
-                styleTag = document.createElement('style');
-                styleTag.id = styleId;
-                document.head.appendChild(styleTag);
-            }
-            styleTag.innerHTML = `
-                .btn-primary { background: ${theme.btnPrimary} !important; border-color: ${theme.btnPrimary} !important; }
-                .dot.active { background: ${theme.brandColor} !important; }
-            `;
+        /* ---------- Modal ---------- */
+        let modalYesFn = null;
+        function openModal(text, yesLabel, noLabel, onYes) {
+            $('modalText').textContent = text;
+            $('modalYes').textContent = yesLabel;
+            const no = $('modalNo');
+            if (noLabel) { no.style.display = ''; no.textContent = noLabel; } else { no.style.display = 'none'; }
+            modalYesFn = onYes;
+            $('modal').classList.remove('hidden');
         }
+        function closeModal() { $('modal').classList.add('hidden'); modalYesFn = null; }
+        $('modalYes').addEventListener('click', () => { const f = modalYesFn; closeModal(); if (f) f(); });
+        $('modalNo').addEventListener('click', closeModal);
 
-        let defaultQuestStatus = {
+        /* ---------- Progress ---------- */
+        const defaultQuestStatus = {
             1: { completed: false, unlocked: true, title: "The Beginning" },
             2: { completed: false, unlocked: false, title: "The Root Cause" },
             3: { completed: false, unlocked: false, title: "How Runi Sees Ali" },
             4: { completed: false, unlocked: false, title: "Last Message for Ali" }
         };
-
-        let questStatus = JSON.parse(localStorage.getItem('notesOnClosureProgress')) || defaultQuestStatus;
+        const chapterMeta = {
+            1: { icon: '📸', sub: 'Kumpulan kenangan', color: '#ffd166' },
+            2: { icon: '🌿', sub: 'Dua cara yang berbeda', color: '#a3b18b' },
+            3: { icon: '🧭', sub: 'Sudut pandang Runi', color: '#b4bde8' },
+            4: { icon: '🐝', sub: 'Surat terakhir', color: '#e0b45c' }
+        };
+        let questStatus;
+        try { questStatus = JSON.parse(localStorage.getItem('notesOnClosureProgress')); } catch (e) { questStatus = null; }
+        if (!questStatus || !questStatus[4]) questStatus = JSON.parse(JSON.stringify(defaultQuestStatus));
 
         function saveProgress() {
-            localStorage.setItem('notesOnClosureProgress', JSON.stringify(questStatus));
+            try { localStorage.setItem('notesOnClosureProgress', JSON.stringify(questStatus)); } catch (e) {}
         }
-
         function resetProgress() {
-            if (confirm("Reset semua progress chapter yang sudah terbuka/selesai, Ali?")) {
-                localStorage.removeItem('notesOnClosureProgress');
+            openModal("Reset semua progress chapter yang sudah terbuka/selesai, Ali?", 'Reset', 'Batal', () => {
+                try { localStorage.removeItem('notesOnClosureProgress'); } catch (e) {}
                 questStatus = JSON.parse(JSON.stringify(defaultQuestStatus));
                 renderMenuList();
-            }
+            });
         }
 
+        /* ---------- Musik ---------- */
         let player;
         let isAppStarted = false;
         const START_TIME = 0;
-
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
-                height: '0',
-                width: '0',
-                videoId: 'l5luP-A1nvM',
-                playerVars: {
-                    'autoplay': 0,
-                    'loop': 1,
-                    'playlist': 'l5luP-A1nvM',
-                    'start': START_TIME
-                },
+                height: '0', width: '0', videoId: 'l5luP-A1nvM',
+                playerVars: { 'autoplay': 0, 'loop': 1, 'playlist': 'l5luP-A1nvM', 'start': START_TIME },
                 events: {
                     'onReady': (event) => {
-                        if (isAppStarted) {
-                            event.target.seekTo(START_TIME, true);
-                            event.target.playVideo();
-                        }
+                        if (isAppStarted) { event.target.seekTo(START_TIME, true); event.target.playVideo(); }
                     }
                 }
             });
         }
 
+        /* ---------- Navigasi layar ---------- */
+        function swapScreen(from, to, cb) {
+            from.classList.add('closing-book');
+            setTimeout(() => {
+                from.classList.add('hidden');
+                from.classList.remove('closing-book');
+                if (cb) cb();
+                to.classList.remove('hidden');
+            }, 250);
+        }
+
         function goToMenu() {
             isAppStarted = true;
-            const cover = document.getElementById('coverScreen');
-            cover.classList.add('closing-book');
-            setTimeout(() => {
-                cover.classList.add('hidden');
-                cover.classList.remove('closing-book');
-                renderMenuList();
-                document.getElementById('menuScreen').classList.remove('hidden');
-            }, 250);
-
+            swapScreen($('coverScreen'), $('menuScreen'), renderMenuList);
             if (player && typeof player.playVideo === 'function') {
                 player.seekTo(START_TIME, true);
                 player.playVideo();
             }
         }
-
         function backToCover() {
-            const menu = document.getElementById('menuScreen');
-            menu.classList.add('closing-book');
-            setTimeout(() => {
-                menu.classList.add('hidden');
-                menu.classList.remove('closing-book');
-                document.getElementById('coverScreen').classList.remove('hidden');
-            }, 250);
+            swapScreen($('menuScreen'), $('coverScreen'));
         }
 
         function renderMenuList() {
-            const container = document.getElementById('menuListContainer');
+            applyTheme(0);
+            const container = $('menuListContainer');
             container.innerHTML = '';
-            
             let completedCount = 0;
-
             for (let id = 1; id <= 4; id++) {
                 const quest = questStatus[id];
                 if (quest.completed) completedCount++;
-
-                let badgeHtml = '';
-                let actionText = 'Mulai →';
-                let cardClass = 'menu-item-card';
-
+                let badgeHtml = '', actionText = 'Mulai →', cardClass = 'menu-item-card';
                 if (quest.completed) {
                     badgeHtml = '<span class="quest-status-badge badge-completed">Selesai</span>';
                     actionText = 'Ulangi ↺';
                 } else if (quest.unlocked) {
                     badgeHtml = '<span class="quest-status-badge badge-available">Tersedia</span>';
                 } else {
-                    badgeHtml = '<span class="quest-status-badge badge-locked">Terkunci 🔒</span>';
+                    badgeHtml = '<span class="quest-status-badge badge-locked">Terkunci</span>';
                     actionText = 'Terkunci';
                     cardClass += ' locked';
                 }
-
-                const itemCard = document.createElement('div');
-                itemCard.className = cardClass;
-                itemCard.innerHTML = `
+                const meta = chapterMeta[id];
+                const card = document.createElement('div');
+                card.className = cardClass;
+                if (quest.unlocked) card.style.borderColor = meta.color;
+                card.innerHTML = `
                     <div class="menu-item-info">
                         <h3>Chapter ${id}: ${quest.title} ${badgeHtml}</h3>
+                        <div class="menu-item-sub">${meta.sub}</div>
                     </div>
-                    <div class="menu-item-action">${actionText}</div>
-                `;
-
-                if (quest.unlocked) {
-                    itemCard.onclick = () => openSection(id);
-                } else {
-                    itemCard.onclick = () => alert("Selesaikan chapter sebelumnya terlebih dahulu ya, Ali! ✨");
-                }
-
-                container.appendChild(itemCard);
+                    <div class="menu-item-action">${actionText}</div>`;
+                card.onclick = quest.unlocked
+                    ? () => openSection(id)
+                    : () => openModal("Selesaikan chapter sebelumnya terlebih dahulu ya, Ali!", 'Oke', null, null);
+                container.appendChild(card);
             }
-
-            document.getElementById('questProgressText').innerText = `Progress: ${completedCount} / 4 Chapter Selesai`;
+            $('questProgressText').innerText = `Progress: ${completedCount} / 4 Chapter Selesai`;
         }
 
         function confirmBackToMenu() {
-            if (confirm("Keluar dari chapter ini, Ali? Progress membaca di chapter ini akan direset.")) {
-                backToMenu();
-            }
+            openModal("Keluar dari chapter ini, Ali? Progress membaca di chapter ini akan direset.", 'Keluar', 'Lanjut baca', () => {
+                runCleanup();
+                swapScreen($('mainCard'), $('menuScreen'), renderMenuList);
+            });
         }
 
-        function backToMenu() {
-            const activeCard = document.getElementById('mainCard');
-            const completeScreen = document.getElementById('questCompleteScreen');
-            const finaleScreen = document.getElementById('grandFinaleScreen');
-            
-            const target = !activeCard.classList.contains('hidden') ? activeCard : 
-                           (!completeScreen.classList.contains('hidden') ? completeScreen : finaleScreen);
-
-            target.classList.add('closing-book');
-            setTimeout(() => {
-                target.classList.add('hidden');
-                target.classList.remove('closing-book');
-                renderMenuList();
-                document.getElementById('menuScreen').classList.remove('hidden');
-            }, 250);
+        function returnToMenuFromComplete() {
+            const complete = $('questCompleteScreen');
+            const finale = $('grandFinaleScreen');
+            const target = !complete.classList.contains('hidden') ? complete : finale;
+            swapScreen(target, $('menuScreen'), renderMenuList);
         }
 
+        /* ---------- Helper footer ---------- */
+        let curChapter = 0, nextHandler = null, prevHandler = null, cleanupFn = null;
+        function runCleanup() { if (cleanupFn) { cleanupFn(); cleanupFn = null; } }
+        function setNext(label, enabled, fn) {
+            const b = $('nextBtn');
+            b.innerHTML = label; b.disabled = !enabled; nextHandler = fn || null;
+        }
+        function setPrev(show, fn) {
+            const b = $('prevBtn');
+            b.hidden = !show; prevHandler = fn || null;
+        }
+        function setHint(t) { $('ctlHint').textContent = t || ''; }
+        function setCounter(t) { $('slideCounterText').textContent = t || ''; }
+        function nextAction() { if (nextHandler) nextHandler(); }
+        function prevAction() { if (prevHandler) prevHandler(); }
+
+        function finishChapter() {
+            runCleanup();
+            questStatus[curChapter].completed = true;
+            if (curChapter < 4) questStatus[curChapter + 1].unlocked = true;
+            saveProgress();
+            $('completedQuestDesc').textContent = `Chapter ${curChapter}: ${questStatus[curChapter].title} selesai dengan baik, Ali`;
+            const target = curChapter === 4 ? $('grandFinaleScreen') : $('questCompleteScreen');
+            swapScreen($('mainCard'), target);
+        }
+
+        /* ---------- Isi tulisan ---------- */
         const sectionsData = {
             1: [
                 `Hai Li, sebelum kita ada di titik ini, seperti yang lu tau... gua pernah ngerasa nyaman dan kagum sama lu.`,
@@ -799,140 +1056,598 @@
             ]
         };
 
-        let currentSection = 1;
-        let currentSlide = 0;
-        let totalSlides = 0;
-        
-        const slidesWrapper = document.getElementById('slidesWrapper');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const slideCounterText = document.getElementById('slideCounterText');
-        const dotsContainer = document.getElementById('dotsContainer');
-        const cardBrandTitle = document.getElementById('cardBrandTitle');
+        /* ---------- Konfeti ---------- */
+        function burstConfetti(host) {
+            const colors = ['#f2c36b', '#d98fa0', '#8fa5cf', '#a3b18b', '#b79ad0', '#f4a261'];
+            const r = host.getBoundingClientRect();
+            const layer = document.createElement('div');
+            layer.className = 'confetti-layer';
+            layer.style.left = (r.left + r.width / 2) + 'px';
+            layer.style.top = (r.top + 34) + 'px';
+            document.body.appendChild(layer);
+            for (let i = 0; i < 30; i++) {
+                const c = document.createElement('i');
+                const ang = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.4;
+                const dist = 70 + Math.random() * 120;
+                c.style.setProperty('--dx', Math.cos(ang) * dist + 'px');
+                c.style.setProperty('--dy', Math.sin(ang) * dist + 'px');
+                c.style.setProperty('--rot', (Math.random() * 720 - 360) + 'deg');
+                c.style.background = colors[i % colors.length];
+                c.style.animationDelay = (Math.random() * 0.12) + 's';
+                if (i % 3 === 0) c.style.borderRadius = '50%';
+                layer.appendChild(c);
+            }
+            setTimeout(() => layer.remove(), 2000);
+        }
 
-        function openSection(sectionId) {
-            currentSection = sectionId;
-            currentSlide = 0;
-            const data = sectionsData[sectionId];
-            totalSlides = data.length;
+        /* ---------- Buka chapter ---------- */
+        const chapters = {};
 
-            applyTheme(sectionId);
-            cardBrandTitle.innerText = `🍯 ${questStatus[sectionId].title}`;
+        function openSection(id) {
+            runCleanup();
+            curChapter = id;
+            applyTheme(id);
+            $('cardBrandTitle').innerText = questStatus[id].title;
+            $('chBody').innerHTML = '';
+            $('chBody').scrollTop = 0;
+            setCounter(''); setHint(''); setPrev(false); setNext('Next →', false);
+            swapScreen($('menuScreen'), $('mainCard'), () => chapters[id]());
+        }
 
-            slidesWrapper.innerHTML = '';
-            data.forEach((text, index) => {
-                const slideDiv = document.createElement('div');
-                slideDiv.className = `slide ${index === 0 ? 'active' : ''}`;
+        /* =====================================================
+           CHAPTER 1: Tumpukan foto polaroid
+           ===================================================== */
+        chapters[1] = function () {
+            const d = sectionsData[1], n = d.length;
+            const emo = ['🌼', '🍁', '🌸', '💮'];
+            const ART1 = [
+                // 0: dua cangkir (nyaman ngobrol)
+                `<svg viewBox="0 0 100 56"><g transform="rotate(-5 32 34)"><rect x="20" y="22" width="24" height="22" rx="5" fill="#fbf4e8" stroke="#d98f6a" stroke-width="2"/><path d="M20 28 h-4 a4.5 4.5 0 0 0 0 9 h4" fill="none" stroke="#d98f6a" stroke-width="2"/></g><g transform="rotate(5 68 34)"><rect x="56" y="22" width="24" height="22" rx="5" fill="#fbf4e8" stroke="#d98f6a" stroke-width="2"/><path d="M80 28 h4 a4.5 4.5 0 0 1 0 9 h-4" fill="none" stroke="#d98f6a" stroke-width="2"/></g><path class="steam" d="M32 18 q-3 -4 0 -7 q3 -3 0 -7"/><path class="steam s2" d="M68 18 q-3 -4 0 -7 q3 -3 0 -7"/></svg>`,
+                // 1: gelembung obrolan (fun to talk to)
+                `<svg viewBox="0 0 100 56"><path d="M20 28 l-4 9 l11 -9z" fill="#fff" stroke="#e0b45c" stroke-width="2" stroke-linejoin="round"/><rect x="10" y="6" width="44" height="22" rx="10" fill="#fff" stroke="#e0b45c" stroke-width="2"/><circle class="dot" cx="24" cy="17" r="2.4" fill="#e0b45c"/><circle class="dot" cx="32" cy="17" r="2.4" fill="#e0b45c"/><circle class="dot" cx="40" cy="17" r="2.4" fill="#e0b45c"/><path d="M80 46 l4 8 l-11 -8z" fill="#ffe9b8" stroke="#d98f6a" stroke-width="2" stroke-linejoin="round"/><rect x="46" y="26" width="44" height="20" rx="10" fill="#ffe9b8" stroke="#d98f6a" stroke-width="2"/><circle class="dot" cx="60" cy="36" r="2.4" fill="#d98f6a"/><circle class="dot" cx="68" cy="36" r="2.4" fill="#d98f6a"/><circle class="dot" cx="76" cy="36" r="2.4" fill="#d98f6a"/></svg>`,
+                // 2: kilau kecil (rasa kagum)
+                `<svg viewBox="0 0 100 56"><path d="M50 6 L56 22 L72 28 L56 34 L50 50 L44 34 L28 28 L44 22 Z" fill="#f2c36b"/><path class="twinkle" d="M18 12 l2 5 l5 2 l-5 2 l-2 5 l-2 -5 l-5 -2 l5 -2z" fill="#ffd9a0"/><path class="twinkle" style="animation-delay:0.9s" d="M84 40 l1.6 4 l4 1.6 l-4 1.6 l-1.6 4 l-1.6 -4 l-4 -1.6 l4 -1.6z" fill="#ffd9a0"/></svg>`,
+                // 3: tunas kecil (harapan tumbuh)
+                `<svg viewBox="0 0 100 56"><ellipse cx="50" cy="49" rx="26" ry="5" fill="#b08a62"/><path d="M50 49 C50 40 50 30 50 22" stroke="#6f8f5a" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M50 32 C38 32 32 24 30 16 C42 16 50 22 50 32z" fill="#9db89a"/><path d="M50 26 C60 26 68 20 70 12 C58 12 50 18 50 26z" fill="#7fa77a"/></svg>`,
+                // 4: buku terbuka
+                `<svg viewBox="0 0 100 56"><path d="M50 14 C40 10 26 10 14 14 V46 C26 42 40 42 50 46 Z" fill="#fbf4e8" stroke="#8fa5cf" stroke-width="2" stroke-linejoin="round"/><path d="M50 14 C60 10 74 10 86 14 V46 C74 42 60 42 50 46 Z" fill="#fff" stroke="#8fa5cf" stroke-width="2" stroke-linejoin="round"/><path d="M20 22 h22 M20 28 h22 M20 34 h15 M58 22 h22 M58 28 h22 M58 34 h15" stroke="#cdbfa0" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+                // 5: awan & matahari (hidup ga selalu sesuai)
+                `<svg viewBox="0 0 100 56"><circle cx="66" cy="20" r="10" fill="#ffd166"/><path d="M66 4 v4 M66 32 v4 M50 20 h4 M78 20 h4 M55 9 l3 3 M77 9 l-3 3" stroke="#ffd166" stroke-width="2.2" stroke-linecap="round"/><g fill="#fff"><circle cx="34" cy="38" r="9"/><circle cx="47" cy="34" r="12"/><circle cx="59" cy="39" r="8"/><rect x="34" y="38" width="25" height="9"/></g></svg>`,
+                // 6: toples madu (hal tulus yang diingat)
+                `<svg viewBox="0 0 100 56"><rect x="34" y="16" width="32" height="34" rx="9" fill="#f2c36b"/><rect x="36" y="9" width="28" height="9" rx="3" fill="#c98b72"/><ellipse cx="42" cy="28" rx="3" ry="7" fill="rgba(255,255,255,0.4)"/><path d="M50 26 l7 4 v8 l-7 4 l-7 -4 v-8z" fill="#fff3d1" stroke="#d9a94f" stroke-width="1.5" stroke-linejoin="round"/></svg>`
+            ];
+            const grads = [
+                'linear-gradient(135deg,#ffecb6,#ffc6d9)', 'linear-gradient(135deg,#ffdfba,#ffb4b0)',
+                'linear-gradient(135deg,#fff3d1,#ffdfba)', 'linear-gradient(135deg,#ffc6d9,#ffecb6)'
+            ];
+            const rots = d.map((_, i) => ((i * 37) % 9) - 4);
+            const dirs = new Array(n).fill(1);
+            let idx = 0;
 
-                const textDiv = document.createElement('div');
-                textDiv.className = 'slide-text';
-                textDiv.innerHTML = text.replace(/\n/g, '<br>');
-                
-                slideDiv.appendChild(textDiv);
-                slidesWrapper.appendChild(slideDiv);
-            });
+            $('chBody').innerHTML = `<div class="p-area" id="pArea"><div class="sheet s1"></div><div class="sheet s2"></div></div>`;
+            const area = $('pArea');
 
-            dotsContainer.innerHTML = '';
-            for (let i = 0; i < totalSlides; i++) {
-                const dot = document.createElement('div');
-                dot.classList.add('dot');
-                if (i === 0) dot.classList.add('active');
-                dot.addEventListener('click', () => goToSlide(i));
-                dotsContainer.appendChild(dot);
+            function dismiss(dir) {
+                if (idx >= n - 1) { layout(); return; }
+                dirs[idx] = dir; idx++; layout();
             }
 
-            const menu = document.getElementById('menuScreen');
-            menu.classList.add('closing-book');
-            setTimeout(() => {
-                menu.classList.add('hidden');
-                menu.classList.remove('closing-book');
-                document.getElementById('mainCard').classList.remove('hidden');
-                updateSlideUI();
-            }, 250);
-        }
-
-        const slides = () => document.querySelectorAll('.slide');
-        const dots = () => document.querySelectorAll('.dot');
-
-        function updateSlideUI() {
-            const currentSlides = slides();
-            const currentDots = dots();
-
-            currentSlides.forEach((slide, index) => {
-                slide.classList.remove('active');
-                if (index === currentSlide) {
-                    slide.classList.add('active');
-                }
-            });
-
-            currentDots.forEach((dot, index) => {
-                dot.classList.remove('active');
-                if (index === currentSlide) {
-                    dot.classList.add('active');
-                }
-            });
-
-            slideCounterText.innerText = `${currentSlide + 1} / ${totalSlides}`;
-            prevBtn.disabled = currentSlide === 0;
-            
-            if (currentSlide === totalSlides - 1) {
-                nextBtn.innerHTML = 'Selesaikan ✓';
-            } else {
-                nextBtn.innerHTML = 'Next →';
+            function attachDrag(el, i) {
+                let sx = 0, dx = 0, drag = false;
+                el.addEventListener('pointerdown', e => {
+                    if (i !== idx) return;
+                    drag = true; sx = e.clientX; dx = 0;
+                    el.classList.add('dragging');
+                    try { el.setPointerCapture(e.pointerId); } catch (err) {}
+                });
+                el.addEventListener('pointermove', e => {
+                    if (!drag) return;
+                    dx = e.clientX - sx;
+                    el.style.transform = `translate(-50%,-50%) translateX(${dx}px) rotate(${dx / 18}deg)`;
+                });
+                el.addEventListener('pointerup', () => {
+                    if (!drag) return;
+                    drag = false; el.classList.remove('dragging');
+                    if (Math.abs(dx) > 70) dismiss(dx > 0 ? 1 : -1);
+                    else if (Math.abs(dx) < 6) dismiss(1);
+                    else layout();
+                });
+                el.addEventListener('pointercancel', () => { drag = false; el.classList.remove('dragging'); layout(); });
             }
-        }
 
-        function changeSlide(direction) {
-            currentSlide += direction;
-            if (currentSlide < 0) currentSlide = 0;
-            if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
-            updateSlideUI();
-        }
+            const cards = d.map((t, i) => {
+                const el = document.createElement('div');
+                el.className = 'polaroid';
+                el.innerHTML = `<div class="tape"></div>
+                    <div class="photo" style="background:${grads[i % 4]}">${ART1[i % ART1.length]}</div>
+                    <div class="p-text">${t}</div>
+                    <div class="p-cap">~ memory ${i + 1}</div>`;
+                area.appendChild(el);
+                attachDrag(el, i);
+                return el;
+            });
 
-        function goToSlide(index) {
-            currentSlide = index;
-            updateSlideUI();
-        }
-
-        function nextAction() {
-            if (currentSlide === totalSlides - 1) {
-                questStatus[currentSection].completed = true;
-                
-                if (currentSection < 4) {
-                    questStatus[currentSection + 1].unlocked = true;
-                }
-
-                saveProgress();
-
-                const mainCard = document.getElementById('mainCard');
-                mainCard.classList.add('closing-book');
-                setTimeout(() => {
-                    mainCard.classList.add('hidden');
-                    mainCard.classList.remove('closing-book');
-                    if (currentSection === 4) {
-                        document.getElementById('grandFinaleScreen').classList.remove('hidden');
+            function layout() {
+                cards.forEach((el, i) => {
+                    el.style.zIndex = 10 + (n - i);
+                    el.classList.toggle('current', i === idx);
+                    if (i < idx) {
+                        el.style.transform = `translate(-50%,-50%) translateX(${dirs[i] * 130}%) rotate(${dirs[i] * 24}deg)`;
+                        el.style.opacity = 0; el.style.pointerEvents = 'none';
+                    } else if (i === idx) {
+                        el.style.transform = `translate(-50%,-50%) rotate(${rots[i] * 0.5}deg)`;
+                        el.style.opacity = 1; el.style.pointerEvents = 'auto';
                     } else {
-                        document.getElementById('questCompleteScreen').classList.remove('hidden');
+                        el.style.transform = `translate(-50%,-50%) translateY(14px) scale(0.94) rotate(${rots[i]}deg)`;
+                        el.style.opacity = 0; el.style.pointerEvents = 'none';
                     }
-                }, 250);
-            } else {
-                changeSlide(1);
+                });
+                setCounter(`${idx + 1} / ${n}`);
+                setPrev(idx > 0, () => { if (idx > 0) { idx--; layout(); } });
+                if (idx === n - 1) {
+                    setNext('Selesaikan ✓', true, finishChapter);
+                    setHint('Kartu terakhir');
+                } else {
+                    setNext('Next →', true, () => dismiss(1));
+                    setHint(idx === 0 ? 'Geser atau ketuk kartunya' : '');
+                }
             }
-        }
+            layout();
+        };
 
-        function returnToMenuFromComplete() {
-            const completeScreen = document.getElementById('questCompleteScreen');
-            const finaleScreen = document.getElementById('grandFinaleScreen');
-            const target = !completeScreen.classList.contains('hidden') ? completeScreen : finaleScreen;
+        /* =====================================================
+           CHAPTER 2: Runi vs Ali
+           ===================================================== */
+        chapters[2] = function () {
+            const d = sectionsData[2];
+            const body = $('chBody');
+            let stage = 0, alive = true, busy = false;
+            const total = 4;
+            cleanupFn = () => { alive = false; body.onclick = null; };
 
-            target.classList.add('closing-book');
-            setTimeout(() => {
-                target.classList.add('hidden');
-                target.classList.remove('closing-book');
-                renderMenuList();
-                document.getElementById('menuScreen').classList.remove('hidden');
-            }, 250);
-        }
+            function go() {
+                setCounter(`${stage + 1} / ${total}`);
+                body.scrollTop = 0;
+                body.onclick = null;
+                busy = false;
+                [stage1, stage2, stage3, stage4][stage]();
+            }
+
+            function sayBubble(chat, text, after, isKey) {
+                busy = true;
+                const b = document.createElement('div');
+                b.className = 'bubble right typing';
+                b.innerHTML = '<i></i><i></i><i></i>';
+                chat.appendChild(b);
+                body.scrollTop = body.scrollHeight;
+                setTimeout(() => {
+                    if (!alive) return;
+                    b.classList.remove('typing');
+                    b.textContent = text;
+                    if (isKey) b.classList.add('key');
+                    busy = false;
+                    body.scrollTop = body.scrollHeight;
+                    if (after) after();
+                }, 700);
+            }
+
+            function chatStage(lines, nextLabel, onAllShown, keyIdx) {
+                body.innerHTML = `<div class="chat" id="chat"></div><div class="tap-hint" id="tapHint">Ketuk layar untuk lanjut</div>`;
+                const chat = $('chat');
+                let shown = 0;
+                setPrev(false);
+                setNext(nextLabel, false);
+                setHint('');
+                function next() {
+                    if (busy || shown >= lines.length) return;
+                    const i = shown++;
+                    sayBubble(chat, lines[i], () => {
+                        if (shown >= lines.length) {
+                            $('tapHint').style.display = 'none';
+                            onAllShown();
+                        }
+                    }, i === keyIdx);
+                }
+                body.onclick = next;
+                next();
+            }
+
+            function stage1() {
+                chatStage(d.slice(0, 4), 'Lanjut →', () => setNext('Lanjut →', true, () => { stage = 1; go(); }));
+            }
+
+            const ALI_SCENE = `
+                <svg viewBox="0 0 200 84" class="mini" aria-hidden="true">
+                    <ellipse cx="100" cy="78" rx="90" ry="4" fill="rgba(0,0,0,0.07)"/>
+                    <circle cx="88" cy="58" r="2.5" fill="#fff" stroke="#b4c3e0"/>
+                    <circle cx="95" cy="49" r="4" fill="#fff" stroke="#b4c3e0"/>
+                    <ellipse cx="118" cy="26" rx="30" ry="18" fill="#fff" stroke="#b4c3e0" stroke-width="2"/>
+                    <g class="spin"><path d="M118 15 a11 11 0 1 1 -11 11" fill="none" stroke="#8fa5cf" stroke-width="3.2" stroke-linecap="round"/></g>
+                    <g class="bob">
+                        <circle cx="62" cy="60" r="18" fill="#8fa5cf"/>
+                        <path d="M53 58 Q57 54 61 58 M65 58 Q69 54 73 58" fill="none" stroke="#33415c" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M56 67 Q62 70 68 67" fill="none" stroke="#33415c" stroke-width="2" stroke-linecap="round"/>
+                    </g>
+                    <text class="qm" x="158" y="52">?</text>
+                    <text class="qm q2" x="176" y="40">?</text>
+                </svg>`;
+            const RUNI_SCENE = `
+                <svg viewBox="0 0 200 84" class="mini" aria-hidden="true">
+                    <ellipse cx="100" cy="78" rx="90" ry="4" fill="rgba(0,0,0,0.07)"/>
+                    <g class="speed"><path d="M20 50 h16 M14 60 h18 M20 70 h14" stroke="#ecc9a8" stroke-width="3" stroke-linecap="round"/></g>
+                    <g class="hop">
+                        <path d="M84 56 L98 40" stroke="#f4a261" stroke-width="7" stroke-linecap="round"/>
+                        <circle cx="62" cy="60" r="18" fill="#f4a261"/>
+                        <circle cx="56" cy="56" r="2.4" fill="#4a3b32"/><circle cx="68" cy="56" r="2.4" fill="#4a3b32"/>
+                        <circle cx="51" cy="63" r="3" fill="#ff9aa2" opacity="0.6"/><circle cx="73" cy="63" r="3" fill="#ff9aa2" opacity="0.6"/>
+                        <path d="M56 64 Q62 72 68 64 Z" fill="#a2493f"/>
+                    </g>
+                    <rect x="100" y="6" width="94" height="26" rx="12" fill="#fff" stroke="#ecc9a8" stroke-width="2"/>
+                    <path d="M108 32 l-8 8 l14 -6 Z" fill="#fff" stroke="#ecc9a8" stroke-width="2" stroke-linejoin="round"/>
+                    <rect x="104" y="28" width="12" height="5" fill="#fff"/>
+                    <text x="147" y="23" text-anchor="middle" font-size="10.5" font-weight="600" fill="#7a5a3a" font-family="Poppins, sans-serif">bahas sekarang!</text>
+                </svg>`;
+
+            function stage2() {
+                body.innerHTML = `
+                    <p class="c2-text">${d[4]}</p>
+                    <p class="c2-text">${d[5]}</p>
+                    <div class="vs">
+                        <div class="vs-card ali" data-k="ali">
+                            <div class="vs-title">Ali <span class="vs-tag">ketuk untuk buka</span></div>
+                            <div class="vs-back">${ALI_SCENE}<p>${d[6]}</p></div>
+                        </div>
+                        <div class="vs-card runi" data-k="runi">
+                            <div class="vs-title">Runi <span class="vs-tag">ketuk untuk buka</span></div>
+                            <div class="vs-back">${RUNI_SCENE}<p>${d[7]}</p></div>
+                        </div>
+                    </div>`;
+                const opened = new Set();
+                setPrev(false);
+                setNext('Lanjut →', false);
+                setHint('Buka kedua kartu');
+                body.querySelectorAll('.vs-card').forEach(c => {
+                    c.addEventListener('click', () => {
+                        c.classList.add('open');
+                        opened.add(c.dataset.k);
+                        if (opened.size === 2) {
+                            setHint('');
+                            setNext('Lanjut →', true, () => { stage = 2; go(); });
+                        }
+                    });
+                });
+            }
+
+            function stage3() {
+                body.innerHTML = `
+                    <p class="c2-text">${d[8]}</p>
+                    <div class="scene2">
+                        <div class="speech sp-runi" id="spRuni">Halo~</div>
+                        <div class="speech sp-ali" id="spAli">hmm?</div>
+                        <svg viewBox="0 0 320 200" class="scene-svg" aria-hidden="true">
+                            <defs>
+                                <radialGradient id="glowRuni">
+                                    <stop offset="0" stop-color="#ffd9a0" stop-opacity="0.95"/>
+                                    <stop offset="1" stop-color="#ffd9a0" stop-opacity="0"/>
+                                </radialGradient>
+                            </defs>
+                            <ellipse cx="160" cy="176" rx="150" ry="7" fill="rgba(88,129,87,0.2)"/>
+                            <circle id="glow" cx="68" cy="142" r="30" fill="url(#glowRuni)" opacity="0"/>
+                            <g id="gapG" opacity="0.9">
+                                <line id="gapLine" x1="108" y1="108" x2="224" y2="108" stroke="#8a9a85" stroke-width="2" stroke-dasharray="4 4" stroke-linecap="round"/>
+                                <path id="gapL" d="M108 108 l6 -4 v8 Z" fill="#8a9a85"/>
+                                <path id="gapR" d="M224 108 l-6 -4 v8 Z" fill="#8a9a85"/>
+                                <text id="gapTxt" x="166" y="100" text-anchor="middle" font-size="10" font-weight="600" fill="#6f8a6b" font-family="Poppins, sans-serif">jarak</text>
+                            </g>
+                            <text x="68" y="194" text-anchor="middle" font-size="9.5" font-weight="600" fill="#9a6a3c" font-family="Poppins, sans-serif">Runi: butuh kejelasan</text>
+                            <g id="aliG">
+                                <text x="252" y="194" text-anchor="middle" font-size="9.5" font-weight="600" fill="#4f648f" font-family="Poppins, sans-serif">Ali: butuh ruang</text>
+                                <g class="bob b2">
+                                    <circle cx="252" cy="142" r="28" fill="#8fa5cf"/>
+                                    <g id="aliEyesOpen">
+                                        <circle cx="242" cy="136" r="5.5" fill="#fff"/><circle cx="262" cy="136" r="5.5" fill="#fff"/>
+                                        <circle id="pL" cx="240" cy="136" r="2.6" fill="#33415c"/><circle id="pR" cx="260" cy="136" r="2.6" fill="#33415c"/>
+                                    </g>
+                                    <g id="aliEyesShut" style="display:none">
+                                        <path d="M236 138 h12 M256 138 h12" stroke="#33415c" stroke-width="2.4" stroke-linecap="round"/>
+                                    </g>
+                                    <path id="aliMouth" d="M242 152 Q252 159 262 152" fill="none" stroke="#33415c" stroke-width="2.4" stroke-linecap="round"/>
+                                    <path id="sweatAli" class="sweat" style="display:none" d="M278 112 Q283 120 278 125 Q273 120 278 112Z" fill="#8ec5f0"/>
+                                </g>
+                            </g>
+                            <g class="bob">
+                                <line id="armL" x1="44" y1="148" x2="18" y2="148" stroke="#f4a261" stroke-width="9" stroke-linecap="round"/>
+                                <line id="armR" x1="92" y1="148" x2="118" y2="148" stroke="#f4a261" stroke-width="9" stroke-linecap="round"/>
+                                <circle cx="68" cy="142" r="28" fill="#f4a261"/>
+                                <circle cx="51" cy="148" r="4.5" fill="#ff9aa2" opacity="0.55"/><circle cx="85" cy="148" r="4.5" fill="#ff9aa2" opacity="0.55"/>
+                                <g id="runiEyesOpen"><circle cx="58" cy="136" r="3" fill="#4a3b32"/><circle cx="78" cy="136" r="3" fill="#4a3b32"/></g>
+                                <g id="runiEyesTired" style="display:none"><path d="M53 138 h9 M74 138 h9" stroke="#4a3b32" stroke-width="2.4" stroke-linecap="round"/></g>
+                                <path id="runiMouth" d="M58 148 Q68 158 78 148" fill="none" stroke="#4a3b32" stroke-width="2.5" stroke-linecap="round"/>
+                                <path id="sweatRuni" class="sweat" style="display:none" d="M96 112 Q101 120 96 125 Q91 120 96 112Z" fill="#8ec5f0"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="slider-wrap">
+                        <input type="range" id="openSlider" min="0" max="100" value="0">
+                        <div class="slider-cap" id="sliderCap">Geser untuk melihat polanya</div>
+                    </div>`;
+
+                const el = id => $(id);
+                function update(v) {
+                    el('glow').setAttribute('r', 30 + v * 0.35);
+                    el('glow').setAttribute('opacity', Math.min(0.75, v / 110));
+                    el('armL').setAttribute('transform', `rotate(${-35 + v * 1.0} 44 148)`);
+                    el('armR').setAttribute('transform', `rotate(${35 - v * 1.05} 92 148)`);
+                    // Ali bergeser sedikit menjauh, bukan membangun tembok
+                    const shift = v * 0.34;
+                    el('aliG').setAttribute('transform', `translate(${shift.toFixed(1)} 0)`);
+                    const gx2 = 224 + shift;
+                    el('gapLine').setAttribute('x2', gx2);
+                    el('gapR').setAttribute('d', `M${gx2} 108 l-6 -4 v8 Z`);
+                    el('gapTxt').setAttribute('x', (108 + gx2) / 2);
+                    el('gapTxt').textContent = v < 25 ? 'jarak' : v < 60 ? 'jarak makin lebar' : 'jarak makin lebar...';
+
+                    const tired = v >= 92;
+                    el('runiEyesOpen').style.display = tired ? 'none' : '';
+                    el('runiEyesTired').style.display = tired ? '' : 'none';
+                    el('aliEyesOpen').style.display = tired ? 'none' : '';
+                    el('aliEyesShut').style.display = tired ? '' : 'none';
+                    el('sweatRuni').style.display = v >= 75 ? '' : 'none';
+                    el('sweatAli').style.display = v >= 75 ? '' : 'none';
+
+                    const rm = el('runiMouth');
+                    rm.setAttribute('d', v >= 75 ? 'M60 153 L76 153' : 'M58 148 Q68 158 78 148');
+                    const am = el('aliMouth');
+                    am.setAttribute('d', v >= 45 ? 'M243 153 L261 153' : 'M242 152 Q252 159 262 152');
+
+                    el('spRuni').textContent = v < 15 ? 'Halo~' : v < 45 ? 'Gua cerita dikit ya' : v < 75 ? 'Gua cerita lebih banyak' : v < 92 ? 'Gua pengen jelas...' : '...';
+                    el('spAli').textContent = v < 15 ? 'hmm?' : v < 45 ? 'Gua butuh waktu' : v < 75 ? 'Gua butuh ruang' : v < 92 ? 'Gua kewalahan...' : '...';
+                    el('sliderCap').textContent = v < 25 ? 'Masih ringan...' : (v < 60 ? 'Mulai terasa...' : (v < 90 ? 'Makin berat buat dua-duanya...' : 'Dua-duanya cuma butuh hal yang beda'));
+                }
+
+                setPrev(false);
+                setNext('Lanjut →', false);
+                setHint('Geser slider sampai ujung');
+                let revealed = false;
+                const slider = $('openSlider');
+                update(0);
+                slider.addEventListener('input', () => {
+                    const v = +slider.value;
+                    update(v);
+                    if (v >= 92 && !revealed) {
+                        revealed = true;
+                        setHint('');
+                        setNext('Lanjut →', true, () => { stage = 3; go(); });
+                    }
+                });
+            }
+
+            function stage4() {
+                chatStage([d[9], d[10], d[11]], 'Selesaikan ✓', () => setNext('Selesaikan ✓', true, finishChapter), 2);
+            }
+
+            go();
+        };
+
+        /* =====================================================
+           CHAPTER 3: Kartu karakter RPG
+           ===================================================== */
+        chapters[3] = function () {
+            const d = sectionsData[3];
+            const strengths = [
+                { name: 'Prinsip & Argumen', text: [d[2]] },
+                { name: 'Niat Tulus', text: [d[3]] },
+                { name: 'Partner Debat', text: [d[4]], extra: '<div class="debate"><span class="db db1">Menurutku sih...</span><span class="db db2">Tapi kan...</span><span class="db db3">Oke, fair 🤝</span></div>' },
+                { name: 'Out-of-the-box', text: [d[5]] }
+            ];
+            const grows = [
+                { name: 'Sinkron Komunikasi', text: [d[6]] },
+                { name: 'Keterbukaan & Ketegasan', text: [d[7], d[8]] },
+                { name: 'Menerima Masukan', text: [d[9]] }
+            ];
+            const totalStats = strengths.length + grows.length;
+            let opened = 0, chestOpen = false;
+
+            function statHtml(s) {
+                return `<div class="stat">
+                    <div class="stat-top"><span>${s.name}</span><span class="stat-tag">ketuk</span></div>
+                    <div class="stat-detail">${s.text.map(t => `<p>${t}</p>`).join('')}${s.extra || ''}</div>
+                </div>`;
+            }
+
+            $('chBody').innerHTML = `
+                <div class="rpg-head">
+                    <div class="avatar" style="font-family:'Pinyon Script',cursive;font-size:2.4rem;color:var(--brand)">A</div>
+                    <div><div class="rpg-name">ALI</div><div class="rpg-sub">Sudut pandang Runi</div></div>
+                </div>
+                <div class="briefing">${d[0]}<br><br>${d[1]}</div>
+                <div class="sec-title">Yang gua kagumi</div>
+                ${strengths.map(statHtml).join('')}
+                <div class="sec-title">Yang gua rasakan &amp; pelajari</div>
+                ${grows.map(statHtml).join('')}
+                <div class="chest locked" id="chest" role="button" tabindex="0">
+                    <span class="chest-emoji">🍯</span>
+                    <span class="chest-label" id="chestLabel">Buka semua poin untuk membaca catatan penutup</span>
+                    <div class="chest-text hidden" id="chestText"></div>
+                </div>`;
+
+            setCounter(`0 / ${totalStats}`);
+            setNext('Selesaikan ✓', false);
+            setHint('Ketuk tiap poin');
+
+            $('chBody').querySelectorAll('.stat').forEach(el => {
+                el.addEventListener('click', () => {
+                    if (el.classList.contains('open')) return;
+                    el.classList.add('open');
+                    opened++;
+                    setCounter(`${opened} / ${totalStats}`);
+                    if (opened === totalStats) {
+                        const chest = $('chest');
+                        chest.classList.remove('locked');
+                        chest.classList.add('ready');
+                        $('chestLabel').textContent = 'Catatan penutup. Ketuk untuk membuka';
+                        setHint('Catatan penutupnya sudah siap');
+                        setTimeout(() => { $('chBody').scrollTo({ top: $('chBody').scrollHeight, behavior: 'smooth' }); }, 500);
+                    }
+                });
+            });
+
+            const chestEl = $('chest');
+            let chestMsgTimer = null;
+            function openChest() {
+                if (chestOpen) return;
+                if (opened < totalStats) {
+                    chestEl.classList.remove('shake'); void chestEl.offsetWidth; chestEl.classList.add('shake');
+                    $('chestLabel').textContent = `Masih ${totalStats - opened} poin lagi yang belum dibuka`;
+                    clearTimeout(chestMsgTimer);
+                    chestMsgTimer = setTimeout(() => {
+                        if (!chestOpen && opened < totalStats) $('chestLabel').textContent = 'Buka semua poin untuk membaca catatan penutup';
+                    }, 2200);
+                    return;
+                }
+                chestOpen = true;
+                chestEl.classList.remove('ready');
+                const ce = chestEl.querySelector('.chest-emoji');
+                if (ce) ce.style.display = 'none';
+                $('chestLabel').textContent = 'Catatan penutup';
+                const ct = $('chestText');
+                ct.textContent = d[10];
+                ct.classList.remove('hidden');
+                ct.classList.add('fade-in');
+                setHint('');
+                setNext('Selesaikan ✓', true, finishChapter);
+                setTimeout(() => { $('chBody').scrollTo({ top: $('chBody').scrollHeight, behavior: 'smooth' }); }, 300);
+            }
+            chestEl.addEventListener('click', openChest);
+            chestEl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openChest(); } });
+        };
+
+        /* =====================================================
+           CHAPTER 4: Amplop & surat (versi closure / honeybee)
+           ===================================================== */
+        chapters[4] = function () {
+            const d = sectionsData[4], n = d.length;
+            const KEY4 = 8; // "ikhlas itu jauh lebih indah"
+            const ART4 = {
+                1: `<svg viewBox="0 0 120 90" class="cake-svg">
+                        <ellipse cx="60" cy="83" rx="46" ry="5" fill="rgba(0,0,0,0.18)"/>
+                        <rect x="30" y="52" width="60" height="28" rx="6" fill="#e8c27a"/>
+                        <path d="M30 58 q7 9 15 0 q7 9 15 0 q7 9 15 0 q7 9 15 0 v-6 h-60 z" fill="#fbf4e8"/>
+                        <rect x="56" y="34" width="8" height="20" rx="2" fill="#c9a8e0"/>
+                        <g class="smoke"><circle cx="60" cy="30" r="3" fill="#cfc4dd"/><circle cx="58" cy="30" r="2.5" fill="#cfc4dd"/><circle cx="62" cy="30" r="2.5" fill="#cfc4dd"/></g>
+                        <g class="flame"><ellipse cx="60" cy="27" rx="9" ry="11" fill="rgba(255,209,102,0.25)"/><path d="M60 20 q-6 8 0 14 q6 -6 0 -14z" fill="#ffd166"/><path d="M60 26 q-2.5 4 0 7 q2.5 -3 0 -7z" fill="#f4a261"/></g>
+                        <text class="wish" x="60" y="12" text-anchor="middle" font-size="9" font-weight="600" fill="#f2d58f" font-family="Poppins, sans-serif">make a wish</text>
+                        <g id="candle" style="cursor:pointer"><rect x="40" y="10" width="40" height="48" fill="transparent"/></g>
+                    </svg>`,
+                2: `<svg viewBox="0 0 120 90">
+                        <ellipse cx="60" cy="83" rx="36" ry="4" fill="rgba(0,0,0,0.18)"/>
+                        <g class="bookbob">
+                            <rect x="38" y="28" width="44" height="52" rx="4" fill="#8fa5cf"/>
+                            <rect x="38" y="28" width="8" height="52" rx="3" fill="#6f87b5"/>
+                            <rect x="52" y="42" width="24" height="3" rx="1.5" fill="#f2e6c8"/>
+                            <rect x="52" y="50" width="18" height="3" rx="1.5" fill="#f2e6c8"/>
+                            <path d="M72 28 v18 l-4 -4 l-4 4 v-18z" fill="#e0b45c"/>
+                        </g>
+                    </svg>`,
+                8: `<svg viewBox="0 0 120 90">
+                        <g class="boat">
+                            <path d="M60 56 v-30 l24 30z" fill="#fbf4e8"/>
+                            <path d="M60 56 v-30 l-18 30z" fill="#f2d58f"/>
+                            <path d="M30 56 h60 l-10 15 h-40z" fill="#fbf4e8" stroke="#d9a94f" stroke-width="1.5" stroke-linejoin="round"/>
+                        </g>
+                        <path d="M6 72 q10 -7 20 0 t20 0 t20 0 t20 0 t20 0 t20 0" fill="none" stroke="#8fa5cf" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+                        <path d="M6 80 q10 -7 20 0 t20 0 t20 0 t20 0 t20 0 t20 0" fill="none" stroke="#8fa5cf" stroke-width="2" stroke-linecap="round" opacity="0.45"/>
+                    </svg>`,
+                10: `<svg viewBox="0 0 120 90">
+                        <g class="balloon">
+                            <ellipse cx="60" cy="30" rx="14" ry="17" fill="#e8c27a"/>
+                            <ellipse cx="54" cy="23" rx="3.5" ry="5.5" fill="rgba(255,255,255,0.45)"/>
+                            <path d="M57 46 h6 l-3 4z" fill="#d9a94f"/>
+                            <path d="M60 50 q-5 8 0 15 q5 7 0 15" fill="none" stroke="#cdbfe0" stroke-width="1.5" stroke-linecap="round"/>
+                        </g>
+                    </svg>`
+            };
+            $('chBody').innerHTML = `
+                <div class="env-wrap" id="envWrap">
+                    <i class="spark" style="left:24%;top:64%;animation-delay:0s"></i>
+                    <i class="spark" style="left:72%;top:58%;animation-delay:1.2s"></i>
+                    <i class="spark" style="left:38%;top:70%;animation-delay:2.4s"></i>
+                    <i class="spark" style="left:62%;top:72%;animation-delay:3.3s"></i>
+                    <i class="spark" style="left:50%;top:60%;animation-delay:4.2s"></i>
+                    <div class="env" id="env">
+                        <div class="env-paper"></div>
+                        <div class="env-body"></div>
+                        <div class="env-flap"></div>
+                        <div class="env-addr"><div class="addr-to">Untuk Ali</div><div class="addr-from">catatan terakhir</div></div>
+                        <div class="env-stamp">
+                            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 3 L19.8 7.5 V16.5 L12 21 L4.2 16.5 V7.5 Z" fill="none" stroke="#d9a94f" stroke-width="1.8"/><path d="M12 8 L15.5 10 V14 L12 16 L8.5 14 V10 Z" fill="#e8c27a"/></svg>
+                        </div>
+                        <div class="seal">
+                            <svg viewBox="0 0 24 24" width="20" height="20"><ellipse cx="9" cy="8" rx="4" ry="2.6" fill="rgba(255,255,255,0.75)" transform="rotate(-25 9 8)"/><ellipse cx="15" cy="8" rx="4" ry="2.6" fill="rgba(255,255,255,0.75)" transform="rotate(25 15 8)"/><ellipse cx="12" cy="14" rx="5" ry="6" fill="#f2c36b"/><path d="M7.5 13 h9 M7.8 16.5 h8.4" stroke="#4a3550" stroke-width="1.8"/></svg>
+                        </div>
+                    </div>
+                    <div class="env-hint">Ketuk amplop untuk membuka</div>
+                </div>`;
+            setNext('Next →', false);
+            setHint('');
+            let idx = 0, started = false;
+            const starEl = document.createElement('div');
+            starEl.className = 'shooting';
+            document.body.appendChild(starEl);
+            const bee = document.createElement('div');
+            bee.className = 'flybee';
+            bee.textContent = '🐝';
+            document.body.appendChild(bee);
+            cleanupFn = () => { starEl.remove(); bee.remove(); };
+            function shoot() {
+                starEl.classList.remove('go');
+                void starEl.offsetWidth;
+                starEl.classList.add('go');
+            }
+            function flyBee() {
+                bee.classList.remove('go');
+                void bee.offsetWidth;
+                bee.classList.add('go');
+            }
+
+            function showLine() {
+                const el = $('lineText');
+                el.className = 'line-text';
+                void el.offsetWidth;
+                el.classList.add(idx === 11 ? 'soft-in' : 'fade-in-line');
+                el.textContent = d[idx];
+                el.parentElement.classList.toggle('key', idx === KEY4);
+                const art = $('lineArt');
+                art.innerHTML = ART4[idx] || '';
+                art.style.display = ART4[idx] ? '' : 'none';
+                const candle = art.querySelector('#candle');
+                if (candle) candle.addEventListener('click', e => {
+                    e.stopPropagation();
+                    art.querySelector('svg').classList.add('out');
+                });
+                if (idx === 9) shoot();
+                if (idx === n - 1) flyBee();
+                setCounter(`${idx + 1} / ${n}`);
+                setPrev(idx > 0, () => { idx--; showLine(); });
+                setHint(idx === 0 ? 'Ketuk untuk lanjut' : idx === 1 ? 'Coba ketuk lilinnya 🕯️' : '');
+                if (idx === n - 1) setNext('Selesaikan ✓', true, finishChapter);
+                else setNext('Next →', true, () => { idx++; showLine(); });
+            }
+
+            $('env').addEventListener('click', () => {
+                if (started) return;
+                started = true;
+                $('env').classList.add('open');
+                setTimeout(() => {
+                    $('envWrap').classList.add('gone');
+                    setTimeout(() => {
+                        $('chBody').innerHTML = `<div class="line-stage" id="lineStage"><div class="line-card"><div class="line-art" id="lineArt"></div><div class="line-text" id="lineText"></div></div></div>`;
+                        $('lineStage').addEventListener('click', () => { if (idx < n - 1) { idx++; showLine(); } });
+                        showLine();
+                    }, 600);
+                }, 1800);
+            });
+        };
     </script>
 </body>
 </html>
