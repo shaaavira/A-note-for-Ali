@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes on Closure - Quest Mode</title>
+    <!-- Google Fonts: Pinyon Script & Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            min-height: 100dvh;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #fff3d1 0%, #ffdfba 50%, #ffc6d9 100%);
+            background-attachment: fixed;
+            color: #5c4033;
+            font-size: 22px;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 16px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient Soft Glow */
+        .ambient-circle {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.5;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .circle-1 {
+            width: 450px;
+            height: 450px;
+            background: #ffecb6;
+            top: -80px;
+            left: -80px;
+        }
+
+        .circle-2 {
+            width: 500px;
+            height: 500px;
+            background: #ffb4b0;
+            bottom: -80px;
+            right: -80px;
+        }
+
+        /* Falling Flowers Animation Container */
+        #falling-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .falling-flower {
+            position: absolute;
+            top: -10vh;
+            user-select: none;
+            pointer-events: none;
+            animation: fallDown linear infinite;
+        }
+
+        @keyframes fallDown {
+            0% {
+                transform: translateY(-10vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.8;
+            }
+            85% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(110vh) translateX(30px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .wrapper {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 860px;
+            display: flex;
+            flex-direction: column;
+            perspective: 1200px;
+        }
+
+        .box-container {
+            width: 100%;
+            background: rgba(255, 253, 245, 0.98);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 3px solid rgba(255, 223, 186, 0.95);
+            border-radius: 52px;
+            padding: 65px 56px 55px 56px;
+            box-shadow: 0 40px 80px rgba(210, 150, 120, 0.32), 0 0 60px rgba(255, 255, 255, 0.7) inset;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 1180px;
+            position: relative;
+            transform-origin: center;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+        }
+
+        .box-container.closing-book {
+            transform: scale(0.85) rotateX(15deg);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .box-container::before {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 18px;
+            right: 18px;
+            bottom: 18px;
+            border: 2px dashed rgba(224, 122, 95, 0.25);
+            border-radius: 40px;
+            pointer-events: none;
+        }
+
+        .cover-content {
+            margin: auto 0;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cover-title {
+            font-family: 'Pinyon Script', cursive;
+            font-size: 7.2rem;
+            color: #4a3b32;
+            line-height: 1.1;
+            font-weight: 400;
+            text-shadow: 2px 2px 4px rgba(212, 131, 72, 0.1);
+            margin-bottom: 24px;
+        }
+
+        .cover-subtitle {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: #a07865;
+            letter-spacing: 0.3px;
+            max-width: 640px;
+            line-height: 1.6;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .menu-main-title {
+            font-family: 'Pinyon Script', cursive;
+            font-size: 5.5rem;
+            color: #4a3b32;
+            margin-bottom: 24px;
+            line-height: 1.1;
+            text-align: center;
+        }
+
+        .menu-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin: 10px 0;
+            max-height: 640px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .menu-item-card {
+            background: #ffffff;
+            border: 3px solid rgba(255, 209, 102, 0.6);
+            padding: 20px 24px;
+            border-radius: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.25s ease;
+            box-shadow: 0 6px 18px rgba(255, 209, 102, 0.2);
+        }
+
+        .menu-item-card:hover:not(.locked) {
+            background: #fffbf0;
+            border-color: #f4a261;
+            transform: translateX(6px);
+            box-shadow: 0 8px 24px rgba(244, 162, 97, 0.25);
+        }
+
+        .menu-item-card.locked {
+            background: #f7f5f0;
+            border-color: rgba(0, 0, 0, 0.06);
+            cursor: not-allowed;
+            opacity: 0.6;
+            box-shadow: none;
+        }
+
+        .menu-item-info h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #4a3b32;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .menu-item-card.locked .menu-item-info h3 {
+            color: #94a3b8;
+        }
+
+        .quest-status-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .badge-available { background: rgba(34, 197, 94, 0.15); color: #15803d; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .badge-completed { background: rgba(59, 130, 246, 0.15); color: #1d4ed8; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .badge-locked { background: rgba(0, 0, 0, 0.05); color: #6b7280; border: 1px solid rgba(0, 0, 0, 0.1); }
+
+        .menu-item-action {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.15rem;
+            color: #f4a261;
+            font-weight: 600;
+        }
+        .menu-item-card.locked .menu-item-action {
+            color: #94a3b8;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid rgba(255, 223, 186, 0.8);
+            padding-bottom: 20px;
+            margin-top: -15px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-brand {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #e07a5f;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .slides-container {
+            display: flex;
+            position: relative;
+            overflow: hidden;
+            min-height: 720px;
+            margin: 15px 0;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            text-align: left;
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            position: relative;
+        }
+
+        .slide-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.85rem;
+            line-height: 1.9;
+            color: #4a3b32;
+            font-weight: 400;
+            word-break: break-word;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 25px;
+            padding-bottom: 5px;
+            border-top: 3px solid rgba(255, 223, 186, 0.8);
+            margin-bottom: -15px;
+            gap: 12px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn {
+            background: #ffffff;
+            border: 3px solid #ffd166;
+            color: #d48348;
+            padding: 22px 24px;
+            border-radius: 50px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(255, 209, 102, 0.38);
+            white-space: nowrap;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+
+        .btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: #e2e8f0;
+            color: #94a3b8;
+            box-shadow: none;
+        }
+
+        .back-menu-btn {
+            background: #fff1f2;
+            border-color: #fca5a5;
+            color: #e11d48;
+            padding: 22px 20px;
+        }
+        .back-menu-btn:hover:not(:disabled) {
+            background: #ffe4e6;
+        }
+
+        .btn-primary {
+            background: #f4a261;
+            color: #ffffff;
+            border-color: #f4a261;
+            width: 100%;
+            padding: 26px;
+            font-size: 1.75rem;
+            box-shadow: 0 8px 25px rgba(244, 162, 97, 0.4);
+        }
+
+        .dots {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            max-width: 150px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .dots::-webkit-scrollbar {
+            display: none;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(244, 162, 97, 0.3);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .dot.active {
+            width: 30px;
+            border-radius: 5px;
+            background: #f4a261;
+        }
+
+        .quest-complete-content {
+            margin: auto 0;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .closing-quote {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.4rem;
+            font-style: italic;
+            color: #a07865;
+            max-width: 640px;
+            line-height: 1.8;
+            margin-top: 20px;
+            padding: 0 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-circle circle-1"></div>
+    <div class="ambient-circle circle-2"></div>
+    <div id="falling-container"></div>
+    <div id="youtube-player" style="display:none;"></div>
+
+    <div class="wrapper">
+        <!-- 1. Cover Screen -->
+        <div class="box-container" id="coverScreen">
+            <div></div>
+            <div class="cover-content">
+                <div class="cover-title">Notes on Closure</div>
+                <div class="cover-subtitle">Written because some things need to be said out loud, even if it's the last time we ever talk</div>
+            </div>
+            <div>
+                <button class="btn btn-primary" onclick="goToMenu()">
+                    Buka Catatan ✨
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. Menu / Quest Log Screen -->
+        <div class="box-container hidden" id="menuScreen">
+            <div>
+                <div class="menu-main-title">Pilih Sesi Catatan</div>
+            </div>
+            <div class="menu-stack" id="menuListContainer"></div>
+            <div>
+                <div style="font-family: 'Poppins', sans-serif; font-size: 1.25rem; font-weight: 600; color: #a07865; text-align: center; margin-bottom: 18px;" id="questProgressText">
+                    Progress: 0 / 4 Chapter Selesai
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" onclick="backToCover()" style="flex: 1; border-radius: 50px;">← Kembali ke Cover</button>
+                    <button class="btn" onclick="resetProgress()" style="background: #fff1f2; border-color: #fca5a5; color: #e11d48; border-radius: 50px;" title="Reset Progress">Reset ↺</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Reader Screen (Slides) -->
+        <div class="box-container hidden" id="mainCard">
+            <div class="card-header">
+                <span class="card-brand" id="cardBrandTitle">🍯 The Beginning</span>
+                <span id="slideCounterText" style="font-family: 'Poppins', sans-serif; font-size: 1.25rem; font-weight: 600; color: #8c6d59;">1 / 15</span>
+            </div>
+
+            <div class="slides-container" id="slidesWrapper"></div>
+
+            <div class="controls">
+                <button class="btn back-menu-btn" onclick="confirmBackToMenu()">
+                    ✕ Menu
+                </button>
+                <button class="btn" id="prevBtn" onclick="changeSlide(-1)" disabled>
+                    ← Prev
+                </button>
+                
+                <div class="dots" id="dotsContainer"></div>
+
+                <button class="btn" id="nextBtn" onclick="nextAction()">
+                    Next →
+                </button>
+            </div>
+        </div>
+
+        <!-- 4. Normal Quest Complete Screen -->
+        <div class="box-container hidden" id="questCompleteScreen">
+            <div></div>
+            <div class="quest-complete-content">
+                <div class="cover-title" style="font-size: 5.5rem; margin-bottom: 20px;">Terima kasih</div>
+                <div style="font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 500; color: #a07865;" id="completedQuestDesc">Chapter berhasil diselesaikan dengan baik, Ali ✨</div>
+            </div>
+            <div>
+                <button class="btn btn-primary" onclick="returnToMenuFromComplete()">
+                    Kembali ke Daftar Chapter ✨
+                </button>
+            </div>
+        </div>
+
+        <!-- 5. Grand Finale Screen -->
+        <div class="box-container hidden" id="grandFinaleScreen">
+            <div></div>
+            <div class="quest-complete-content">
+                <div class="cover-title" style="font-size: 5.5rem; margin-bottom: 15px;">The Final Chapter</div>
+                <div style="font-family: 'Poppins', sans-serif; font-size: 1.35rem; font-weight: 500; color: #a07865; margin-bottom: 12px;">Semua perjalanan telah ditutup, Ali.</div>
+                <div class="closing-quote">
+                    "Some chapters are meant to be read once, closed gently, and put back on the shelf without ever needing to be reopened."
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-primary" onclick="returnToMenuFromComplete()">
+                    Tutup Buku & Kembali ke Menu 🕊️
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- YouTube IFrame API Script -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        const flowers = ['🌸', '🌼', '🌷', '🌻', '💮'];
+        const container = document.getElementById('falling-container');
+        for (let i = 0; i < 6; i++) {
+            const span = document.createElement('div');
+            span.classList.add('falling-flower');
+            span.innerText = flowers[Math.floor(Math.random() * flowers.length)];
+            span.style.left = Math.random() * 100 + 'vw';
+            span.style.animationDuration = (Math.random() * 4 + 7) + 's';
+            span.style.animationDelay = (Math.random() * 5) + 's';
+            span.style.fontSize = (Math.random() * 4 + 22) + 'px';
+            container.appendChild(span);
+        }
+
+        let defaultQuestStatus = {
+            1: { completed: false, unlocked: true, title: "The Beginning" },
+            2: { completed: false, unlocked: false, title: "The Root Cause" },
+            3: { completed: false, unlocked: false, title: "How Runi Sees Ali" },
+            4: { completed: false, unlocked: false, title: "Last Message for Ali" }
+        };
+
+        let questStatus = JSON.parse(localStorage.getItem('notesOnClosureProgress')) || defaultQuestStatus;
+
+        function saveProgress() {
+            localStorage.setItem('notesOnClosureProgress', JSON.stringify(questStatus));
+        }
+
+        function resetProgress() {
+            if (confirm("Reset semua progress chapter yang sudah terbuka/selesai, Ali?")) {
+                localStorage.removeItem('notesOnClosureProgress');
+                questStatus = JSON.parse(JSON.stringify(defaultQuestStatus));
+                renderMenuList();
+            }
+        }
+
+        let player;
+        let isAppStarted = false;
+        const START_TIME = 0;
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                height: '0',
+                width: '0',
+                videoId: 'l5luP-A1nvM',
+                playerVars: {
+                    'autoplay': 0,
+                    'loop': 1,
+                    'playlist': 'l5luP-A1nvM',
+                    'start': START_TIME
+                },
+                events: {
+                    'onReady': (event) => {
+                        if (isAppStarted) {
+                            event.target.seekTo(START_TIME, true);
+                            event.target.playVideo();
+                        }
+                    }
+                }
+            });
+        }
+
+        function goToMenu() {
+            isAppStarted = true;
+            const cover = document.getElementById('coverScreen');
+            cover.classList.add('closing-book');
+            setTimeout(() => {
+                cover.classList.add('hidden');
+                cover.classList.remove('closing-book');
+                renderMenuList();
+                document.getElementById('menuScreen').classList.remove('hidden');
+            }, 300);
+
+            if (player && typeof player.playVideo === 'function') {
+                player.seekTo(START_TIME, true);
+                player.playVideo();
+            }
+        }
+
+        function backToCover() {
+            const menu = document.getElementById('menuScreen');
+            menu.classList.add('closing-book');
+            setTimeout(() => {
+                menu.classList.add('hidden');
+                menu.classList.remove('closing-book');
+                document.getElementById('coverScreen').classList.remove('hidden');
+            }, 300);
+        }
+
+        function renderMenuList() {
+            const container = document.getElementById('menuListContainer');
+            container.innerHTML = '';
+            
+            let completedCount = 0;
+
+            for (let id = 1; id <= 4; id++) {
+                const quest = questStatus[id];
+                if (quest.completed) completedCount++;
+
+                let badgeHtml = '';
+                let actionText = 'Mulai →';
+                let cardClass = 'menu-item-card';
+
+                if (quest.completed) {
+                    badgeHtml = '<span class="quest-status-badge badge-completed">Selesai</span>';
+                    actionText = 'Ulangi ↺';
+                } else if (quest.unlocked) {
+                    badgeHtml = '<span class="quest-status-badge badge-available">Tersedia</span>';
+                } else {
+                    badgeHtml = '<span class="quest-status-badge badge-locked">Terkunci 🔒</span>';
+                    actionText = 'Terkunci';
+                    cardClass += ' locked';
+                }
+
+                const itemCard = document.createElement('div');
+                itemCard.className = cardClass;
+                itemCard.innerHTML = `
+                    <div class="menu-item-info">
+                        <h3>Chapter ${id}: ${quest.title} ${badgeHtml}</h3>
+                    </div>
+                    <div class="menu-item-action">${actionText}</div>
+                `;
+
+                if (quest.unlocked) {
+                    itemCard.onclick = () => openSection(id);
+                } else {
+                    itemCard.onclick = () => alert("Selesaikan chapter sebelumnya terlebih dahulu ya, Ali! ✨");
+                }
+
+                container.appendChild(itemCard);
+            }
+
+            document.getElementById('questProgressText').innerText = `Progress: ${completedCount} / 4 Chapter Selesai`;
+        }
+
+        function confirmBackToMenu() {
+            if (confirm("Keluar dari chapter ini, Ali? Progress membaca di chapter ini akan direset.")) {
+                backToMenu();
+            }
+        }
+
+        function backToMenu() {
+            const activeCard = document.getElementById('mainCard');
+            const completeScreen = document.getElementById('questCompleteScreen');
+            const finaleScreen = document.getElementById('grandFinaleScreen');
+            
+            const target = !activeCard.classList.contains('hidden') ? activeCard : 
+                           (!completeScreen.classList.contains('hidden') ? completeScreen : finaleScreen);
+
+            target.classList.add('closing-book');
+            setTimeout(() => {
+                target.classList.add('hidden');
+                target.classList.remove('closing-book');
+                renderMenuList();
+                document.getElementById('menuScreen').classList.remove('hidden');
+            }, 300);
+        }
+
+        const sectionsData = {
+            1: [
+                "Hai Li, sebelum kita ada di titik ini, seperti yang lu tau... gua pernah ngerasa nyaman dan kagum sama lu.",
+                "U were so fun to talk to, had strong principles, and ur out of the box perspective always made me see things differently.",
+                "And i guess, all of that became the real reason why i fell for u.",
+                "I used to think that if i ever have kids one day, I\\'d want them to have a father just like u",
+                "Waktu itu, rasanya semua hal tentang lu keliatan begitu berarti, dan bagian dari diri gua sempat berharap kalau cerita kita bakal berjalan beda dari realitanya sekarang.",
+                "Tapi ya, hidup ga selalu sesuai sama apa yang kita mau.",
+                "Even now, part of me still appreciates those little things we shared. Hal-hal tulus itu yang bakal selalu gua ingat dari lu."
+            ],
+            2: [
+                "Mungkin lu agak kaget nerima tulisan ini, tapi gua rasa ini cara yang paling clear buat nutup semuanya.",
+                "Sebenarnya waktu gua tanya kenapa kita berantem mulu, gua udah lama tau jawabannya, Li.",
+                "Waktu lu tanya balik, gua memilih untuk jawab ga tau karena gua ga punya cukup keberanian buat nyampeinnya, tapi akhirnya kita sampe di moment yang bener-bener terakhir ini.",
+                "So, let me share how i saw what was really happening between us.",
+                "Gua sadar, interaksi kita selama setengah tahun ini ga sejalan.",
+                "Bukan berarti salah siapa-siapa, tapi cara kita merespons masalah emang beda.",
+                "Lu cenderung butuh waktu sendiri atau memproses semuanya secara internal saat tekanan datang, yang sering bikin gua nangkep mixed signals.",
+                "Sementara gua tipikal yang langsung butuh kejelasan dan pengen dibahas saat itu juga, yang di sisi lain mungkin malah bikin lu ngerasa tertekan.",
+                "Dari awal udah berasa ko Li, dimana semakin gua buka diri seluas-luasnya, semakin tinggi juga boundary lu.",
+                "Ya jadinya kita sama-sama cape, gua cape nebak-nebak dan lu mungkin cape karena ngerasa ditekan, mungkin lu juga ngerasa ruang aman lu terganggu.",
+                "Kita berdua punya prinsip dan standar sendiri yang sayangnya untuk sekarang belum ketemu di satu titik tengah dan malah jadi saling nyakitin.",
+                "Intinya, masih banyak yang harus kita pelajarin. Semoga tulisan gua ini bisa bikin kita lebih kenal sama diri masing-masing. Sukses buat kedepannya."
+            ],
+            3: [
+                "Ngomongin soal interaksi kita kemarin, ini murni cara gua melihat sosok lu selama setengah tahun kita berinteraksi.",
+                "Kalau lu mau, lu juga bebas banget buat ngasi feedback gimana gua selama ini.",
+                "Di mata gua lu punya prinsip kuat buat defend argumen lu, dan jujur itu buat gua kagum. Seorang Ali dengan argumennya yang ga gampang goyah.",
+                "Deep down, gua tau niat lu emang tulus pengen jadi orang baik.",
+                "Walau sering bikin gua cape dan nguras energi banget, to be fair, lu partner debat paling seru.",
+                "Lu bisa ngasih perspective yang out of the box. Ada aja sudut pandang tak terduga dari lu yang ngebuka mata gua.",
+                "Di sisi lain, harus gua akuin kalau pola komunikasi kita sering banget ga sejalan, yang akhirnya memicu banyak kesalahpahaman.",
+                "Gua sempat merasa kesulitan ketika lu memilih untuk menutup diri, nyimpen semuanya sendiri, dan beberapa keputusan yang tidak lu ambil secara tegas.",
+                "Di satu sisi, gua jadi bingung harus bersikap gimana. Tapi gua juga mulai belajar untuk memahami, mungkin cara itu yang paling nyaman buat lu menghadapi masalah untuk saat ini.",
+                "Begitu juga soal diskusi atau masukan. Ke depannya, semoga lu bisa lebih nyaman buat nerima masukan orang lain.",
+                "Anyway, thanks for the chaos, the debates, and everything in between. Semoga whatever u pursue next, semuanya dimudahkan."
+            ],
+            4: [
+                "Akhirnya kita sampai di tahap gua harus nulis pesan ini.",
+                "Thanks for the gift, and i\\'m glad we managed to exchange gifts. A bit late, but happy 24th birthday.",
+                "Oh, and i bought u that book u wanted to read (I really hope u haven\\'t bought it yet, cause i had to wait quite a while to finally give it to u).",
+                "Lewat tulisan ini, gua beneran mau pamit. Thanks for everything, terutama buat pertemanan kita selama setengah tahun.",
+                "Makasih udah dipersilakan pergi juga, jadi gua bisa pergi tanpa rasa bersalah dan ga perlu mikir buat balik lagi kayak sebelum sebelumnya.",
+                "Di titik ini, gua sadar kalau perasaan yang sempat ada buat lu perlahan udah hilang, dan gua juga sadar kalau kita emang ga bisa berteman secara wajar tanpa terus-terusan saling nyakitin.",
+                "Dari evaluasi gua belakangan, i realized komunikasi kita sering ga sejalan dan gua masih punya banyak hal yang harus diperbaiki dalam diri ini, termasuk cara pandang gua yang sering kejebak di ego sendiri.",
+                "Lu pernah jelasin tentang ego gua, gua rasa itu bener. Selama ini tulisan gua selalu dari pov gua aja, and i need to learn buat mulai lihat dari pov orang lain.",
+                "At the end of the day, gua belajar kalau ikhlas itu jauh lebih indah.",
+                "If we\\'re truly meant to cross paths again, we\\'ll find our way back to each other.",
+                "Kalaupun bukan takdirnya, it\\'s okay, maybe we only met to learn from each other. So, we don\\'t need to be afraid to walk away anymore.",
+                "When u finish reading this note, I\\'ve already blocked u. I\\'m so sorry. Gua ga bermaksud untuk mutus silaturahim, but i need to take my own time dan fokus ke diri sendiri.",
+                "Tapi, kalau ada hal penting or feedback yang pengen lu sampein, u can send it to my email at karuniashavira@gmail.com.",
+                "Thanks for everything, and i truly wish the best for both of us."
+            ]
+        };
+
+        let currentSection = 1;
+        let currentSlide = 0;
+        let totalSlides = 0;
+        
+        const slidesWrapper = document.getElementById('slidesWrapper');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const slideCounterText = document.getElementById('slideCounterText');
+        const dotsContainer = document.getElementById('dotsContainer');
+        const cardBrandTitle = document.getElementById('cardBrandTitle');
+
+        function openSection(sectionId) {
+            currentSection = sectionId;
+            currentSlide = 0;
+            const data = sectionsData[sectionId];
+            totalSlides = data.length;
+
+            cardBrandTitle.innerText = `🍯 ${questStatus[sectionId].title}`;
+
+            slidesWrapper.innerHTML = '';
+            data.forEach((text, index) => {
+                const slideDiv = document.createElement('div');
+                slideDiv.className = `slide ${index === 0 ? 'active' : ''}`;
+
+                const textDiv = document.createElement('div');
+                textDiv.className = 'slide-text';
+                textDiv.innerHTML = text.replace(/\n/g, '<br>');
+                
+                slideDiv.appendChild(textDiv);
+                slidesWrapper.appendChild(slideDiv);
+            });
+
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('dot');
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(i));
+                dotsContainer.appendChild(dot);
+            }
+
+            const menu = document.getElementById('menuScreen');
+            menu.classList.add('closing-book');
+            setTimeout(() => {
+                menu.classList.add('hidden');
+                menu.classList.remove('closing-book');
+                document.getElementById('mainCard').classList.remove('hidden');
+                updateSlideUI();
+            }, 300);
+        }
+
+        const slides = () => document.querySelectorAll('.slide');
+        const dots = () => document.querySelectorAll('.dot');
+
+        function updateSlideUI() {
+            const currentSlides = slides();
+            const currentDots = dots();
+
+            currentSlides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                }
+            });
+
+            currentDots.forEach((dot, index) => {
+                dot.classList.remove('active');
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                }
+            });
+
+            slideCounterText.innerText = `${currentSlide + 1} / ${totalSlides}`;
+            prevBtn.disabled = currentSlide === 0;
+            
+            if (currentSlide === totalSlides - 1) {
+                nextBtn.innerHTML = 'Selesaikan ✓';
+            } else {
+                nextBtn.innerHTML = 'Next →';
+            }
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 0) currentSlide = 0;
+            if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
+            updateSlideUI();
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlideUI();
+        }
+
+        function nextAction() {
+            if (currentSlide === totalSlides - 1) {
+                questStatus[currentSection].completed = true;
+                
+                if (currentSection < 4) {
+                    questStatus[currentSection + 1].unlocked = true;
+                }
+
+                saveProgress();
+
+                const mainCard = document.getElementById('mainCard');
+                mainCard.classList.add('closing-book');
+                setTimeout(() => {
+                    mainCard.classList.add('hidden');
+                    mainCard.classList.remove('closing-book');
+                    if (currentSection === 4) {
+                        document.getElementById('grandFinaleScreen').classList.remove('hidden');
+                    } else {
+                        document.getElementById('questCompleteScreen').classList.remove('hidden');
+                    }
+                }, 300);
+            } else {
+                changeSlide(1);
+            }
+        }
+
+        function returnToMenuFromComplete() {
+            const completeScreen = document.getElementById('questCompleteScreen');
+            const finaleScreen = document.getElementById('grandFinaleScreen');
+            const target = !completeScreen.classList.contains('hidden') ? completeScreen : finaleScreen;
+
+            target.classList.add('closing-book');
+            setTimeout(() => {
+                target.classList.add('hidden');
+                target.classList.remove('closing-book');
+                renderMenuList();
+                document.getElementById('menuScreen').classList.remove('hidden');
+            }, 300);
+        }
+    </script>
+</body>
+</html>
