@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="0">
+<html lang="id" data-theme="0" data-mode="anim">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -860,6 +860,42 @@
         .bubble.right.typing.tail { border-bottom-right-radius: 999px; }
         .bubble.right.typing.tail::after { display: none; }
         .speech::after { left: calc(50% + var(--tx, 0px)); border-bottom-right-radius: 3px; }
+
+        /* =====================================================
+           PILIHAN MODE: Animasi / Serius
+           ===================================================== */
+        .mode-pick { display: flex; flex-direction: column; gap: 10px; }
+        .mode-btn { white-space: normal; text-align: center; line-height: 1.3; }
+        .mode-title { display: block; font-size: 1.05rem; }
+        .mode-sub { display: block; font-size: 0.72rem; font-weight: 500; margin-top: 4px; opacity: 0.92; }
+        .mode-seg { display: flex; gap: 6px; margin-bottom: 6px; background: rgba(0,0,0,0.06); padding: 4px; border-radius: 30px; }
+        .mode-seg button {
+            flex: 1; border: none; background: transparent; font-family: inherit; font-weight: 600; font-size: 0.82rem;
+            padding: 9px 10px; border-radius: 26px; color: var(--muted); cursor: pointer; transition: all 0.25s ease;
+        }
+        .mode-seg button.active { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        .mode-desc { font-size: 0.72rem; color: var(--muted); text-align: center; line-height: 1.45; margin-bottom: 10px; min-height: 2.2em; }
+        .toast {
+            position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 120;
+            background: rgba(60,45,45,0.92); color: #fff; padding: 10px 20px; border-radius: 22px;
+            font-size: 0.85rem; font-weight: 600; opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+            white-space: nowrap;
+        }
+        .mode-note { font-size: 0.74rem; color: var(--muted); text-align: center; line-height: 1.5; margin-top: 2px; }
+        .mode-btn { width: 100%; padding: 14px; font-size: 1rem; }
+        .mode-switch { width: 100%; margin: 0 0 10px; padding: 9px 14px; font-size: 0.8rem; }
+
+        /* mode serius: tampilan polos, hanya kalimat */
+        .plain-page {
+            margin: auto 0; padding: 8px 6px; font-size: 1.15rem; line-height: 1.95;
+            color: var(--text); font-weight: 400;
+        }
+        html[data-mode="serious"] #falling-container,
+        html[data-mode="serious"] #stars,
+        html[data-mode="serious"] .ambient-circle,
+        html[data-mode="serious"] .cover-bee-wrap,
+        html[data-mode="serious"] .shelfbee { display: none !important; }
+        html[data-mode="serious"] .ch-body { cursor: pointer; }
     </style>
 </head>
 <body>
@@ -888,7 +924,10 @@
                 <div class="cover-subtitle">Written because some things need to be said out loud, even if it's the last time we ever talk</div>
             </div>
             <div>
-                <button class="btn btn-primary" onclick="goToMenu()">Buka Catatan</button>
+                <div class="mode-pick">
+                    <button class="btn btn-primary mode-btn" onclick="goToMenu('serious')"><span class="mode-title">Mode Serius</span><span class="mode-sub">Untuk Ali: hanya kata-kata, apa adanya, tanpa hiasan apa pun.</span></button>
+                    <button class="btn mode-btn" onclick="goToMenu('anim')"><span class="mode-title">Mode Animasi</span><span class="mode-sub">Website terakhir Runi untuk Ali, dengan sedikit warna dan gerak sebagai kesan terakhir.</span></button>
+                </div>
             </div>
         </div>
 
@@ -898,6 +937,11 @@
             <div class="menu-stack" id="menuListContainer"></div>
             <div>
                 <div style="font-size: 0.85rem; font-weight: 600; color: var(--muted); text-align: center; margin-bottom: 10px;" id="questProgressText">Progress: 0 / 4 Chapter Selesai</div>
+                <div class="mode-seg" id="modeSeg">
+                    <button data-m="serious" onclick="setModeUser('serious')">Serius</button>
+                    <button data-m="anim" onclick="setModeUser('anim')">Animasi</button>
+                </div>
+                <div class="mode-desc" id="modeDesc"></div>
                 <div style="display: flex; gap: 8px;">
                     <button class="btn" onclick="backToCover()" style="flex: 1; padding: 10px 14px; font-size: 0.85rem;">← Kembali</button>
                     <button class="btn" onclick="resetProgress()" style="background: #fff1f2; border-color: #fca5a5; color: #e11d48; padding: 10px 14px; font-size: 0.85rem;" title="Reset Progress">Reset ↺</button>
@@ -984,6 +1028,8 @@
             </div>
         </div>
     </div>
+
+    <div class="toast" id="toast"></div>
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
@@ -1088,7 +1134,59 @@
             }, 250);
         }
 
-        function goToMenu() {
+        /* ---------- Mode: animasi / serius ---------- */
+        let mode = 'anim';
+        const MODE_DESC = {
+            serious: 'Kalimat-kalimat yang belum sempat terucap dirangkai secara sederhana',
+            anim: 'Pesan yang sama, dengan sedikit warna sebagai kenang-kenangan terakhir'
+        };
+        function updateModeBtn() {
+            document.querySelectorAll('#modeSeg button').forEach(b => b.classList.toggle('active', b.dataset.m === mode));
+            const d = $('modeDesc');
+            if (d) d.textContent = MODE_DESC[mode];
+        }
+        let toastT;
+        function showToast(t) {
+            const el = $('toast');
+            el.textContent = t;
+            el.style.opacity = 1;
+            clearTimeout(toastT);
+            toastT = setTimeout(() => { el.style.opacity = 0; }, 2400);
+        }
+        function setModeUser(m) {
+            if (m === mode) return;
+            setMode(m);
+            showToast(m === 'serious' ? 'Mode Serius aktif ✓' : 'Mode Animasi aktif ✓');
+        }
+        function setMode(m) {
+            mode = m === 'serious' ? 'serious' : 'anim';
+            document.documentElement.setAttribute('data-mode', mode);
+            updateModeBtn();
+        }
+        function toggleMode() { setMode(mode === 'serious' ? 'anim' : 'serious'); }
+
+        /* Mode serius: satu kalimat per halaman, tanpa ilustrasi/animasi */
+        function plainChapter(id) {
+            const body = $('chBody'), d = sectionsData[id], n = d.length;
+            cleanupFn = () => { body.onclick = null; };
+            function show(k) {
+                const last = k === n - 1;
+                body.scrollTop = 0;
+                body.innerHTML = `<div class="plain-page">${d[k]}</div>`;
+                setCounter(`${k + 1} / ${n}`);
+                setPrev(k > 0, () => show(k - 1));
+                setHint(k === 0 ? 'Ketuk layar untuk lanjut' : '');
+                setNext(last ? 'Selesaikan ✓' : 'Next →', true, last ? finishChapter : () => show(k + 1));
+                body.onclick = last ? null : () => show(k + 1);
+            }
+            show(0);
+        }
+
+        function goToMenu(m) {
+            if (m) {
+                setMode(m);
+                setTimeout(() => showToast(m === 'serious' ? 'Mode Serius aktif ✓' : 'Mode Animasi aktif ✓'), 450);
+            }
             isAppStarted = true;
             swapScreen($('coverScreen'), $('menuScreen'), renderMenuList);
             if (player && typeof player.playVideo === 'function') {
@@ -1179,55 +1277,55 @@
         /* ---------- Isi tulisan ---------- */
         const sectionsData = {
             1: [
-                `Hai Li, sebelum kita ada di titik ini, seperti yang lu tau... gua pernah ngerasa nyaman dan kagum sama lu`,
-                `U were so fun to talk to, had strong principles, and ur out of the box perspective always made me see things differently`,
-                `And i guess, all of that became the real reason why i admired u.<br>I really respected the way u think and how u carry yourself`,
-                `Ada moment dimana semua hal tentang lu keliatan begitu berarti, dan bagian dari diri gua sempat berharap kalau cerita kita bakal berjalan beda dari realitanya sekarang`,
-                `Tapi ya, hidup ga selalu sesuai sama apa yang kita mau`,
-                `Even now, part of me still appreciates those little things we shared. Hal-hal tulus itu yang bakal selalu gua ingat dari lu`
+                `Hai Li, sebelum kita ada di titik ini, seperti yang lu tau... gua pernah ngerasa nyaman dan kagum sama lu.`,
+                `U were so fun to talk to, had strong principles, and ur out of the box perspective always made me see things differently.`,
+                `And i guess, all of that became the real reason why i admired u.I really respected the way u think and how u carry yourself.`,
+                `Ada moment dimana semua hal tentang lu keliatan begitu berarti, dan bagian dari diri gua sempat berharap kalau cerita kita bakal berjalan beda dari realitanya sekarang.`,
+                `Tapi ya, hidup ga selalu sesuai sama apa yang kita mau.`,
+                `Even now, part of me still appreciates those little things we shared. Hal-hal tulus itu yang bakal selalu gua ingat dari lu.`
             ],
             2: [
-                `Mungkin lu agak kaget nerima tulisan ini, tapi gua rasa ini cara yang paling clear buat nutup semuanya`,
-                `Sebenarnya waktu gua tanya kenapa kita berantem mulu, gua udah lama tau jawabannya, Li`,
-                `Waktu lu tanya balik, gua memilih untuk jawab ga tau karena gua ga punya cukup keberanian buat nyampeinnya, tapi akhirnya kita sampe di moment yang bener-bener terakhir ini`,
-                `So, let me share how i saw what was really happening between us`,
-                `Gua sadar, interaksi kita selama setengah tahun ini ga sejalan`,
-                `Bukan berarti salah siapa-siapa, tapi cara kita merespons masalah emang beda`,
-                `Lu cenderung butuh waktu sendiri atau memproses semuanya secara internal saat tekanan datang, yang sering bikin gua nangkep mixed signals`,
-                `Sementara gua tipikal yang langsung butuh kejelasan dan pengen dibahas saat itu juga, yang di sisi lain mungkin malah bikin lu ngerasa tertekan`,
-                `Dari awal gua ngerasa, tiap gua berusaha lebih terbuka, lu justru butuh jarak lebih, dan gua akhirnya ngerti itu adalah cara lu menjaga diri`,
-                `Ya jadinya kita sama-sama cape, gua cape nebak-nebak dan lu mungkin cape karena ngerasa ditekan, mungkin lu juga ngerasa ruang aman lu terganggu`,
-                `Kita berdua punya prinsip dan standar sendiri yang sayangnya untuk sekarang belum ketemu di satu titik tengah dan malah jadi saling nyakitin`,
-                `Intinya, masih banyak yang harus kita pelajarin. Semoga tulisan gua ini bisa bikin kita lebih kenal sama diri masing-masing. Sukses buat kedepannya`
+                `Mungkin lu agak kaget nerima tulisan ini, tapi gua rasa ini cara yang paling clear buat nutup semuanya.`,
+                `Sebenarnya waktu gua tanya kenapa kita berantem mulu, gua udah lama tau jawabannya, Li.`,
+                `Waktu lu tanya balik, gua memilih untuk jawab ga tau karena gua ga punya cukup keberanian buat nyampeinnya, tapi akhirnya kita sampe di moment yang bener-bener terakhir ini.`,
+                `So, let me share how i saw what was really happening between us.`,
+                `Gua sadar, interaksi kita selama setengah tahun ini ga sejalan.`,
+                `Bukan berarti salah siapa-siapa, tapi cara kita merespons masalah emang beda.`,
+                `Lu cenderung butuh waktu sendiri atau memproses semuanya secara internal saat tekanan datang, yang sering bikin gua nangkep mixed signals.`,
+                `Sementara gua tipikal yang langsung butuh kejelasan dan pengen dibahas saat itu juga, yang di sisi lain mungkin malah bikin lu ngerasa tertekan.`,
+                `Dari awal gua ngerasa, tiap gua berusaha lebih terbuka, lu justru butuh jarak lebih, dan gua akhirnya ngerti itu adalah cara lu menjaga diri.`,
+                `Ya jadinya kita sama-sama cape, gua cape nebak-nebak dan lu mungkin cape karena ngerasa ditekan, mungkin lu juga ngerasa ruang aman lu terganggu.`,
+                `Kita berdua punya prinsip dan standar sendiri yang sayangnya untuk sekarang belum ketemu di satu titik tengah dan malah jadi saling nyakitin.`,
+                `Intinya, masih banyak yang harus kita pelajarin. Semoga tulisan gua ini bisa bikin kita lebih kenal sama diri masing-masing. Sukses buat kedepannya.`
             ],
             3: [
-                `Ngomongin soal interaksi kita kemarin, ini murni cara gua melihat sosok lu selama setengah tahun kita berinteraksi`,
-                `Kalau lu mau, lu juga bebas banget buat ngasi feedback gimana gua selama ini`,
-                `Di mata gua lu punya prinsip kuat buat defend argumen lu, dan kejujuran itu buat gua kagum. Argumen lu selalu punya dasar yang jelas, dan itu bikin gua respect`,
-                `Deep down, gua tau niat lu emang tulus pengen jadi orang baik`,
-                `Lu partner debat yang seru, banyak diskusi kita yang bikin gua mikir ulang`,
-                `Lu bisa ngasih perspective yang out of the box. Ada aja sudut pandang tak terduga dari lu yang ngebuka mata gua`,
-                `Di sisi lain, harus gua akuin kalau pola komunikasi kita sering banget ga sejalan, yang akhirnya memicu banyak kesalahpahaman`,
-                `Gua sempat kesulitan waktu lu milih nyimpen semuanya sendiri. Dan gua rasa lu sendiri juga sadar, beberapa keputusan emang belum lu ambil dengan tegas, jadi sikap lu susah gua baca`,
-                `Di satu sisi, gua jadi bingung harus bersikap gimana. Tapi gua juga mulai belajar untuk memahami, mungkin cara itu yang paling nyaman buat lu menghadapi masalah untuk saat ini`,
-                `Begitu juga soal diskusi atau masukan. Semoga ke depannya kita sama-sama makin nyaman buat terima masukan`,
-                `Anyway, thanks for the debates, the stories, and everything in between. Semoga whatever u pursue next, semuanya dimudahkan`
+                `Ngomongin soal interaksi kita kemarin, ini murni cara gua melihat sosok lu selama setengah tahun kita berinteraksi.`,
+                `Kalau lu mau, lu juga bebas banget buat ngasi feedback gimana gua selama ini.`,
+                `Di mata gua lu punya prinsip kuat buat defend argumen lu, dan kejujuran itu buat gua kagum. Argumen lu selalu punya dasar yang jelas, dan itu bikin gua respect.`,
+                `Deep down, gua tau niat lu emang tulus pengen jadi orang baik.`,
+                `Lu partner debat yang seru, banyak diskusi kita yang bikin gua mikir ulang.`,
+                `Lu bisa ngasih perspective yang out of the box. Ada aja sudut pandang tak terduga dari lu yang ngebuka mata gua.`,
+                `Di sisi lain, harus gua akuin kalau pola komunikasi kita sering banget ga sejalan, yang akhirnya memicu banyak kesalahpahaman.`,
+                `Gua sempat kesulitan waktu lu milih nyimpen semuanya sendiri. Dan gua rasa lu sendiri juga sadar, beberapa keputusan emang belum lu ambil dengan tegas, jadi sikap lu susah gua baca.`,
+                `Di satu sisi, gua jadi bingung harus bersikap gimana. Tapi gua juga mulai belajar untuk memahami, mungkin cara itu yang paling nyaman buat lu menghadapi masalah untuk saat ini.`,
+                `Begitu juga soal diskusi atau masukan. Semoga ke depannya kita sama-sama makin nyaman buat terima masukan.`,
+                `Anyway, thanks for the debates, the stories, and everything in between. Semoga whatever u pursue next, semuanya dimudahkan.`
             ],
             4: [
-                `Akhirnya kita sampai di tahap gua harus nulis pesan ini`,
-                `Thanks for the gift, and i'm glad we managed to exchange gifts. A bit late, but happy 24th birthday`,
+                `Akhirnya kita sampai di tahap gua harus nulis pesan ini.`,
+                `Thanks for the gift, and i'm glad we managed to exchange gifts. A bit late, but happy 24th birthday.`,
                 `Oh, and i bought u that book u wanted to read (Semoga lu belum beli sendiri ya, kalau udah, anggap aja jadi koleksi tambahan)`,
-                `Lewat tulisan ini, gua beneran mau pamit. Thanks for everything, terutama buat pertemanan kita selama setengah tahun`,
-                `Makasih udah ngasih ruang buat gua pamit, jadi gua bisa pergi dengan lebih tenang`,
-                `Di titik ini, gua sadar kalau perasaan yang sempat ada buat lu perlahan udah hilang, dan gua juga sadar kalau kita emang ga bisa berteman secara wajar tanpa terus-terusan saling nyakitin`,
-                `Dari evaluasi gua belakangan, i realized komunikasi kita sering ga sejalan dan gua masih punya banyak hal yang harus diperbaiki dalam diri ini, termasuk cara pandang gua yang sering kejebak di ego sendiri`,
-                `Lu pernah jelasin tentang ego gua, gua rasa itu bener. Selama ini tulisan gua selalu dari pov gua aja, and i need to learn buat mulai lihat dari pov orang lain`,
-                `At the end of the day, gua belajar kalau ikhlas itu jauh lebih indah`,
-                `If we're truly meant to cross paths again, we'll find our way back to each other`,
-                `Kalaupun bukan takdirnya, it's okay, maybe we only met to learn from each other. So, we don't need to be afraid to walk away anymore`,
-                `When u finish reading this note, I've already blocked u. I'm so sorry. Gua ga bermaksud untuk mutus silaturahim, but i need to take my own time dan fokus ke diri sendiri`,
+                `Lewat tulisan ini, gua beneran mau pamit. Thanks for everything, terutama buat pertemanan kita selama setengah tahun.`,
+                `Makasih udah ngasih ruang buat gua pamit, jadi gua bisa pergi dengan lebih tenang.`,
+                `Di titik ini, gua sadar kalau perasaan yang sempat ada buat lu perlahan udah hilang, dan gua juga sadar kalau kita emang ga bisa berteman secara wajar tanpa terus-terusan saling nyakitin.`,
+                `Dari evaluasi gua belakangan, i realized komunikasi kita sering ga sejalan dan gua masih punya banyak hal yang harus diperbaiki dalam diri ini, termasuk cara pandang gua yang sering kejebak di ego sendiri.`,
+                `Lu pernah jelasin tentang ego gua, gua rasa itu bener. Selama ini tulisan gua selalu dari pov gua aja, and i need to learn buat mulai lihat dari pov orang lain.`,
+                `At the end of the day, gua belajar kalau ikhlas itu jauh lebih indah.`,
+                `If we're truly meant to cross paths again, we'll find our way back to each other.`,
+                `Kalaupun bukan takdirnya, it's okay, maybe we only met to learn from each other. So, we don't need to be afraid to walk away anymore.`,
+                `When u finish reading this note, I've already blocked u. I'm so sorry. Gua ga bermaksud untuk mutus silaturahim, but i need to take my own time dan fokus ke diri sendiri.`,
                 `Tapi, kalau ada hal penting or feedback yang pengen lu sampein, u can send it to my email at karuniashavira@gmail.com`,
-                `Thanks for everything, and i truly wish the best for both of us`
+                `Thanks for everything, and i truly wish the best for both of us.`
             ]
         };
 
@@ -1266,7 +1364,7 @@
             $('chBody').innerHTML = '';
             $('chBody').scrollTop = 0;
             setCounter(''); setHint(''); setPrev(false); setNext('Next →', false);
-            swapScreen($('menuScreen'), $('mainCard'), () => chapters[id]());
+            swapScreen($('menuScreen'), $('mainCard'), () => (mode === 'serious' ? plainChapter(id) : chapters[id]()));
         }
 
         /* =====================================================
