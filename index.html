@@ -177,9 +177,9 @@
 
         .menu-main-title {
             font-family: 'Pinyon Script', cursive;
-            font-size: 3.5rem;
+            font-size: 3rem;
             color: #4a3b32;
-            margin-bottom: 14px;
+            margin-bottom: 10px;
             line-height: 1.1;
             text-align: center;
         }
@@ -187,8 +187,8 @@
         .menu-stack {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin: 8px 0;
+            gap: 10px;
+            margin: 6px 0;
             max-height: 52vh;
             overflow-y: auto;
             padding-right: 2px;
@@ -197,14 +197,14 @@
         .menu-item-card {
             background: #ffffff;
             border: 2px solid rgba(255, 209, 102, 0.6);
-            padding: 14px 16px;
-            border-radius: 18px;
+            padding: 10px 14px;
+            border-radius: 14px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: space-between;
             transition: all 0.2s ease;
-            box-shadow: 0 3px 10px rgba(255, 209, 102, 0.15);
+            box-shadow: 0 3px 8px rgba(255, 209, 102, 0.12);
         }
 
         .menu-item-card:hover:not(.locked) {
@@ -222,12 +222,12 @@
 
         .menu-item-info h3 {
             font-family: 'Poppins', sans-serif;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 600;
             color: #4a3b32;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
@@ -236,10 +236,10 @@
         }
 
         .quest-status-badge {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 6px;
+            padding: 2px 6px;
+            border-radius: 4px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -249,7 +249,7 @@
 
         .menu-item-action {
             font-family: 'Poppins', sans-serif;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #f4a261;
             font-weight: 600;
         }
@@ -461,12 +461,12 @@
             </div>
             <div class="menu-stack" id="menuListContainer"></div>
             <div>
-                <div style="font-family: 'Poppins', sans-serif; font-size: 0.95rem; font-weight: 600; color: #a07865; text-align: center; margin-bottom: 12px;" id="questProgressText">
+                <div style="font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 600; color: #a07865; text-align: center; margin-bottom: 10px;" id="questProgressText">
                     Progress: 0 / 4 Chapter Selesai
                 </div>
                 <div style="display: flex; gap: 8px;">
-                    <button class="btn" onclick="backToCover()" style="flex: 1; border-radius: 30px;">← Kembali</button>
-                    <button class="btn" onclick="resetProgress()" style="background: #fff1f2; border-color: #fca5a5; color: #e11d48; border-radius: 30px;" title="Reset Progress">Reset ↺</button>
+                    <button class="btn" onclick="backToCover()" style="flex: 1; border-radius: 30px; padding: 10px 14px; font-size: 0.85rem;">← Kembali</button>
+                    <button class="btn" onclick="resetProgress()" style="background: #fff1f2; border-color: #fca5a5; color: #e11d48; border-radius: 30px; padding: 10px 14px; font-size: 0.85rem;" title="Reset Progress">Reset ↺</button>
                 </div>
             </div>
         </div>
