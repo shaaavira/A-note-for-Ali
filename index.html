@@ -21,14 +21,14 @@
             background: linear-gradient(135deg, #fff3d1 0%, #ffdfba 50%, #ffc6d9 100%);
             background-attachment: fixed;
             color: #5c4033;
-            font-size: 22px;
+            font-size: 16px;
         }
 
         body {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 30px 16px;
+            padding: 20px 12px;
             overflow-x: hidden;
             position: relative;
         }
@@ -37,26 +37,26 @@
         .ambient-circle {
             position: fixed;
             border-radius: 50%;
-            filter: blur(90px);
+            filter: blur(70px);
             opacity: 0.5;
             z-index: 0;
             pointer-events: none;
         }
 
         .circle-1 {
-            width: 450px;
-            height: 450px;
+            width: 300px;
+            height: 300px;
             background: #ffecb6;
-            top: -80px;
-            left: -80px;
+            top: -50px;
+            left: -50px;
         }
 
         .circle-2 {
-            width: 500px;
-            height: 500px;
+            width: 350px;
+            height: 350px;
             background: #ffb4b0;
-            bottom: -80px;
-            right: -80px;
+            bottom: -50px;
+            right: -50px;
         }
 
         /* Falling Flowers Animation Container */
@@ -100,7 +100,7 @@
             position: relative;
             z-index: 2;
             width: 100%;
-            max-width: 860px;
+            max-width: 680px;
             display: flex;
             flex-direction: column;
             perspective: 1200px;
@@ -112,13 +112,13 @@
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 3px solid rgba(255, 223, 186, 0.95);
-            border-radius: 52px;
-            padding: 65px 56px 55px 56px;
-            box-shadow: 0 40px 80px rgba(210, 150, 120, 0.32), 0 0 60px rgba(255, 255, 255, 0.7) inset;
+            border-radius: 36px;
+            padding: 36px 24px 28px 24px;
+            box-shadow: 0 25px 50px rgba(210, 150, 120, 0.28), 0 0 40px rgba(255, 255, 255, 0.7) inset;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 1180px;
+            min-height: 85vh;
             position: relative;
             transform-origin: center;
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
@@ -133,12 +133,12 @@
         .box-container::before {
             content: '';
             position: absolute;
-            top: 18px;
-            left: 18px;
-            right: 18px;
-            bottom: 18px;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            bottom: 12px;
             border: 2px dashed rgba(224, 122, 95, 0.25);
-            border-radius: 40px;
+            border-radius: 26px;
             pointer-events: none;
         }
 
@@ -154,22 +154,22 @@
 
         .cover-title {
             font-family: 'Pinyon Script', cursive;
-            font-size: 7.2rem;
+            font-size: 4.5rem;
             color: #4a3b32;
             line-height: 1.1;
             font-weight: 400;
             text-shadow: 2px 2px 4px rgba(212, 131, 72, 0.1);
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
 
         .cover-subtitle {
             font-family: 'Poppins', sans-serif;
-            font-size: 1.6rem;
+            font-size: 1.1rem;
             font-weight: 500;
             color: #a07865;
             letter-spacing: 0.3px;
-            max-width: 640px;
-            line-height: 1.6;
+            max-width: 480px;
+            line-height: 1.5;
         }
 
         .hidden {
@@ -178,9 +178,9 @@
 
         .menu-main-title {
             font-family: 'Pinyon Script', cursive;
-            font-size: 5.5rem;
+            font-size: 3.8rem;
             color: #4a3b32;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
             line-height: 1.1;
             text-align: center;
         }
@@ -188,31 +188,30 @@
         .menu-stack {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
             margin: 10px 0;
-            max-height: 640px;
+            max-height: 52vh;
             overflow-y: auto;
             padding-right: 4px;
         }
 
         .menu-item-card {
             background: #ffffff;
-            border: 3px solid rgba(255, 209, 102, 0.6);
-            padding: 20px 24px;
-            border-radius: 24px;
+            border: 2.5px solid rgba(255, 209, 102, 0.6);
+            padding: 16px 18px;
+            border-radius: 20px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: space-between;
             transition: all 0.25s ease;
-            box-shadow: 0 6px 18px rgba(255, 209, 102, 0.2);
+            box-shadow: 0 4px 12px rgba(255, 209, 102, 0.2);
         }
 
         .menu-item-card:hover:not(.locked) {
             background: #fffbf0;
             border-color: #f4a261;
-            transform: translateX(6px);
-            box-shadow: 0 8px 24px rgba(244, 162, 97, 0.25);
+            transform: translateX(4px);
         }
 
         .menu-item-card.locked {
@@ -225,12 +224,12 @@
 
         .menu-item-info h3 {
             font-family: 'Poppins', sans-serif;
-            font-size: 1.3rem;
+            font-size: 1rem;
             font-weight: 600;
             color: #4a3b32;
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
@@ -239,12 +238,12 @@
         }
 
         .quest-status-badge {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             font-weight: 700;
-            padding: 4px 12px;
-            border-radius: 8px;
+            padding: 3px 8px;
+            border-radius: 6px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
         .badge-available { background: rgba(34, 197, 94, 0.15); color: #15803d; border: 1px solid rgba(34, 197, 94, 0.3); }
         .badge-completed { background: rgba(59, 130, 246, 0.15); color: #1d4ed8; border: 1px solid rgba(59, 130, 246, 0.3); }
@@ -252,7 +251,7 @@
 
         .menu-item-action {
             font-family: 'Poppins', sans-serif;
-            font-size: 1.15rem;
+            font-size: 0.95rem;
             color: #f4a261;
             font-weight: 600;
         }
@@ -264,9 +263,9 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 3px solid rgba(255, 223, 186, 0.8);
-            padding-bottom: 20px;
-            margin-top: -15px;
+            border-bottom: 2.5px solid rgba(255, 223, 186, 0.8);
+            padding-bottom: 14px;
+            margin-top: -10px;
             margin-bottom: 10px;
             position: relative;
             z-index: 2;
@@ -274,21 +273,21 @@
 
         .card-brand {
             font-family: 'Poppins', sans-serif;
-            font-size: 1.4rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             color: #e07a5f;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .slides-container {
             display: flex;
             position: relative;
             overflow: hidden;
-            min-height: 720px;
-            margin: 15px 0;
+            min-height: 48vh;
+            margin: 10px 0;
             align-items: center;
             z-index: 2;
         }
@@ -311,8 +310,8 @@
 
         .slide-text {
             font-family: 'Poppins', sans-serif;
-            font-size: 1.85rem;
-            line-height: 1.9;
+            font-size: 1.15rem;
+            line-height: 1.7;
             color: #4a3b32;
             font-weight: 400;
             word-break: break-word;
@@ -322,26 +321,26 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-top: 25px;
-            padding-bottom: 5px;
-            border-top: 3px solid rgba(255, 223, 186, 0.8);
-            margin-bottom: -15px;
-            gap: 12px;
+            padding-top: 16px;
+            padding-bottom: 2px;
+            border-top: 2.5px solid rgba(255, 223, 186, 0.8);
+            margin-bottom: -10px;
+            gap: 8px;
             position: relative;
             z-index: 2;
         }
 
         .btn {
             background: #ffffff;
-            border: 3px solid #ffd166;
+            border: 2.5px solid #ffd166;
             color: #d48348;
-            padding: 22px 24px;
-            border-radius: 50px;
+            padding: 14px 18px;
+            border-radius: 40px;
             font-family: 'Poppins', sans-serif;
-            font-size: 1.3rem;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 6px 18px rgba(255, 209, 102, 0.38);
+            box-shadow: 0 4px 12px rgba(255, 209, 102, 0.3);
             white-space: nowrap;
             -webkit-tap-highlight-color: transparent;
             transition: transform 0.2s ease;
@@ -363,7 +362,7 @@
             background: #fff1f2;
             border-color: #fca5a5;
             color: #e11d48;
-            padding: 22px 20px;
+            padding: 14px 14px;
         }
         .back-menu-btn:hover:not(:disabled) {
             background: #ffe4e6;
@@ -374,16 +373,16 @@
             color: #ffffff;
             border-color: #f4a261;
             width: 100%;
-            padding: 26px;
-            font-size: 1.75rem;
-            box-shadow: 0 8px 25px rgba(244, 162, 97, 0.4);
+            padding: 18px;
+            font-size: 1.25rem;
+            box-shadow: 0 6px 20px rgba(244, 162, 97, 0.4);
         }
 
         .dots {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
-            max-width: 150px;
+            max-width: 100px;
             overflow-x: auto;
             scrollbar-width: none;
         }
@@ -393,8 +392,8 @@
         }
 
         .dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: rgba(244, 162, 97, 0.3);
             transition: all 0.3s ease;
@@ -402,8 +401,8 @@
         }
 
         .dot.active {
-            width: 30px;
-            border-radius: 5px;
+            width: 22px;
+            border-radius: 4px;
             background: #f4a261;
         }
 
@@ -425,13 +424,13 @@
 
         .closing-quote {
             font-family: 'Poppins', sans-serif;
-            font-size: 1.4rem;
+            font-size: 1.05rem;
             font-style: italic;
             color: #a07865;
-            max-width: 640px;
-            line-height: 1.8;
-            margin-top: 20px;
-            padding: 0 10px;
+            max-width: 480px;
+            line-height: 1.6;
+            margin-top: 14px;
+            padding: 0 8px;
         }
     </style>
 </head>
@@ -464,12 +463,12 @@
             </div>
             <div class="menu-stack" id="menuListContainer"></div>
             <div>
-                <div style="font-family: 'Poppins', sans-serif; font-size: 1.25rem; font-weight: 600; color: #a07865; text-align: center; margin-bottom: 18px;" id="questProgressText">
+                <div style="font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 600; color: #a07865; text-align: center; margin-bottom: 14px;" id="questProgressText">
                     Progress: 0 / 4 Chapter Selesai
                 </div>
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn" onclick="backToCover()" style="flex: 1; border-radius: 50px;">← Kembali ke Cover</button>
-                    <button class="btn" onclick="resetProgress()" style="background: #fff1f2; border-color: #fca5a5; color: #e11d48; border-radius: 50px;" title="Reset Progress">Reset ↺</button>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn" onclick="backToCover()" style="flex: 1; border-radius: 40px;">← Kembali</button>
+                    <button class="btn" onclick="resetProgress()" style="background: #fff1f2; border-color: #fca5a5; color: #e11d48; border-radius: 40px;" title="Reset Progress">Reset ↺</button>
                 </div>
             </div>
         </div>
@@ -478,7 +477,7 @@
         <div class="box-container hidden" id="mainCard">
             <div class="card-header">
                 <span class="card-brand" id="cardBrandTitle">🍯 The Beginning</span>
-                <span id="slideCounterText" style="font-family: 'Poppins', sans-serif; font-size: 1.25rem; font-weight: 600; color: #8c6d59;">1 / 15</span>
+                <span id="slideCounterText" style="font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 600; color: #8c6d59;">1 / 15</span>
             </div>
 
             <div class="slides-container" id="slidesWrapper"></div>
@@ -503,8 +502,8 @@
         <div class="box-container hidden" id="questCompleteScreen">
             <div></div>
             <div class="quest-complete-content">
-                <div class="cover-title" style="font-size: 5.5rem; margin-bottom: 20px;">Terima kasih</div>
-                <div style="font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 500; color: #a07865;" id="completedQuestDesc">Chapter berhasil diselesaikan dengan baik, Ali ✨</div>
+                <div class="cover-title" style="font-size: 4rem; margin-bottom: 16px;">Terima kasih</div>
+                <div style="font-family: 'Poppins', sans-serif; font-size: 1.1rem; font-weight: 500; color: #a07865;" id="completedQuestDesc">Chapter berhasil diselesaikan dengan baik, Ali ✨</div>
             </div>
             <div>
                 <button class="btn btn-primary" onclick="returnToMenuFromComplete()">
@@ -517,8 +516,8 @@
         <div class="box-container hidden" id="grandFinaleScreen">
             <div></div>
             <div class="quest-complete-content">
-                <div class="cover-title" style="font-size: 5.5rem; margin-bottom: 15px;">The Final Chapter</div>
-                <div style="font-family: 'Poppins', sans-serif; font-size: 1.35rem; font-weight: 500; color: #a07865; margin-bottom: 12px;">Semua perjalanan telah ditutup, Ali.</div>
+                <div class="cover-title" style="font-size: 4rem; margin-bottom: 12px;">The Final Chapter</div>
+                <div style="font-family: 'Poppins', sans-serif; font-size: 1.05rem; font-weight: 500; color: #a07865; margin-bottom: 10px;">Semua perjalanan telah ditutup, Ali.</div>
                 <div class="closing-quote">
                     "Some chapters are meant to be read once, closed gently, and put back on the shelf without ever needing to be reopened."
                 </div>
@@ -543,7 +542,7 @@
             span.style.left = Math.random() * 100 + 'vw';
             span.style.animationDuration = (Math.random() * 4 + 7) + 's';
             span.style.animationDelay = (Math.random() * 5) + 's';
-            span.style.fontSize = (Math.random() * 4 + 22) + 'px';
+            span.style.fontSize = (Math.random() * 4 + 18) + 'px';
             container.appendChild(span);
         }
 
@@ -717,7 +716,7 @@
             3: [
                 "Ngomongin soal interaksi kita kemarin, ini murni cara gua melihat sosok lu selama setengah tahun kita berinteraksi.",
                 "Kalau lu mau, lu juga bebas banget buat ngasi feedback gimana gua selama ini.",
-                "Di mata gua lu punya prinsip kuat buat defend argumen lu, dan jujur itu buat gua kagum. Seorang Ali dengan argumennya yang ga gampang goyah.",
+                "Di mata gua lu punya prinsip kuat buat defend argumen lu, dan kejujuran itu buat gua kagum. Seorang Ali dengan argumennya yang ga gampang goyah.",
                 "Deep down, gua tau niat lu emang tulus pengen jadi orang baik.",
                 "Walau sering bikin gua cape dan nguras energi banget, to be fair, lu partner debat paling seru.",
                 "Lu bisa ngasih perspective yang out of the box. Ada aja sudut pandang tak terduga dari lu yang ngebuka mata gua.",
