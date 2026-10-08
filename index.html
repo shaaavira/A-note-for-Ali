@@ -21,14 +21,14 @@
             background: linear-gradient(135deg, #fff3d1 0%, #ffdfba 50%, #ffc6d9 100%);
             background-attachment: fixed;
             color: #5c4033;
-            font-size: 16px;
+            font-size: 14px;
         }
 
         body {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px 12px;
+            padding: 12px 8px;
             overflow-x: hidden;
             position: relative;
         }
@@ -37,26 +37,26 @@
         .ambient-circle {
             position: fixed;
             border-radius: 50%;
-            filter: blur(70px);
+            filter: blur(60px);
             opacity: 0.5;
             z-index: 0;
             pointer-events: none;
         }
 
         .circle-1 {
-            width: 300px;
-            height: 300px;
+            width: 250px;
+            height: 250px;
             background: #ffecb6;
-            top: -50px;
-            left: -50px;
+            top: -40px;
+            left: -40px;
         }
 
         .circle-2 {
-            width: 350px;
-            height: 350px;
+            width: 280px;
+            height: 280px;
             background: #ffb4b0;
-            bottom: -50px;
-            right: -50px;
+            bottom: -40px;
+            right: -40px;
         }
 
         /* Falling Flowers Animation Container */
@@ -91,7 +91,7 @@
                 opacity: 0.8;
             }
             100% {
-                transform: translateY(110vh) translateX(30px) rotate(360deg);
+                transform: translateY(110vh) translateX(20px) rotate(360deg);
                 opacity: 0;
             }
         }
@@ -100,32 +100,32 @@
             position: relative;
             z-index: 2;
             width: 100%;
-            max-width: 680px;
+            max-width: 480px;
             display: flex;
             flex-direction: column;
-            perspective: 1200px;
+            perspective: 1000px;
         }
 
         .box-container {
             width: 100%;
             background: rgba(255, 253, 245, 0.98);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 3px solid rgba(255, 223, 186, 0.95);
-            border-radius: 36px;
-            padding: 36px 24px 28px 24px;
-            box-shadow: 0 25px 50px rgba(210, 150, 120, 0.28), 0 0 40px rgba(255, 255, 255, 0.7) inset;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 223, 186, 0.95);
+            border-radius: 28px;
+            padding: 24px 18px 20px 18px;
+            box-shadow: 0 15px 35px rgba(210, 150, 120, 0.22), 0 0 30px rgba(255, 255, 255, 0.7) inset;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 85vh;
+            min-height: 82vh;
             position: relative;
             transform-origin: center;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
         }
 
         .box-container.closing-book {
-            transform: scale(0.85) rotateX(15deg);
+            transform: scale(0.9) rotateX(10deg);
             opacity: 0;
             pointer-events: none;
         }
@@ -133,12 +133,12 @@
         .box-container::before {
             content: '';
             position: absolute;
-            top: 12px;
-            left: 12px;
-            right: 12px;
-            bottom: 12px;
-            border: 2px dashed rgba(224, 122, 95, 0.25);
-            border-radius: 26px;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1.5px dashed rgba(224, 122, 95, 0.2);
+            border-radius: 20px;
             pointer-events: none;
         }
 
@@ -154,22 +154,22 @@
 
         .cover-title {
             font-family: 'Pinyon Script', cursive;
-            font-size: 4.5rem;
+            font-size: 3.4rem;
             color: #4a3b32;
             line-height: 1.1;
             font-weight: 400;
-            text-shadow: 2px 2px 4px rgba(212, 131, 72, 0.1);
-            margin-bottom: 16px;
+            text-shadow: 1px 1px 3px rgba(212, 131, 72, 0.1);
+            margin-bottom: 12px;
         }
 
         .cover-subtitle {
             font-family: 'Poppins', sans-serif;
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             font-weight: 500;
             color: #a07865;
-            letter-spacing: 0.3px;
-            max-width: 480px;
-            line-height: 1.5;
+            letter-spacing: 0.2px;
+            max-width: 320px;
+            line-height: 1.4;
         }
 
         .hidden {
@@ -178,9 +178,9 @@
 
         .menu-main-title {
             font-family: 'Pinyon Script', cursive;
-            font-size: 3.8rem;
+            font-size: 2.8rem;
             color: #4a3b32;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             line-height: 1.1;
             text-align: center;
         }
@@ -188,35 +188,34 @@
         .menu-stack {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin: 10px 0;
-            max-height: 52vh;
+            gap: 10px;
+            margin: 6px 0;
+            max-height: 50vh;
             overflow-y: auto;
-            padding-right: 4px;
+            padding-right: 2px;
         }
 
         .menu-item-card {
             background: #ffffff;
-            border: 2.5px solid rgba(255, 209, 102, 0.6);
-            padding: 16px 18px;
-            border-radius: 20px;
+            border: 2px solid rgba(255, 209, 102, 0.6);
+            padding: 12px 14px;
+            border-radius: 16px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 12px rgba(255, 209, 102, 0.2);
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 10px rgba(255, 209, 102, 0.15);
         }
 
         .menu-item-card:hover:not(.locked) {
             background: #fffbf0;
             border-color: #f4a261;
-            transform: translateX(4px);
         }
 
         .menu-item-card.locked {
             background: #f7f5f0;
-            border-color: rgba(0, 0, 0, 0.06);
+            border-color: rgba(0, 0, 0, 0.05);
             cursor: not-allowed;
             opacity: 0.6;
             box-shadow: none;
@@ -224,12 +223,12 @@
 
         .menu-item-info h3 {
             font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
+            font-size: 0.85rem;
             font-weight: 600;
             color: #4a3b32;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
@@ -238,10 +237,10 @@
         }
 
         .quest-status-badge {
-            font-size: 0.65rem;
+            font-size: 0.55rem;
             font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 6px;
+            padding: 2px 6px;
+            border-radius: 4px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -251,7 +250,7 @@
 
         .menu-item-action {
             font-family: 'Poppins', sans-serif;
-            font-size: 0.95rem;
+            font-size: 0.8rem;
             color: #f4a261;
             font-weight: 600;
         }
@@ -263,31 +262,31 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 2.5px solid rgba(255, 223, 186, 0.8);
-            padding-bottom: 14px;
-            margin-top: -10px;
-            margin-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 223, 186, 0.8);
+            padding-bottom: 10px;
+            margin-top: -6px;
+            margin-bottom: 8px;
             position: relative;
             z-index: 2;
         }
 
         .card-brand {
             font-family: 'Poppins', sans-serif;
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             font-weight: 700;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.2px;
             color: #e07a5f;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .slides-container {
             display: flex;
             position: relative;
             overflow: hidden;
-            min-height: 48vh;
-            margin: 10px 0;
+            min-height: 44vh;
+            margin: 8px 0;
             align-items: center;
             z-index: 2;
         }
@@ -298,7 +297,7 @@
             display: none;
             flex-direction: column;
             opacity: 0;
-            transition: opacity 0.3s ease-in-out;
+            transition: opacity 0.25s ease-in-out;
             text-align: left;
         }
 
@@ -310,8 +309,8 @@
 
         .slide-text {
             font-family: 'Poppins', sans-serif;
-            font-size: 1.15rem;
-            line-height: 1.7;
+            font-size: 0.95rem;
+            line-height: 1.6;
             color: #4a3b32;
             font-weight: 400;
             word-break: break-word;
@@ -321,29 +320,29 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-top: 16px;
+            padding-top: 12px;
             padding-bottom: 2px;
-            border-top: 2.5px solid rgba(255, 223, 186, 0.8);
-            margin-bottom: -10px;
-            gap: 8px;
+            border-top: 2px solid rgba(255, 223, 186, 0.8);
+            margin-bottom: -6px;
+            gap: 6px;
             position: relative;
             z-index: 2;
         }
 
         .btn {
             background: #ffffff;
-            border: 2.5px solid #ffd166;
+            border: 2px solid #ffd166;
             color: #d48348;
-            padding: 14px 18px;
-            border-radius: 40px;
+            padding: 10px 14px;
+            border-radius: 30px;
             font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(255, 209, 102, 0.3);
+            box-shadow: 0 3px 8px rgba(255, 209, 102, 0.25);
             white-space: nowrap;
             -webkit-tap-highlight-color: transparent;
-            transition: transform 0.2s ease;
+            transition: transform 0.15s ease;
         }
 
         .btn:active:not(:disabled) {
@@ -362,7 +361,7 @@
             background: #fff1f2;
             border-color: #fca5a5;
             color: #e11d48;
-            padding: 14px 14px;
+            padding: 10px 10px;
         }
         .back-menu-btn:hover:not(:disabled) {
             background: #ffe4e6;
@@ -373,16 +372,16 @@
             color: #ffffff;
             border-color: #f4a261;
             width: 100%;
-            padding: 18px;
-            font-size: 1.25rem;
-            box-shadow: 0 6px 20px rgba(244, 162, 97, 0.4);
+            padding: 14px;
+            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(244, 162, 97, 0.35);
         }
 
         .dots {
             display: flex;
-            gap: 6px;
+            gap: 5px;
             align-items: center;
-            max-width: 100px;
+            max-width: 80px;
             overflow-x: auto;
             scrollbar-width: none;
         }
@@ -392,17 +391,17 @@
         }
 
         .dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background: rgba(244, 162, 97, 0.3);
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
             flex-shrink: 0;
         }
 
         .dot.active {
-            width: 22px;
-            border-radius: 4px;
+            width: 18px;
+            border-radius: 3px;
             background: #f4a261;
         }
 
@@ -414,7 +413,7 @@
             align-items: center;
             position: relative;
             z-index: 2;
-            animation: fadeIn 0.4s ease;
+            animation: fadeIn 0.3s ease;
         }
 
         @keyframes fadeIn {
@@ -424,13 +423,13 @@
 
         .closing-quote {
             font-family: 'Poppins', sans-serif;
-            font-size: 1.05rem;
+            font-size: 0.85rem;
             font-style: italic;
             color: #a07865;
-            max-width: 480px;
-            line-height: 1.6;
-            margin-top: 14px;
-            padding: 0 8px;
+            max-width: 320px;
+            line-height: 1.5;
+            margin-top: 10px;
+            padding: 0 6px;
         }
     </style>
 </head>
@@ -463,12 +462,12 @@
             </div>
             <div class="menu-stack" id="menuListContainer"></div>
             <div>
-                <div style="font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 600; color: #a07865; text-align: center; margin-bottom: 14px;" id="questProgressText">
+                <div style="font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 600; color: #a07865; text-align: center; margin-bottom: 10px;" id="questProgressText">
                     Progress: 0 / 4 Chapter Selesai
                 </div>
-                <div style="display: flex; gap: 8px;">
-                    <button class="btn" onclick="backToCover()" style="flex: 1; border-radius: 40px;">← Kembali</button>
-                    <button class="btn" onclick="resetProgress()" style="background: #fff1f2; border-color: #fca5a5; color: #e11d48; border-radius: 40px;" title="Reset Progress">Reset ↺</button>
+                <div style="display: flex; gap: 6px;">
+                    <button class="btn" onclick="backToCover()" style="flex: 1; border-radius: 30px;">← Kembali</button>
+                    <button class="btn" onclick="resetProgress()" style="background: #fff1f2; border-color: #fca5a5; color: #e11d48; border-radius: 30px;" title="Reset Progress">Reset ↺</button>
                 </div>
             </div>
         </div>
@@ -477,7 +476,7 @@
         <div class="box-container hidden" id="mainCard">
             <div class="card-header">
                 <span class="card-brand" id="cardBrandTitle">🍯 The Beginning</span>
-                <span id="slideCounterText" style="font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 600; color: #8c6d59;">1 / 15</span>
+                <span id="slideCounterText" style="font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 600; color: #8c6d59;">1 / 15</span>
             </div>
 
             <div class="slides-container" id="slidesWrapper"></div>
@@ -502,8 +501,8 @@
         <div class="box-container hidden" id="questCompleteScreen">
             <div></div>
             <div class="quest-complete-content">
-                <div class="cover-title" style="font-size: 4rem; margin-bottom: 16px;">Terima kasih</div>
-                <div style="font-family: 'Poppins', sans-serif; font-size: 1.1rem; font-weight: 500; color: #a07865;" id="completedQuestDesc">Chapter berhasil diselesaikan dengan baik, Ali ✨</div>
+                <div class="cover-title" style="font-size: 3rem; margin-bottom: 12px;">Terima kasih</div>
+                <div style="font-family: 'Poppins', sans-serif; font-size: 0.9rem; font-weight: 500; color: #a07865;" id="completedQuestDesc">Chapter berhasil diselesaikan dengan baik, Ali ✨</div>
             </div>
             <div>
                 <button class="btn btn-primary" onclick="returnToMenuFromComplete()">
@@ -516,8 +515,8 @@
         <div class="box-container hidden" id="grandFinaleScreen">
             <div></div>
             <div class="quest-complete-content">
-                <div class="cover-title" style="font-size: 4rem; margin-bottom: 12px;">The Final Chapter</div>
-                <div style="font-family: 'Poppins', sans-serif; font-size: 1.05rem; font-weight: 500; color: #a07865; margin-bottom: 10px;">Semua perjalanan telah ditutup, Ali.</div>
+                <div class="cover-title" style="font-size: 3rem; margin-bottom: 10px;">The Final Chapter</div>
+                <div style="font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 500; color: #a07865; margin-bottom: 8px;">Semua perjalanan telah ditutup, Ali.</div>
                 <div class="closing-quote">
                     "Some chapters are meant to be read once, closed gently, and put back on the shelf without ever needing to be reopened."
                 </div>
@@ -542,7 +541,7 @@
             span.style.left = Math.random() * 100 + 'vw';
             span.style.animationDuration = (Math.random() * 4 + 7) + 's';
             span.style.animationDelay = (Math.random() * 5) + 's';
-            span.style.fontSize = (Math.random() * 4 + 18) + 'px';
+            span.style.fontSize = (Math.random() * 4 + 14) + 'px';
             container.appendChild(span);
         }
 
@@ -602,7 +601,7 @@
                 cover.classList.remove('closing-book');
                 renderMenuList();
                 document.getElementById('menuScreen').classList.remove('hidden');
-            }, 300);
+            }, 250);
 
             if (player && typeof player.playVideo === 'function') {
                 player.seekTo(START_TIME, true);
@@ -617,7 +616,7 @@
                 menu.classList.add('hidden');
                 menu.classList.remove('closing-book');
                 document.getElementById('coverScreen').classList.remove('hidden');
-            }, 300);
+            }, 250);
         }
 
         function renderMenuList() {
@@ -686,7 +685,7 @@
                 target.classList.remove('closing-book');
                 renderMenuList();
                 document.getElementById('menuScreen').classList.remove('hidden');
-            }, 300);
+            }, 250);
         }
 
         const sectionsData = {
@@ -792,7 +791,7 @@
                 menu.classList.remove('closing-book');
                 document.getElementById('mainCard').classList.remove('hidden');
                 updateSlideUI();
-            }, 300);
+            }, 250);
         }
 
         const slides = () => document.querySelectorAll('.slide');
@@ -858,7 +857,7 @@
                     } else {
                         document.getElementById('questCompleteScreen').classList.remove('hidden');
                     }
-                }, 300);
+                }, 250);
             } else {
                 changeSlide(1);
             }
@@ -875,7 +874,7 @@
                 target.classList.remove('closing-book');
                 renderMenuList();
                 document.getElementById('menuScreen').classList.remove('hidden');
-            }, 300);
+            }, 250);
         }
     </script>
 </body>
