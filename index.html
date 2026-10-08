@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notes on Closure - Quest Mode</title>
+    <title>Notes on Closure - Unique Quests</title>
     <!-- Google Fonts: Pinyon Script & Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -81,20 +81,10 @@
         }
 
         @keyframes fallDown {
-            0% {
-                transform: translateY(-10vh) translateX(0) rotate(0deg);
-                opacity: 0;
-            }
-            15% {
-                opacity: 0.8;
-            }
-            85% {
-                opacity: 0.8;
-            }
-            100% {
-                transform: translateY(110vh) translateX(20px) rotate(360deg);
-                opacity: 0;
-            }
+            0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
+            15% { opacity: 0.8; }
+            85% { opacity: 0.8; }
+            100% { transform: translateY(110vh) translateX(20px) rotate(360deg); opacity: 0; }
         }
 
         .wrapper {
@@ -174,9 +164,7 @@
             line-height: 1.5;
         }
 
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
         .menu-main-title {
             font-family: 'Pinyon Script', cursive;
@@ -234,9 +222,7 @@
             flex-wrap: wrap;
         }
 
-        .menu-item-card.locked .menu-item-info h3 {
-            color: #94a3b8;
-        }
+        .menu-item-card.locked .menu-item-info h3 { color: #94a3b8; }
 
         .quest-status-badge {
             font-size: 0.6rem;
@@ -256,9 +242,7 @@
             color: #f4a261;
             font-weight: 600;
         }
-        .menu-item-card.locked .menu-item-action {
-            color: #94a3b8;
-        }
+        .menu-item-card.locked .menu-item-action { color: #94a3b8; }
 
         .card-header {
             display: flex;
@@ -285,39 +269,84 @@
             transition: color 0.4s ease;
         }
 
-        .slides-container {
+        /* Container Dinamis untuk Chapter */
+        .dynamic-reader-area {
             display: flex;
-            position: relative;
-            overflow: hidden;
-            min-height: 45vh;
-            margin: 10px 0;
-            align-items: center;
-            z-index: 2;
-        }
-
-        .slide {
-            position: absolute;
-            width: 100%;
-            display: none;
             flex-direction: column;
-            opacity: 0;
-            transition: opacity 0.25s ease-in-out;
-            text-align: left;
-        }
-
-        .slide.active {
-            display: flex;
-            opacity: 1;
             position: relative;
+            overflow-y: auto;
+            max-height: 52vh;
+            min-height: 44vh;
+            margin: 10px 0;
+            z-index: 2;
+            padding-right: 4px;
         }
 
-        .slide-text {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.1rem;
-            line-height: 1.75;
-            color: #4a3b32;
-            font-weight: 400;
-            word-break: break-word;
+        /* Tampilan Chapter 1: Tap to Reveal Cards */
+        .ch1-card-item {
+            background: #fff;
+            border: 2px dashed rgba(244, 162, 97, 0.5);
+            padding: 12px 14px;
+            border-radius: 14px;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            opacity: 0.4;
+            transform: scale(0.98);
+        }
+        .ch1-card-item.revealed {
+            opacity: 1;
+            transform: scale(1);
+            border-style: solid;
+            background: #fffbf5;
+            border-color: #f4a261;
+        }
+
+        /* Tampilan Chapter 2: Scrollable Letter */
+        .ch2-scroll-content {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #3b4238;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            padding-bottom: 10px;
+        }
+
+        /* Tampilan Chapter 3: Stacked Polaroid */
+        .ch3-polaroid {
+            background: #ffffff;
+            border: 2px solid rgba(212, 163, 115, 0.4);
+            padding: 18px 16px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(180, 140, 100, 0.15);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 32vh;
+            animation: fadeInCard 0.3s ease;
+        }
+        .ch3-text {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #583101;
+        }
+        @keyframes fadeInCard {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tampilan Chapter 4: Envelope / Final Reveal */
+        .ch4-envelope-box {
+            text-align: center;
+            margin: auto 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
         }
 
         .controls {
@@ -350,17 +379,8 @@
             transition: all 0.2s ease;
         }
 
-        .btn:active:not(:disabled) {
-            transform: scale(0.95);
-        }
-
-        .btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            border-color: #e2e8f0;
-            color: #94a3b8;
-            box-shadow: none;
-        }
+        .btn:active:not(:disabled) { transform: scale(0.95); }
+        .btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #e2e8f0; color: #94a3b8; box-shadow: none; }
 
         .back-menu-btn {
             background: #fff1f2;
@@ -368,9 +388,7 @@
             color: #e11d48;
             padding: 12px 12px;
         }
-        .back-menu-btn:hover:not(:disabled) {
-            background: #ffe4e6;
-        }
+        .back-menu-btn:hover:not(:disabled) { background: #ffe4e6; }
 
         .btn-primary {
             background: #f4a261;
@@ -381,35 +399,6 @@
             font-size: 1.1rem;
             box-shadow: 0 5px 15px rgba(244, 162, 97, 0.35);
             transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
-        }
-
-        .dots {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-            max-width: 90px;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .dots::-webkit-scrollbar {
-            display: none;
-        }
-
-        .dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: rgba(244, 162, 97, 0.3);
-            transition: all 0.25s ease;
-            flex-shrink: 0;
-        }
-
-        .dot.active {
-            width: 20px;
-            border-radius: 4px;
-            background: #f4a261;
-            transition: background 0.4s ease;
         }
 
         .quest-complete-content {
@@ -479,27 +468,25 @@
             </div>
         </div>
 
-        <!-- 3. Reader Screen (Slides) -->
+        <!-- 3. Unique Reader Screen -->
         <div class="box-container hidden" id="mainCard">
             <div class="card-header" id="cardHeader">
                 <span class="card-brand" id="cardBrandTitle">🍯 The Beginning</span>
-                <span id="slideCounterText" style="font-family: 'Poppins', sans-serif; font-size: 0.95rem; font-weight: 600; color: #8c6d59;">1 / 15</span>
+                <span id="slideCounterText" style="font-family: 'Poppins', sans-serif; font-size: 0.95rem; font-weight: 600; color: #8c6d59;">Ketuk untuk Buka</span>
             </div>
 
-            <div class="slides-container" id="slidesWrapper"></div>
+            <!-- Area Konten Dinamis Tergantung Chapter -->
+            <div class="dynamic-reader-area" id="dynamicReaderArea"></div>
 
             <div class="controls" id="cardControls">
                 <button class="btn back-menu-btn" onclick="confirmBackToMenu()">
                     ✕ Menu
                 </button>
-                <button class="btn" id="prevBtn" onclick="changeSlide(-1)" disabled>
-                    ← Prev
-                </button>
-                
-                <div class="dots" id="dotsContainer"></div>
-
-                <button class="btn" id="nextBtn" onclick="nextAction()">
-                    Next →
+                <div style="flex: 1; text-align: center; font-size: 0.85rem; color: #a07865; font-weight: 500;" id="interactiveHintText">
+                    ✨ Ikuti alurnya, Ali
+                </div>
+                <button class="btn btn-primary" id="nextActionBtn" onclick="onNextAction()" style="width: auto; padding: 10px 18px;">
+                    Lanjut →
                 </button>
             </div>
         </div>
@@ -512,7 +499,7 @@
                 <div style="font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 500; color: #a07865;" id="completedQuestDesc">Chapter berhasil diselesaikan dengan baik, Ali ✨</div>
             </div>
             <div>
-                <button class="btn btn-primary" id="completeBtn" onclick="returnToMenuFromComplete()">
+                <button class="btn btn-primary" onclick="returnToMenuFromComplete()">
                     Kembali ke Daftar Chapter ✨
                 </button>
             </div>
@@ -529,7 +516,7 @@
                 </div>
             </div>
             <div>
-                <button class="btn btn-primary" style="background: #a37060; border-color: #a37060;" onclick="returnToMenuFromComplete()">
+                <button class="btn btn-primary" style="background: #59354e; border-color: #59354e;" onclick="returnToMenuFromComplete()">
                     Tutup Buku & Kembali ke Menu 🕊️
                 </button>
             </div>
@@ -552,47 +539,43 @@
             container.appendChild(span);
         }
 
-        // Definisi Tema Berdasarkan Chapter
+        // Palet Warna & Tema Unik Tiap Chapter (Tidak ada yang kembar)
         const chapterThemes = {
-            1: {
+            1: { // Warm Honey & Peach
                 bg: "linear-gradient(135deg, #fff3d1 0%, #ffdfba 50%, #ffc6d9 100%)",
                 boxBg: "rgba(255, 253, 245, 0.98)",
                 boxBorder: "rgba(255, 223, 186, 0.95)",
-                brandColor: "#e07a5f",
+                brandColor: "#d06a4c",
                 btnPrimary: "#f4a261",
-                btnBorder: "#ffd166",
                 circle1: "#ffecb6",
                 circle2: "#ffb4b0"
             },
-            2: {
+            2: { // Sage Green & Earthy Calm
                 bg: "linear-gradient(135deg, #e3eedd 0%, #d4e0cb 50%, #bcd2b6 100%)",
                 boxBg: "rgba(247, 252, 245, 0.98)",
                 boxBorder: "rgba(202, 222, 195, 0.95)",
-                brandColor: "#588157",
+                brandColor: "#4f7744",
                 btnPrimary: "#588157",
-                btnBorder: "#a3b18b",
                 circle1: "#d8f3dc",
                 circle2: "#b7b7a4"
             },
-            3: {
-                bg: "linear-gradient(135deg, #faedcd 0%, #fefae0 50%, #f5cac3 100%)",
-                boxBg: "rgba(255, 253, 250, 0.98)",
-                boxBorder: "rgba(242, 219, 203, 0.95)",
-                brandColor: "#bc6c25",
-                btnPrimary: "#dda15e",
-                btnBorder: "#f4a261",
-                circle1: "#fefae0",
-                circle2: "#f5cac3"
+            3: { // Soft Dusty Rose & Warm Gold
+                bg: "linear-gradient(135deg, #fce4ec 0%, #f8bbd0 50%, #e1bee7 100%)",
+                boxBg: "rgba(254, 250, 252, 0.98)",
+                boxBorder: "rgba(243, 208, 222, 0.95)",
+                brandColor: "#ad406f",
+                btnPrimary: "#c94f7c",
+                circle1: "#f8bbd0",
+                circle2: "#e1bee7"
             },
-            4: {
-                bg: "linear-gradient(135deg, #e2ece9 0%, #dfccdf 50%, #f3c6df 100%)",
-                boxBg: "rgba(253, 250, 253, 0.98)",
-                boxBorder: "rgba(225, 204, 222, 0.95)",
-                brandColor: "#7c4d58",
-                btnPrimary: "#9e5a63",
-                btnBorder: "#d4a373",
-                circle1: "#eed7c5",
-                circle2: "#d4a5a5"
+            4: { // Deep Muted Lavender & Slate Blue (Elegan & Misterius)
+                bg: "linear-gradient(135deg, #e4e5f1 0%, #d5d4d9 100%)",
+                boxBg: "rgba(250, 250, 252, 0.98)",
+                boxBorder: "rgba(215, 212, 225, 0.95)",
+                brandColor: "#59354e",
+                btnPrimary: "#6d4c7d",
+                circle1: "#d4c5ed",
+                circle2: "#b5c7ed"
             }
         };
 
@@ -614,10 +597,6 @@
             document.getElementById('circle1').style.background = theme.circle1;
             document.getElementById('circle2').style.background = theme.circle2;
 
-            document.getElementById('nextBtn').style.borderColor = theme.btnBorder;
-            document.getElementById('nextBtn').style.color = theme.brandColor;
-
-            // Update primary buttons and active dots
             const styleId = 'dynamic-theme-style';
             let styleTag = document.getElementById(styleId);
             if (!styleTag) {
@@ -627,7 +606,6 @@
             }
             styleTag.innerHTML = `
                 .btn-primary { background: ${theme.btnPrimary} !important; border-color: ${theme.btnPrimary} !important; }
-                .dot.active { background: ${theme.brandColor} !important; }
             `;
         }
 
@@ -830,45 +808,75 @@
         };
 
         let currentSection = 1;
-        let currentSlide = 0;
-        let totalSlides = 0;
-        
-        const slidesWrapper = document.getElementById('slidesWrapper');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const slideCounterText = document.getElementById('slideCounterText');
-        const dotsContainer = document.getElementById('dotsContainer');
-        const cardBrandTitle = document.getElementById('cardBrandTitle');
+        let interactiveIndex = 0;
+        let totalItems = 0;
 
         function openSection(sectionId) {
             currentSection = sectionId;
-            currentSlide = 0;
+            interactiveIndex = 0;
             const data = sectionsData[sectionId];
-            totalSlides = data.length;
+            totalItems = data.length;
 
             applyTheme(sectionId);
-            cardBrandTitle.innerText = `🍯 ${questStatus[sectionId].title}`;
+            document.getElementById('cardBrandTitle').innerText = `🍯 ${questStatus[sectionId].title}`;
 
-            slidesWrapper.innerHTML = '';
-            data.forEach((text, index) => {
-                const slideDiv = document.createElement('div');
-                slideDiv.className = `slide ${index === 0 ? 'active' : ''}`;
+            const readerArea = document.getElementById('dynamicReaderArea');
+            readerArea.innerHTML = '';
 
-                const textDiv = document.createElement('div');
-                textDiv.className = 'slide-text';
-                textDiv.innerHTML = text.replace(/\n/g, '<br>');
-                
-                slideDiv.appendChild(textDiv);
-                slidesWrapper.appendChild(slideDiv);
-            });
+            if (sectionId === 1) {
+                // Chapter 1: Tap to Reveal Cards
+                document.getElementById('slideCounterText').innerText = "Ketuk Kartu Memori";
+                document.getElementById('nextActionBtn').innerText = "Selesaikan ✓";
+                document.getElementById('nextActionBtn').style.display = 'none'; // Selesai otomatis pas semua kebuka
 
-            dotsContainer.innerHTML = '';
-            for (let i = 0; i < totalSlides; i++) {
-                const dot = document.createElement('div');
-                dot.classList.add('dot');
-                if (i === 0) dot.classList.add('active');
-                dot.addEventListener('click', () => goToSlide(i));
-                dotsContainer.appendChild(dot);
+                data.forEach((text, index) => {
+                    const card = document.createElement('div');
+                    card.className = `ch1-card-item ${index === 0 ? 'revealed' : ''}`;
+                    card.innerHTML = `<b>Memori #${index + 1}</b><br><span class="card-txt" style="display:${index === 0 ? 'block' : 'none'}; margin-top:6px;">${text}</span>`;
+                    
+                    card.onclick = () => {
+                        card.classList.add('revealed');
+                        card.querySelector('.card-txt').style.display = 'block';
+                        // Buka card berikutnya otomatis jika ada
+                        const nextCard = readerArea.children[index + 1];
+                        if (nextCard) {
+                            nextCard.style.opacity = '1';
+                        }
+                        checkCh1Completion();
+                    };
+                    readerArea.appendChild(card);
+                });
+
+            } else if (sectionId === 2) {
+                // Chapter 2: Scrollable Vintage Letter
+                document.getElementById('slideCounterText').innerText = "Gulir Surat";
+                document.getElementById('nextActionBtn').innerText = "Selesaikan Sesi ✓";
+                document.getElementById('nextActionBtn').style.display = 'block';
+
+                const scrollDiv = document.createElement('div');
+                scrollDiv.className = 'ch2-scroll-content';
+                data.forEach(text => {
+                    const p = document.createElement('p');
+                    p.innerHTML = text.replace(/\n/g, '<br>');
+                    scrollDiv.appendChild(p);
+                });
+                readerArea.appendChild(scrollDiv);
+
+            } else if (sectionId === 3) {
+                // Chapter 3: Polaroid Stack
+                document.getElementById('slideCounterText').innerText = `Catatan 1 / ${totalItems}`;
+                document.getElementById('nextActionBtn').innerText = "Lanjut →";
+                document.getElementById('nextActionBtn').style.display = 'block';
+
+                renderPolaroid(0);
+
+            } else if (sectionId === 4) {
+                // Chapter 4: Envelope & Final Message Stack
+                document.getElementById('slideCounterText').innerText = `Pesan Terakhir 1 / ${totalItems}`;
+                document.getElementById('nextActionBtn').innerText = "Lanjut →";
+                document.getElementById('nextActionBtn').style.display = 'block';
+
+                renderPolaroid(0);
             }
 
             const menu = document.getElementById('menuScreen');
@@ -877,78 +885,73 @@
                 menu.classList.add('hidden');
                 menu.classList.remove('closing-book');
                 document.getElementById('mainCard').classList.remove('hidden');
-                updateSlideUI();
             }, 250);
         }
 
-        const slides = () => document.querySelectorAll('.slide');
-        const dots = () => document.querySelectorAll('.dot');
-
-        function updateSlideUI() {
-            const currentSlides = slides();
-            const currentDots = dots();
-
-            currentSlides.forEach((slide, index) => {
-                slide.classList.remove('active');
-                if (index === currentSlide) {
-                    slide.classList.add('active');
-                }
-            });
-
-            currentDots.dots = currentDots || [];
-            currentDots.forEach((dot, index) => {
-                dot.classList.remove('active');
-                if (index === currentSlide) {
-                    dot.classList.add('active');
-                }
-            });
-
-            slideCounterText.innerText = `${currentSlide + 1} / ${totalSlides}`;
-            prevBtn.disabled = currentSlide === 0;
-            
-            if (currentSlide === totalSlides - 1) {
-                nextBtn.innerHTML = 'Selesaikan ✓';
-            } else {
-                nextBtn.innerHTML = 'Next →';
+        function checkCh1Completion() {
+            const readerArea = document.getElementById('dynamicReaderArea');
+            const allRevealed = Array.from(readerArea.children).every(c => c.classList.contains('revealed'));
+            if (allRevealed) {
+                document.getElementById('nextActionBtn').style.display = 'block';
+                document.getElementById('nextActionBtn').innerText = "Selesaikan Chapter ✓";
             }
         }
 
-        function changeSlide(direction) {
-            currentSlide += direction;
-            if (currentSlide < 0) currentSlide = 0;
-            if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
-            updateSlideUI();
-        }
+        function renderPolaroid(index) {
+            const readerArea = document.getElementById('dynamicReaderArea');
+            readerArea.innerHTML = '';
+            const data = sectionsData[currentSection];
 
-        function goToSlide(index) {
-            currentSlide = index;
-            updateSlideUI();
-        }
+            const polaroid = document.createElement('div');
+            polaroid.className = 'ch3-polaroid';
+            polaroid.innerHTML = `
+                <div style="font-size: 1.5rem; margin-bottom: 8px;">💌</div>
+                <div class="ch3-text">${data[index]}</div>
+                <div style="margin-top: 12px; font-size: 0.75rem; color: #a07865; font-weight: 600;">Poin ${index + 1} dari ${data.length}</div>
+            `;
+            readerArea.appendChild(polaroid);
 
-        function nextAction() {
-            if (currentSlide === totalSlides - 1) {
-                questStatus[currentSection].completed = true;
-                
-                if (currentSection < 4) {
-                    questStatus[currentSection + 1].unlocked = true;
-                }
-
-                saveProgress();
-
-                const mainCard = document.getElementById('mainCard');
-                mainCard.classList.add('closing-book');
-                setTimeout(() => {
-                    mainCard.classList.add('hidden');
-                    mainCard.classList.remove('closing-book');
-                    if (currentSection === 4) {
-                        document.getElementById('grandFinaleScreen').classList.remove('hidden');
-                    } else {
-                        document.getElementById('questCompleteScreen').classList.remove('hidden');
-                    }
-                }, 250);
+            document.getElementById('slideCounterText').innerText = `Catatan ${index + 1} / ${data.length}`;
+            if (index === data.length - 1) {
+                document.getElementById('nextActionBtn').innerText = "Selesaikan ✓";
             } else {
-                changeSlide(1);
+                document.getElementById('nextActionBtn').innerText = "Lanjut →";
             }
+        }
+
+        function onNextAction() {
+            const data = sectionsData[currentSection];
+
+            if (currentSection === 1 || currentSection === 2) {
+                completeCurrentQuest();
+            } else if (currentSection === 3 || currentSection === 4) {
+                if (interactiveIndex < data.length - 1) {
+                    interactiveIndex++;
+                    renderPolaroid(interactiveIndex);
+                } else {
+                    completeCurrentQuest();
+                }
+            }
+        }
+
+        function completeCurrentQuest() {
+            questStatus[currentSection].completed = true;
+            if (currentSection < 4) {
+                questStatus[currentSection + 1].unlocked = true;
+            }
+            saveProgress();
+
+            const mainCard = document.getElementById('mainCard');
+            mainCard.classList.add('closing-book');
+            setTimeout(() => {
+                mainCard.classList.add('hidden');
+                mainCard.classList.remove('closing-book');
+                if (currentSection === 4) {
+                    document.getElementById('grandFinaleScreen').classList.remove('hidden');
+                } else {
+                    document.getElementById('questCompleteScreen').classList.remove('hidden');
+                }
+            }, 250);
         }
 
         function returnToMenuFromComplete() {
