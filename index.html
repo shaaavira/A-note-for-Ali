@@ -573,8 +573,6 @@
         .cake-svg.out .smoke circle:nth-child(2) { animation-delay: 0.25s; }
         .cake-svg.out .smoke circle:nth-child(3) { animation-delay: 0.5s; }
         @keyframes smokeUp { 0% { transform: translateY(0) scale(0.6); opacity: 0; } 20% { opacity: 0.7; } 100% { transform: translateY(-26px) scale(1.6); opacity: 0; } }
-        .wish { opacity: 0; transition: opacity 1s ease 1s; }
-        .cake-svg.out .wish { opacity: 1; }
         .boat { transform-box: fill-box; transform-origin: 50% 100%; animation: boatRock 3.2s ease-in-out infinite; }
         @keyframes boatRock { 0%, 100% { transform: translateX(-6px) rotate(-3deg); } 50% { transform: translateX(6px) rotate(3deg); } }
         .balloon { transform-box: fill-box; transform-origin: 50% 100%; animation: balloonFloat 4s ease-in-out infinite; }
@@ -617,7 +615,7 @@
         @keyframes cbY { from { transform: translateY(calc(var(--ry) * -1)); } to { transform: translateY(var(--ry)); } }
         .cover-bee-wrap svg { width: 28px; height: auto; margin: -10px 0 0 -14px; display: block; overflow: visible; }
 
-        /* FIX: lebah cover menghadap arah geraknya (gambar asli menghadap kiri; 10s = 5s ke kanan + 5s ke kiri, sama dengan cbX) */
+        /* lebah cover menghadap arah geraknya */
         .cover-bee-wrap svg { animation: cbFace 10s linear infinite; }
         @keyframes cbFace {
             0%, 49.99% { transform: scaleX(-1); }
@@ -627,7 +625,7 @@
         .flybee {
             position: fixed; left: -10%; top: 30%; font-size: 22px; z-index: 3;
             opacity: 0; pointer-events: none;
-            scale: -1 1; /* FIX: emoji lebah terbang ke kanan, jadi dibalik (pakai `scale` agar tidak bentrok dengan `transform` di animasi) */
+            scale: -1 1;
         }
         .flybee.go { animation: beeAway 6s ease-in-out forwards; }
         @keyframes beeAway {
@@ -638,16 +636,100 @@
             100% { transform: translate(115vw, -80px); opacity: 0; }
         }
 
-        /* ilustrasi chapter 4 yang bisa diketuk */
-        .line-art svg [data-tap]{cursor:pointer}
-        .tapmsg{opacity:0;transition:opacity .8s ease .6s}
-        .out .tapmsg{opacity:1}
-        .bk-cover{transform-box:fill-box;transform-origin:left center;transition:transform .9s cubic-bezier(.3,.8,.3,1)}
-        .book-svg.out .bk-cover{transform:scaleX(-.9)}
-        .boat-svg.out .boat{animation:boatAway 3s ease-in forwards}
-        @keyframes boatAway{to{transform:translateX(110px);opacity:0}}
-        .balloon-svg.out .balloon{animation:balloonUp 3.5s ease-in forwards}
-        @keyframes balloonUp{to{transform:translateY(-70px) rotate(4deg);opacity:0}}
+        /* =====================================================
+           CHAPTER 4: ilustrasi interaktif (versi pengalaman)
+           ===================================================== */
+        .line-art svg [data-tap] { cursor: pointer; }
+        .line-art .boat-svg { width: 230px; touch-action: none; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; cursor: pointer; }
+        .line-art .balloon-svg { width: 190px; cursor: pointer; }
+        .line-art .book-svg { width: 160px; cursor: pointer; }
+        .line-art .cake-svg { width: 130px; cursor: pointer; }
+
+        /* -- Buku: sampul terbuka, halaman berbalik, cahaya terbit -- */
+        .bk-cover { transform-box: fill-box; transform-origin: left center; transition: transform 0.9s cubic-bezier(.3,.8,.3,1); }
+        .book-svg.out .bk-cover { transform: scaleX(-0.9); }
+        .pg { transform-box: fill-box; transform-origin: left center; }
+        .book-svg.out .pg { animation: pageFlip 0.7s ease-in-out forwards; }
+        .book-svg.out .pg.p1 { animation-delay: 0.55s; }
+        .book-svg.out .pg.p2 { animation-delay: 0.95s; }
+        .book-svg.out .pg.p3 { animation-delay: 1.35s; }
+        @keyframes pageFlip { from { transform: scaleX(1); } to { transform: scaleX(-0.85); } }
+        .book-svg .beam { opacity: 0; transition: opacity 2s ease 1.6s; }
+        .book-svg.out .beam { opacity: 1; animation: beamPulse 3.4s ease-in-out 3.6s infinite; }
+        @keyframes beamPulse { 0%, 100% { opacity: 0.75; } 50% { opacity: 1; } }
+        .book-svg .tapmsg { opacity: 0; transition: opacity 1.2s ease 2s; fill: #4a3550; font-size: 6.5px; }
+        .book-svg.out .tapmsg { opacity: 1; }
+
+        /* -- Perahu: tahan untuk melepas -- */
+        .boat-svg .ring, .boat-svg .ring-bg { transition: opacity 0.8s ease; }
+        .boat-svg .lglow { opacity: 0.5; }
+        .boat-svg .boat { filter: drop-shadow(0 0 6px rgba(242,213,143,0.5)); }
+        .boat-svg.holding .boat { animation-duration: 1.1s; }
+        .boat-svg.out .ring, .boat-svg.out .ring-bg { opacity: 0; }
+        .boat-svg.out .boat { animation: boatSail 7s cubic-bezier(.35,.05,.6,1) forwards; }
+        .boat-svg.out .lglow { animation: glowAway 7s cubic-bezier(.35,.05,.6,1) forwards; }
+        @keyframes boatSail {
+            0%   { transform: translateX(0) scale(1); opacity: 1; }
+            85%  { opacity: 0.9; }
+            100% { transform: translateX(125px) scale(0.4); opacity: 0; }
+        }
+        @keyframes glowAway {
+            0%   { transform: translateX(0); opacity: 0.9; }
+            100% { transform: translateX(125px); opacity: 0; }
+        }
+        .boat-svg .rip { fill: none; stroke: rgba(242,213,143,0.7); stroke-width: 1.2; opacity: 0; transform-box: fill-box; transform-origin: center; }
+        .boat-svg.out .rip { animation: ripple 3.6s ease-out forwards; }
+        .boat-svg.out .rip.r2 { animation-delay: 0.9s; }
+        .boat-svg.out .rip.r3 { animation-delay: 1.8s; }
+        @keyframes ripple { 0% { transform: scale(0.2); opacity: 0.8; } 100% { transform: scale(3); opacity: 0; } }
+        .boat-svg .refl { opacity: 0; transition: opacity 3s ease 4s; }
+        .boat-svg.out .refl { opacity: 1; }
+        .boat-svg .waves2 { transform-box: fill-box; animation: waveDrift 5s ease-in-out infinite alternate; }
+        @keyframes waveDrift { from { transform: translateX(-4px); } to { transform: translateX(4px); } }
+
+        /* -- Partikel & balon yang dilepas (di atas seluruh layar) -- */
+        .fx-p {
+            position: fixed; z-index: 6; pointer-events: none; border-radius: 50%;
+            width: var(--s, 5px); height: var(--s, 5px);
+            margin: calc(var(--s, 5px) / -2) 0 0 calc(var(--s, 5px) / -2);
+            background: var(--c, #f2d58f); box-shadow: 0 0 8px 2px var(--c, #f2d58f);
+            opacity: 0; animation: fxFly var(--t, 1.6s) ease-out both;
+        }
+        @keyframes fxFly {
+            0%   { transform: translate(0, 0) scale(1); opacity: 0; }
+            15%  { opacity: 1; }
+            100% { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; }
+        }
+        .fx-balloon {
+            position: fixed; z-index: 6; width: 0; height: 0; pointer-events: none;
+            animation: fbRise 9s cubic-bezier(.3,.1,.5,1) forwards;
+        }
+        .fb-in { position: absolute; left: -19px; top: -21px; width: 38px; height: 100px; transform-origin: 50% 21%; animation: fbSway 2.6s ease-in-out infinite alternate; }
+        .fb-in svg { display: block; overflow: visible; filter: drop-shadow(0 0 8px rgba(242,213,143,0.6)); }
+        @keyframes fbSway { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
+        @keyframes fbRise {
+            0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+            70%  { opacity: 1; }
+            100% { transform: translate(var(--drift), var(--rise)) scale(0.4); opacity: 0; }
+        }
+        .fx-star {
+            position: fixed; z-index: 3; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%;
+            pointer-events: none; background: #fff6d6;
+            box-shadow: 0 0 10px 4px rgba(255,236,170,0.8), 0 0 28px 10px rgba(255,220,140,0.35);
+            opacity: 0; animation: starBorn 3s ease forwards, starTw 2.8s ease-in-out 3s infinite;
+        }
+        @keyframes starBorn { 0% { opacity: 0; transform: scale(0.2); } 60% { opacity: 1; transform: scale(1.8); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes starTw { 0%, 100% { opacity: 0.55; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.15); } }
+
+        /* redup lembut saat melepas perahu */
+        html.release-dim body::before { opacity: 0.4; }
+
+        /* harapan: kartu surat menyala sebentar */
+        .line-card.wishglow { animation: wishGlow 3s ease both; }
+        @keyframes wishGlow {
+            0%, 100% { box-shadow: 0 0 30px rgba(150,120,230,0.38), 0 10px 28px rgba(0,0,0,0.4); }
+            35% { box-shadow: 0 0 60px 8px rgba(242,201,107,0.55), 0 10px 28px rgba(0,0,0,0.4); }
+        }
 
         /* --- Chapter 2: ilustrasi lebih besar & kotak tidak putih --- */
         .c2-text { background: #dcebd4; border-color: rgba(88,129,87,0.45); }
@@ -731,10 +813,6 @@
         }
         html[data-theme="4"] .line-card.key .line-text { color: #f6dc9c; font-weight: 600; }
         html[data-theme="4"] .line-card .art-hint { color: #d9c9f0; }
-        .line-art svg { width: 150px; }
-        .line-art .tapmsg { fill: #f2d58f; font-size: 10px; }
-        .line-art .book-svg .tapmsg { fill: #4a3550; font-size: 6.5px; }
-        .boat-svg .boat { filter: drop-shadow(0 0 6px rgba(242,213,143,0.5)); }
 
         /* =====================================================
            BUBBLE CHAT CHAPTER 2 (tampilan seperti aplikasi chat)
@@ -819,7 +897,7 @@
         @keyframes introIn { 0% { opacity: 0; transform: translateY(10px); } 25% { opacity: 1; transform: none; } 80% { opacity: 1; } 100% { opacity: 0; } }
         @keyframes ciLine { to { width: 110px; } }
 
-        /* tanda tangan yang tertulis di akhir surat (dipercepat) */
+        /* tanda tangan yang tertulis di akhir surat */
         .sign {
             font-family: 'Pinyon Script', cursive; font-size: 2rem; color: #f6dc9c; text-align: right;
             margin-top: 6px; white-space: nowrap; clip-path: inset(0 100% 0 0);
@@ -866,7 +944,7 @@
         /* --- Chapter 2: di ujung slider, garis jarak memudar dan keduanya menunduk tenang --- */
         .scene-svg .bob { transition: translate 1.4s ease, rotate 1.4s ease; }
 
-        /* --- Layar meredup sebentar di kalimat kunci (pengganti efek musik di iPhone) --- */
+        /* --- Layar meredup sebentar di kalimat kunci (pengganti efek volume di iPhone) --- */
         body::before {
             content: ''; position: fixed; inset: 0; background: #0d0a1a; opacity: 0;
             pointer-events: none; z-index: 0; transition: opacity 2.5s ease;
@@ -898,7 +976,7 @@
                 transition-delay: 0s !important;
                 scroll-behavior: auto !important;
             }
-            #falling-container, .cover-bee-wrap, .lanterns, .spark, .shooting, .flybee { display: none !important; }
+            #falling-container, .cover-bee-wrap, .lanterns, .spark, .shooting, .flybee, .fx-p, .fx-balloon { display: none !important; }
             .ch-intro { animation: none !important; opacity: 1; }
             .ci-line { width: 110px; }
         }
@@ -919,7 +997,6 @@
         <i class="lantern" style="left:82%;animation-duration:20s;animation-delay:6s"></i>
         <i class="lantern" style="left:94%;animation-duration:15s;animation-delay:10s"></i>
     </div>
-    <div id="youtube-player" style="display:none;"></div>
 
     <div class="wrapper">
         <!-- 1. Cover -->
@@ -1077,25 +1154,106 @@
             }
         })();
 
-        /* ---------- Lagu per chapter (0 = menu, 1-4 = chapter) ---------- */
+        /* =====================================================
+           MUSIK: file audio sendiri + crossfade
+           Taruh file di folder "audio/" di sebelah index.html:
+             audio/menu.mp3, audio/cp1.mp3, audio/cp2.mp3, audio/cp3.mp3, audio/cp4.mp3
+           (kalau formatnya bukan mp3, ganti AUDIO_EXT)
+           ===================================================== */
+        const AUDIO_DIR = 'audio/';
+        const AUDIO_EXT = '.mp3';
         const SONGS = {
-            0: 'TK1Ij_-mank',  /* Menu */
-            1: 'znfYwABeSZ0',  /* Chapter 1 */
-            2: 'sR2W2scFS4Y',  /* Chapter 2 */
-            3: 'kKjoi7WTrjo',  /* Chapter 3 */
-            4: 'X-Xxqt6Xdio'   /* Chapter 4 */
+            0: AUDIO_DIR + 'menu' + AUDIO_EXT,
+            1: AUDIO_DIR + 'cp1' + AUDIO_EXT,
+            2: AUDIO_DIR + 'cp2' + AUDIO_EXT,
+            3: AUDIO_DIR + 'cp3' + AUDIO_EXT,
+            4: AUDIO_DIR + 'cp4' + AUDIO_EXT
         };
-        let curSong = SONGS[0];
 
-        function playSong(key) {
-            const id = SONGS[key];
-            if (!id || id === curSong || !player || typeof player.loadVideoById !== 'function') return;
-            curSong = id;
-            try {
-                if (musicOn) player.loadVideoById({ videoId: id, startSeconds: 0 });
-                else player.cueVideoById({ videoId: id });
-            } catch (e) {}
+        let isAppStarted = false;
+        let musicOn = true;
+        try { musicOn = localStorage.getItem('notesOnClosureMusic') !== 'off'; } catch (e) {}
+
+        const decks = [new Audio(), new Audio()];
+        decks.forEach(d => {
+            d.loop = true; d.preload = 'auto'; d._g = 0; d._tok = 0;
+            /* kalau file tidak ketemu, sembunyikan tombol musik */
+            d.addEventListener('error', () => { if (d.getAttribute('src')) hideMusicUI(); });
+        });
+        let deckI = 0, curKey = 0, masterVol = 100, volTok = 0;
+
+        function setVol(d) {
+            try { d.volume = Math.max(0, Math.min(1, d._g * masterVol / 100)); } catch (e) {}
         }
+        function fadeDeck(d, to, ms, done) {
+            const tok = ++d._tok, from = d._g, t0 = performance.now();
+            (function step() {
+                if (tok !== d._tok) return;
+                const k = ms <= 0 ? 1 : Math.min(1, (performance.now() - t0) / ms);
+                d._g = from + (to - from) * k; setVol(d);
+                if (k < 1) setTimeout(step, 40); else if (done) done();
+            })();
+        }
+        /* volume global 0-100 (dipakai efek di chapter 4 & finale) */
+        function fadeVolume(to, ms) {
+            const tok = ++volTok, from = masterVol, t0 = performance.now();
+            (function step() {
+                if (tok !== volTok) return;
+                const k = ms <= 0 ? 1 : Math.min(1, (performance.now() - t0) / ms);
+                masterVol = from + (to - from) * k;
+                decks.forEach(setVol);
+                if (k < 1) setTimeout(step, 40);
+            })();
+        }
+        function crossfadeTo(key) {
+            const old = decks[deckI], nw = decks[1 - deckI];
+            deckI = 1 - deckI;
+            nw.muted = false;
+            nw.src = SONGS[key];
+            nw._g = 0; setVol(nw);
+            nw.play().catch(() => {});
+            fadeDeck(nw, 1, 2500);
+            fadeDeck(old, 0, 2000, () => old.pause());
+        }
+        function playSong(key) {
+            if (key === curKey) return;
+            curKey = key;
+            if (!isAppStarted || !musicOn) return;
+            crossfadeTo(key);
+        }
+        function applyMusic() {
+            if (!isAppStarted) return;
+            const d = decks[deckI];
+            if (musicOn) {
+                if (d.getAttribute('src') !== SONGS[curKey]) d.src = SONGS[curKey];
+                d.play().catch(() => {});
+                fadeDeck(d, 1, 1500);
+            } else {
+                fadeDeck(d, 0, 500, () => d.pause());
+            }
+        }
+        /* dipanggil di dalam klik pertama, supaya deck cadangan boleh diputar nanti (penting di iPhone/Safari) */
+        function unlockAudio() {
+            const s = decks[1 - deckI];
+            s.muted = true; s.src = SONGS[0];
+            s.play().then(() => { s.pause(); s.muted = false; }).catch(() => { s.muted = false; });
+            Object.values(SONGS).forEach(u => { const p = new Audio(); p.preload = 'auto'; p.src = u; });
+        }
+
+        function updateMusicBtn() {
+            document.querySelectorAll('.music-btn').forEach(b => {
+                b.textContent = musicOn ? '🔊' : '🔇';
+                b.setAttribute('aria-label', musicOn ? 'Matikan musik' : 'Nyalakan musik');
+                b.setAttribute('aria-pressed', String(!musicOn));
+            });
+        }
+        function toggleMusic() {
+            musicOn = !musicOn;
+            try { localStorage.setItem('notesOnClosureMusic', musicOn ? 'on' : 'off'); } catch (e) {}
+            updateMusicBtn();
+            applyMusic();
+        }
+        function hideMusicUI() { document.documentElement.classList.add('no-music'); }
 
         function applyTheme(id) {
             document.documentElement.setAttribute('data-theme', String(id || 0));
@@ -1151,51 +1309,7 @@
             try { localStorage.setItem('notesOnClosureProgress', JSON.stringify(questStatus)); } catch (e) {}
         }
 
-        /* ---------- Musik (dengan tombol nyala/mati) ---------- */
-        let player = null;
-        let isAppStarted = false;
-        const START_TIME = 0;
-        let musicOn = true;
-        try { musicOn = localStorage.getItem('notesOnClosureMusic') !== 'off'; } catch (e) {}
-
-        function updateMusicBtn() {
-            document.querySelectorAll('.music-btn').forEach(b => {
-                b.textContent = musicOn ? '🔊' : '🔇';
-                b.setAttribute('aria-label', musicOn ? 'Matikan musik' : 'Nyalakan musik');
-                b.setAttribute('aria-pressed', String(!musicOn));
-            });
-        }
-        function applyMusic(seek) {
-            if (!isAppStarted || !player || typeof player.playVideo !== 'function') return;
-            try {
-                if (musicOn) { if (seek) player.seekTo(START_TIME, true); player.playVideo(); }
-                else player.pauseVideo();
-            } catch (e) {}
-        }
-        function toggleMusic() {
-            musicOn = !musicOn;
-            try { localStorage.setItem('notesOnClosureMusic', musicOn ? 'on' : 'off'); } catch (e) {}
-            updateMusicBtn();
-            applyMusic(false);
-        }
-        function hideMusicUI() { document.documentElement.classList.add('no-music'); }
-        function showMusicUI() { document.documentElement.classList.remove('no-music'); }
-
         /* ---------- Efek tambahan Animation Mode ---------- */
-        let volTok = 0;
-        function fadeVolume(to, ms) {
-            const tok = ++volTok;
-            if (!player || typeof player.setVolume !== 'function') return;
-            let from = 100;
-            try { from = player.getVolume(); } catch (e) {}
-            const t0 = performance.now();
-            (function step(now) {
-                if (tok !== volTok) return;
-                const k = Math.min(1, (now - t0) / ms);
-                try { player.setVolume(Math.round(from + (to - from) * k)); } catch (e) { return; }
-                if (k < 1) requestAnimationFrame(step);
-            })(t0);
-        }
         function buzz(pattern) {
             if (mode !== 'anim') return;
             try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (e) {}
@@ -1206,6 +1320,27 @@
         function keyDim(on) {
             /* iOS tidak mengizinkan volume diatur lewat kode, jadi suasananya diganti redup visual */
             document.documentElement.classList.toggle('key-dim', !!(on && IS_IOS && mode === 'anim'));
+        }
+
+        /* partikel cahaya yang beterbangan (dipakai interaksi chapter 4) */
+        function emit(x, y, n, o) {
+            o = o || {};
+            const cols = o.colors || ['#f2d58f', '#ffe9b8', '#f6dc9c', '#ffd9a0'];
+            for (let i = 0; i < n; i++) {
+                const p = document.createElement('i');
+                p.className = 'fx-p';
+                const s = (o.size || 5) * (0.6 + Math.random() * 0.9);
+                p.style.left = (x + (Math.random() - 0.5) * (o.jitter || 10)) + 'px';
+                p.style.top = y + 'px';
+                p.style.setProperty('--s', s + 'px');
+                p.style.setProperty('--c', cols[i % cols.length]);
+                p.style.setProperty('--dx', ((Math.random() - 0.5) * (o.spread || 120)) + 'px');
+                p.style.setProperty('--dy', (-(o.rise || 90) * (0.4 + Math.random() * 0.6)) + 'px');
+                p.style.setProperty('--t', ((o.t || 1.6) * (0.7 + Math.random() * 0.6)) + 's');
+                p.style.animationDelay = (Math.random() * (o.delay || 0.4)) + 's';
+                p.addEventListener('animationend', () => p.remove());
+                document.body.appendChild(p);
+            }
         }
 
         /* posisi terakhir baca (Chapter 1 dan 4) */
@@ -1238,7 +1373,7 @@
             act.classList.remove('finale-in');
             const calm = mode === 'serious' || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
             if (calm) { act.classList.add('finale-in'); return; }
-            fadeVolume(25, 9000); /* hening pelan-pelan naik jadi samar saat lampu meredup */
+            fadeVolume(25, 9000); /* musik meredup pelan saat lampu meredup */
             finaleT.push(setTimeout(() => document.documentElement.classList.add('finale-dim'), 5000));
             finaleT.push(setTimeout(() => act.classList.add('finale-in'), 8500));
         }
@@ -1246,25 +1381,6 @@
             finaleT.forEach(clearTimeout); finaleT = [];
             document.documentElement.classList.remove('finale-dim');
             $('finaleActions').classList.remove('finale-in');
-        }
-
-        function onYouTubeIframeAPIReady() {
-            try {
-                player = new YT.Player('youtube-player', {
-                    height: '0', width: '0', videoId: SONGS[0],
-                    playerVars: { 'autoplay': 0, 'start': START_TIME },
-                    events: {
-                        'onReady': () => { showMusicUI(); applyMusic(true); },
-                        'onError': () => { hideMusicUI(); },
-                        /* loop manual, karena loop bawaan tidak ikut saat ganti lagu lewat loadVideoById */
-                        'onStateChange': e => {
-                            if (e.data === YT.PlayerState.ENDED && musicOn) {
-                                try { player.seekTo(0, true); player.playVideo(); } catch (err) {}
-                            }
-                        }
-                    }
-                });
-            } catch (e) { hideMusicUI(); }
         }
 
         /* ---------- Navigasi layar ---------- */
@@ -1380,7 +1496,6 @@
             })();
         }
 
-        let musicHideTimer = null;
         function goToMenu(m) {
             if (m) {
                 setMode(m);
@@ -1389,10 +1504,8 @@
             isAppStarted = true;
             updateMusicBtn();
             swapScreen($('coverScreen'), $('menuScreen'), renderMenuList);
-            applyMusic(true);
-            /* kalau pemutar YouTube tidak pernah siap (diblokir / offline), sembunyikan tombol musik */
-            clearTimeout(musicHideTimer);
-            musicHideTimer = setTimeout(() => { if (!player) hideMusicUI(); }, 7000);
+            unlockAudio();
+            applyMusic();
         }
         function backToCover() {
             swapScreen($('menuScreen'), $('coverScreen'));
@@ -1604,7 +1717,6 @@
 
         /* =====================================================
            CHAPTER 1: Tumpukan foto polaroid
-           (tanpa kertas kosong di akhir; tombol Next hanya muncul di kartu terakhir)
            ===================================================== */
         chapters[1] = function () {
             const d = sectionsData[1], n = d.length;
@@ -1620,7 +1732,7 @@
                 'linear-gradient(135deg,#ffecb6,#ffc6d9)', 'linear-gradient(135deg,#ffdfba,#ffb4b0)',
                 'linear-gradient(135deg,#fff3d1,#ffdfba)', 'linear-gradient(135deg,#ffc6d9,#ffecb6)'
             ];
-            const total = n; /* tidak ada lagi bingkai kosong di akhir */
+            const total = n;
             const rots = Array.from({ length: total }, (_, i) => ((i * 37) % 9) - 4);
             const dirs = new Array(total).fill(1);
             let idx = Math.min(resumeAt, n - 1); resumeAt = 0;
@@ -1695,7 +1807,7 @@
                     setHint('Kartu terakhir');
                 } else {
                     setNext('Next →', false, null);
-                    $('nextBtn').hidden = true; /* cukup digeser/diketuk, tombol Next tidak perlu */
+                    $('nextBtn').hidden = true;
                     setHint(idx === 0 ? 'Geser atau ketuk kartunya' : '');
                 }
             }
@@ -1839,8 +1951,6 @@
             }
 
             function stage3() {
-                /* Alur ilustrasi: Ali (ungu/biru) yang membuka obrolan dulu.
-                   Saat Runi (oren) mulai terbuka, Ali makin menjauh. */
                 body.innerHTML = `
                     <p class="c2-text">${d[8]}</p>
                     <div class="scene2">
@@ -1911,7 +2021,6 @@
                 function update(v) {
                     el('glow').setAttribute('r', 30 + v * 0.35);
                     el('glow').setAttribute('opacity', Math.min(0.75, v / 110));
-                    /* tangan Runi: mulai rileks, terbuka lebar saat ia bercerita (v~45), lalu terkulai turun saat jarak melebar */
                     const armA = v <= 45 ? -35 + (v / 45) * 35 : -((v - 45) / 55) * 65;
                     el('armL').setAttribute('transform', `rotate(${armA.toFixed(1)} 44 148)`);
                     el('armR').setAttribute('transform', `rotate(${(-armA).toFixed(1)} 92 148)`);
@@ -1924,7 +2033,6 @@
                     el('gapTxt').textContent = v < 20 ? 'kita nyambung' : v < 60 ? 'mulai ada jarak' : 'jarak kita makin lebar...';
 
                     const tired = v >= 92;
-                    /* di ujung slider: garis jarak memudar, keduanya menunduk tenang tanpa saling menyalahkan */
                     const gg = el('gapG');
                     gg.style.transition = 'opacity 1.4s ease';
                     gg.style.opacity = tired ? '0.18' : '0.9';
@@ -1945,7 +2053,6 @@
                     const am = el('aliMouth');
                     am.setAttribute('d', v >= 65 ? 'M243 153 L261 153' : 'M242 152 Q252 159 262 152');
 
-                    /* Ali (ungu) yang memulai obrolan; Runi (oren) mulai terbuka, Ali makin menjauh */
                     el('spAli').textContent = v < 20 ? 'Halo~ ngobrol yuk' : v < 45 ? 'Oh gitu, lanjut~' : v < 65 ? 'Hmm... gua butuh waktu' : v < 80 ? 'Gua butuh ruang' : v < 92 ? 'Gua kewalahan...' : '...';
                     el('spRuni').textContent = v < 20 ? 'Halo juga~' : v < 45 ? 'Gua cerita dikit ya' : v < 65 ? 'Gua cerita lebih banyak' : v < 80 ? 'Gua cuma pengen terbuka' : v < 92 ? 'Gua bingung harus gimana...' : '...';
                     el('sliderCap').textContent = v < 20 ? 'Awalnya kita saling nyambung...' : (v < 60 ? 'Mulai terasa buat kita...' : (v < 90 ? 'Makin berat buat gua dan lu...' : 'Gua butuh kejelasan, lu butuh ruang, dan kita belum ketemu di tengah'));
@@ -2078,11 +2185,18 @@
         };
 
         /* =====================================================
-           CHAPTER 4: Amplop & surat (versi closure / honeybee)
+           CHAPTER 4: Amplop & surat
+           Ilustrasi interaktif dibuat sebagai "pengalaman":
+             kalimat 2  : kue  -> tiup lilin, harapan terbang jadi cahaya
+             kalimat 3  : buku -> sampul terbuka, halaman berbalik, cahaya terbit
+             kalimat 9  : perahu -> TAHAN untuk melepaskan, berlayar pergi, riak air & bintang
+             kalimat 11 : balon -> dilepas, naik melintasi layar, berubah jadi bintang
            ===================================================== */
         chapters[4] = function () {
             const d = sectionsData[4], n = d.length;
             const KEY4 = 8;
+            const fxNodes = new Set(), fxTimers = new Set();
+
             const ART4 = {
                 1: `<svg viewBox="0 0 120 90" class="cake-svg">
                         <ellipse cx="60" cy="83" rx="46" ry="5" fill="rgba(0,0,0,0.18)"/>
@@ -2091,15 +2205,24 @@
                         <rect x="56" y="34" width="8" height="20" rx="2" fill="#c9a8e0"/>
                         <g class="smoke"><circle cx="60" cy="30" r="3" fill="#cfc4dd"/><circle cx="58" cy="30" r="2.5" fill="#cfc4dd"/><circle cx="62" cy="30" r="2.5" fill="#cfc4dd"/></g>
                         <g class="flame"><ellipse cx="60" cy="27" rx="9" ry="11" fill="rgba(255,209,102,0.25)"/><path d="M60 20 q-6 8 0 14 q6 -6 0 -14z" fill="#ffd166"/><path d="M60 26 q-2.5 4 0 7 q2.5 -3 0 -7z" fill="#f4a261"/></g>
-                        <text class="wish" x="60" y="12" text-anchor="middle" font-size="9" font-weight="600" fill="#f2d58f" font-family="Poppins, sans-serif">make a wish</text>
-                        <g data-tap style="cursor:pointer"><rect x="40" y="10" width="40" height="48" fill="transparent"/></g>
+                        <rect x="30" y="10" width="60" height="70" fill="transparent"/>
                     </svg>`,
                 2: `<svg viewBox="0 0 120 90" class="book-svg">
+                        <defs>
+                            <linearGradient id="bm" x1="0" y1="1" x2="0" y2="0">
+                                <stop offset="0" stop-color="#ffe7a8" stop-opacity="0.65"/>
+                                <stop offset="1" stop-color="#ffe7a8" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                        <polygon class="beam" points="36,30 84,30 118,-40 2,-40" fill="url(#bm)"/>
                         <ellipse cx="60" cy="83" rx="36" ry="4" fill="rgba(0,0,0,0.18)"/>
                         <rect x="30" y="28" width="60" height="52" rx="4" fill="#fffdf6"/>
-                        <text class="tapmsg" x="60" y="52" text-anchor="middle" font-size="6.5" font-weight="600" fill="#4a3550" font-family="Poppins, sans-serif">Sisi Tergelap</text>
-                        <text class="tapmsg" x="60" y="62" text-anchor="middle" font-size="6.5" font-weight="600" fill="#4a3550" font-family="Poppins, sans-serif">Surga</text>
-                        <g class="bk-cover" data-tap>
+                        <text class="tapmsg" x="60" y="52" text-anchor="middle" font-weight="600" font-family="Poppins, sans-serif">Sisi Tergelap</text>
+                        <text class="tapmsg" x="60" y="62" text-anchor="middle" font-weight="600" font-family="Poppins, sans-serif">Surga</text>
+                        <rect class="pg p3" x="30" y="28" width="60" height="52" rx="3" fill="#f6edd8"/>
+                        <rect class="pg p2" x="30" y="28" width="60" height="52" rx="3" fill="#fbf3e0"/>
+                        <rect class="pg p1" x="30" y="28" width="60" height="52" rx="3" fill="#fffaf0"/>
+                        <g class="bk-cover">
                             <rect x="30" y="28" width="60" height="52" rx="4" fill="#8fa5cf"/>
                             <rect x="30" y="28" width="8" height="52" rx="3" fill="#6f87b5"/>
                             <rect x="46" y="42" width="30" height="3" rx="1.5" fill="#f2e6c8"/>
@@ -2107,14 +2230,31 @@
                         </g>
                     </svg>`,
                 8: `<svg viewBox="0 0 120 90" class="boat-svg">
+                        <defs>
+                            <radialGradient id="lg">
+                                <stop offset="0" stop-color="#ffe7a8" stop-opacity="0.95"/>
+                                <stop offset="1" stop-color="#ffe7a8" stop-opacity="0"/>
+                            </radialGradient>
+                        </defs>
+                        <circle class="ring-bg" cx="60" cy="48" r="34" fill="none" stroke="rgba(242,213,143,0.18)" stroke-width="2"/>
+                        <circle class="ring" cx="60" cy="48" r="34" fill="none" stroke="#f2d58f" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="213.6" stroke-dashoffset="213.6" transform="rotate(-90 60 48)"/>
+                        <circle class="lglow" cx="60" cy="52" r="12" fill="url(#lg)"/>
                         <g class="boat">
                             <path d="M60 56 v-30 l24 30z" fill="#fffdf6"/>
                             <path d="M60 56 v-30 l-18 30z" fill="#f2d58f"/>
                             <path d="M30 56 h60 l-10 15 h-40z" fill="#fffdf6" stroke="#d9a94f" stroke-width="1.5" stroke-linejoin="round"/>
+                            <circle cx="60" cy="63" r="2.6" fill="#ffe7a8"/>
                         </g>
-                        <path d="M6 72 q10 -7 20 0 t20 0 t20 0 t20 0 t20 0 t20 0" fill="none" stroke="#8fa5cf" stroke-width="2.5" stroke-linecap="round"/>
-                        <text class="tapmsg" x="60" y="88" text-anchor="middle" font-size="9" font-weight="600" fill="#f2d58f" font-family="Poppins, sans-serif">ikhlas</text>
-                        <rect width="120" height="90" fill="transparent" data-tap/>
+                        <ellipse class="rip" cx="60" cy="74" rx="20" ry="3.5"/>
+                        <ellipse class="rip r2" cx="60" cy="74" rx="20" ry="3.5"/>
+                        <ellipse class="rip r3" cx="60" cy="74" rx="20" ry="3.5"/>
+                        <path class="waves2" d="M6 74 q10 -7 20 0 t20 0 t20 0 t20 0 t20 0 t20 0" fill="none" stroke="#8fa5cf" stroke-width="2.5" stroke-linecap="round"/>
+                        <g class="refl" fill="#fff6d6">
+                            <circle class="twinkle" cx="28" cy="82" r="1.3"/>
+                            <circle class="twinkle" style="animation-delay:.7s" cx="60" cy="85" r="1.6"/>
+                            <circle class="twinkle" style="animation-delay:1.3s" cx="92" cy="81" r="1.2"/>
+                        </g>
+                        <rect width="120" height="90" fill="transparent"/>
                     </svg>`,
                 10: `<svg viewBox="0 0 120 90" class="balloon-svg">
                         <g class="balloon">
@@ -2123,10 +2263,178 @@
                             <path d="M57 46 h6 l-3 4z" fill="#d9a94f"/>
                             <path d="M60 50 q-5 8 0 15 q5 7 0 15" fill="none" stroke="#cdbfe0" stroke-width="1.5" stroke-linecap="round"/>
                         </g>
-                        <text class="tapmsg" x="60" y="86" text-anchor="middle" font-size="9" font-weight="600" fill="#f2d58f" font-family="Poppins, sans-serif">it's okay</text>
-                        <rect width="120" height="90" fill="transparent" data-tap/>
+                        <rect width="120" height="90" fill="transparent"/>
                     </svg>`
             };
+
+            /* petunjuk di atas gambar */
+            const ART_HINTS = {
+                1: 'Ketuk lilinnya, lalu buat satu harapan 🕯️',
+                2: 'Ketuk bukunya untuk membukanya 📖',
+                8: 'Tahan perahunya... sampai ia siap berlayar 🤍',
+                10: 'Ketuk balonnya untuk melepasnya 🎈'
+            };
+
+            /* ----- Aksi tiap ilustrasi ----- */
+            function lineCardGlow() {
+                const c = document.querySelector('.line-card');
+                if (!c) return;
+                c.classList.remove('wishglow'); void c.offsetWidth; c.classList.add('wishglow');
+                setTimeout(() => c.classList.remove('wishglow'), 3100);
+            }
+
+            /* KUE: lilin padam, asap jadi cahaya yang naik jadi bintang */
+            function actCake(svg) {
+                let done = false;
+                svg.addEventListener('click', () => {
+                    if (done) return; done = true;
+                    svg.classList.add('out');
+                    buzz([20, 60, 20]);
+                    const r = svg.getBoundingClientRect();
+                    const cx = r.left + r.width * 0.5, cy = r.top + r.height * 0.28;
+                    setTimeout(() => {
+                        emit(cx, cy, 30, { spread: 230, rise: 230, t: 2.8, size: 4.5, delay: 0.8, jitter: 16 });
+                        lineCardGlow();
+                        buzz(30);
+                    }, 450);
+                    setTimeout(() => emit(cx, cy, 12, { spread: 120, rise: 300, t: 3.6, size: 3, delay: 1.2, colors: ['#ffffff', '#ffe9b8'] }), 1300);
+                    $('artHint').textContent = '';
+                });
+            }
+
+            /* BUKU: sampul terbuka, halaman berbalik satu-satu, cahaya terbit dari dalamnya */
+            function actBook(svg) {
+                let done = false;
+                svg.addEventListener('click', () => {
+                    if (done) return; done = true;
+                    svg.classList.add('out');
+                    buzz([15, 70, 15, 70, 15]);
+                    const r = svg.getBoundingClientRect();
+                    const cx = r.left + r.width * 0.5, cy = r.top + r.height * 0.5;
+                    setTimeout(() => emit(cx, cy, 24, { spread: 150, rise: 210, t: 3.2, size: 3.6, delay: 1.2, jitter: 40 }), 1500);
+                    setTimeout(() => lineCardGlow(), 1700);
+                    $('artHint').textContent = '';
+                });
+            }
+
+            /* PERAHU: tahan untuk melepaskan */
+            function dimOn(on) { document.documentElement.classList.toggle('release-dim', !!on); }
+            function actBoat(svg) {
+                const ring = svg.querySelector('.ring'), glow = svg.querySelector('.lglow');
+                const L = 213.6, HOLD_MS = 2600;
+                let holding = false, done = false, t0 = 0, raf = 0, lastBuzz = 0, restoreT = null;
+                const baseHint = ART_HINTS[8];
+
+                function frame(now) {
+                    if (!holding) return;
+                    const p = Math.min(1, (now - t0) / HOLD_MS);
+                    ring.style.strokeDashoffset = String(L * (1 - p));
+                    glow.setAttribute('r', String(12 + p * 24));
+                    glow.style.opacity = String(0.5 + p * 0.5);
+                    if (now - lastBuzz > 420) { lastBuzz = now; buzz(8 + Math.round(p * 22)); }
+                    if (p >= 1) { complete(); return; }
+                    raf = requestAnimationFrame(frame);
+                }
+                function start(e) {
+                    if (done || holding) return;
+                    e.preventDefault(); e.stopPropagation();
+                    try { svg.setPointerCapture(e.pointerId); } catch (err) {}
+                    holding = true; t0 = performance.now(); lastBuzz = 0;
+                    clearTimeout(restoreT);
+                    ring.style.transition = 'none';
+                    svg.classList.add('holding');
+                    dimOn(true);
+                    fadeVolume(18, 2200);
+                    $('artHint').textContent = 'Tetap tahan... jangan dilepas dulu 🤍';
+                    raf = requestAnimationFrame(frame);
+                }
+                function cancel() {
+                    if (!holding || done) return;
+                    holding = false; cancelAnimationFrame(raf);
+                    ring.style.transition = 'stroke-dashoffset 0.9s ease';
+                    ring.style.strokeDashoffset = String(L);
+                    glow.setAttribute('r', '12'); glow.style.opacity = '';
+                    svg.classList.remove('holding');
+                    dimOn(false);
+                    fadeVolume(35, 1200);
+                    $('artHint').textContent = 'Belum... tahan sedikit lebih lama 🤍';
+                    restoreT = setTimeout(() => { if (!done) $('artHint').textContent = baseHint; }, 2600);
+                }
+                function complete() {
+                    done = true; holding = false;
+                    svg.classList.remove('holding');
+                    svg.classList.add('out');
+                    $('artHint').textContent = '';
+                    buzz([40, 90, 40, 140, 70]);
+                    shoot();
+                    fadeVolume(50, 6000);
+                    const r = svg.getBoundingClientRect();
+                    const bx = r.left + r.width * 0.5, by = r.top + r.height * 0.6;
+                    emit(bx, by, 22, { spread: 200, rise: 140, t: 2.4, size: 4, delay: 0.3, jitter: 30 });
+                    const t1 = setTimeout(() => emit(r.left + r.width * 0.75, by, 8, { spread: 90, rise: 70, t: 3, size: 3, delay: 2 }), 1800);
+                    const t2 = setTimeout(() => { dimOn(false); }, 5200);
+                    fxTimers.add(t1); fxTimers.add(t2);
+                }
+                svg.addEventListener('pointerdown', start);
+                svg.addEventListener('pointerup', cancel);
+                svg.addEventListener('pointercancel', cancel);
+                svg.addEventListener('lostpointercapture', cancel);
+                svg.addEventListener('contextmenu', e => e.preventDefault());
+            }
+
+            /* BALON: dilepas, naik melintasi layar, jadi bintang */
+            function actBalloon(svg) {
+                let done = false;
+                svg.addEventListener('click', () => {
+                    if (done) return; done = true;
+                    const g = svg.querySelector('.balloon');
+                    const r = g.getBoundingClientRect();
+                    const sx = r.left + r.width / 2, sy = r.top + r.height * 0.42;
+                    g.style.transition = 'opacity 0.2s ease'; g.style.opacity = '0';
+                    $('artHint').textContent = '';
+                    buzz([20, 60, 20]);
+
+                    const endY = Math.max(70, window.innerHeight * 0.13);
+                    const drift = (Math.random() < 0.5 ? -1 : 1) * (28 + Math.random() * 38);
+                    const b = document.createElement('div');
+                    b.className = 'fx-balloon';
+                    b.style.left = sx + 'px'; b.style.top = sy + 'px';
+                    b.style.setProperty('--rise', -(sy - endY) + 'px');
+                    b.style.setProperty('--drift', drift + 'px');
+                    b.innerHTML = `<div class="fb-in"><svg viewBox="0 0 38 100" width="38" height="100">
+                        <ellipse cx="19" cy="21" rx="17" ry="21" fill="#e8c27a"/>
+                        <ellipse cx="12" cy="13" rx="4.5" ry="7" fill="rgba(255,255,255,0.45)"/>
+                        <path d="M16 41 h6 l-3 5z" fill="#d9a94f"/>
+                        <path d="M19 46 q-6 10 0 20 q6 10 0 20 q-4 8 0 14" fill="none" stroke="#cdbfe0" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg></div>`;
+                    document.body.appendChild(b);
+                    fxNodes.add(b);
+
+                    /* jejak cahaya di belakang balon */
+                    const trail = setInterval(() => {
+                        const q = b.getBoundingClientRect();
+                        emit(q.left, q.top + 26, 1, { spread: 22, rise: 34, t: 1.6, size: 3, delay: 0, jitter: 8 });
+                    }, 130);
+                    fxTimers.add(trail);
+
+                    b.addEventListener('animationend', e => {
+                        if (e.target !== b) return;
+                        clearInterval(trail); fxTimers.delete(trail);
+                        const ex = sx + drift;
+                        b.remove(); fxNodes.delete(b);
+                        const star = document.createElement('div');
+                        star.className = 'fx-star';
+                        star.style.left = ex + 'px'; star.style.top = endY + 'px';
+                        document.body.appendChild(star);
+                        fxNodes.add(star);
+                        emit(ex, endY, 14, { spread: 90, rise: 40, t: 2, size: 3, delay: 0.2, jitter: 4, colors: ['#ffffff', '#ffe9b8'] });
+                        buzz(25);
+                    });
+                });
+            }
+
+            const ACT4 = { 1: actCake, 2: actBook, 8: actBoat, 10: actBalloon };
+
             $('chBody').innerHTML = `
                 <div class="env-wrap" id="envWrap">
                     <i class="spark" style="left:24%;top:64%;animation-delay:0s"></i>
@@ -2160,7 +2468,14 @@
             document.body.appendChild(bee);
             let signTimer = null;
             let lockUntil = 0, holdT = null;
-            cleanupFn = () => { clearTimeout(signTimer); clearTimeout(holdT); keyDim(false); starEl.remove(); bee.remove(); };
+            cleanupFn = () => {
+                clearTimeout(signTimer); clearTimeout(holdT); keyDim(false);
+                dimOn(false);
+                fxTimers.forEach(t => { clearInterval(t); clearTimeout(t); }); fxTimers.clear();
+                fxNodes.forEach(x => x.remove()); fxNodes.clear();
+                document.querySelectorAll('.fx-p').forEach(x => x.remove());
+                starEl.remove(); bee.remove();
+            };
             function shoot() {
                 starEl.classList.remove('go');
                 void starEl.offsetWidth;
@@ -2172,9 +2487,6 @@
                 bee.classList.add('go');
             }
 
-            // petunjuk ketuk: ditampilkan DI ATAS gambar
-            const ART_HINTS = { 1: 'Coba ketuk lilinnya 🕯️', 2: 'Coba ketuk bukunya 📖', 8: 'Coba ketuk perahunya ⛵', 10: 'Coba ketuk balonnya 🎈' };
-
             function showLine() {
                 const el = $('lineText');
                 el.className = 'line-text';
@@ -2184,14 +2496,17 @@
                 if (idx === KEY4 || idx === n - 1) typeLine(el, d[idx]);
                 else { typeTok++; el.textContent = d[idx]; }
                 el.parentElement.classList.toggle('key', idx === KEY4);
+                dimOn(false);
                 const art = $('lineArt');
                 art.innerHTML = ART4[idx] || '';
                 art.style.display = ART4[idx] ? '' : 'none';
                 $('artHint').textContent = ART_HINTS[idx] || '';
-                art.querySelectorAll('[data-tap]').forEach(t => t.addEventListener('click', e => {
-                    e.stopPropagation();
-                    t.closest('svg').classList.add('out');
-                }));
+                const svg = art.querySelector('svg');
+                if (svg) {
+                    /* ketukan di ilustrasi tidak boleh ikut memajukan kalimat */
+                    svg.addEventListener('click', e => e.stopPropagation());
+                    if (ACT4[idx]) ACT4[idx](svg);
+                }
                 /* alamat email jadi tautan yang bisa diketuk */
                 const mm = d[idx].match(MAIL_RE);
                 $('mailRow').innerHTML = mm
@@ -2212,7 +2527,6 @@
                 if (idx === n - 1) {
                     sg.textContent = '— Runi';
                     const my = idx;
-                    /* mulai ditulis saat kalimat terakhir hampir selesai diketik (dipercepat dari 2,6 detik) */
                     signTimer = setTimeout(() => { if (idx === my) sg.classList.add('go'); }, 900);
                 }
                 setCounter(`${idx + 1} / ${n}`);
@@ -2252,7 +2566,5 @@
         setMode(mode);
         updateMusicBtn();
     </script>
-    <!-- Dimuat paling akhir supaya onYouTubeIframeAPIReady sudah terdefinisi sebelum API memanggilnya -->
-    <script async src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
